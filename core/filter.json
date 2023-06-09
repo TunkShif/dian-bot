@@ -1,10 +1,8 @@
 {
-  {
-    "message_type": "group",
-    "sub_type": "normal",
-    "raw_message": {
-      ".regex": "^\\[CQ:reply,id=",
-      ".contains": "/设精"
-    }
+  "message_type": "group",
+  "sub_type": "normal",
+  "raw_message": {
+    ".regex": "^\\[CQ:reply,id=",
+    ".contains": "/设精"
   }
 }

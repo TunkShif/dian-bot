@@ -8,6 +8,10 @@ defmodule Dian.QQ do
   defp base_url, do: Application.get_env(:dian, Dian.QQ)[:base_url]
   defp access_token, do: Application.get_env(:dian, Dian.QQ)[:access_token]
 
+  def get_user_avator_by_number(number, size \\ 100) do
+    "https://q.qlogo.cn/g?b=qq&nk=#{number}&s=#{size}"
+  end
+
   def get_message_by_id(id) do
     case get("/get_msg", query: [message_id: id]) do
       {:ok, %{status: 200, body: %{"status" => "ok", "data" => data}}} ->

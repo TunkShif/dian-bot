@@ -1,6 +1,7 @@
 defmodule DianWeb.EventController do
   use DianWeb, :controller
 
+  alias Dian.Favorites.Diaan
   alias Dian.QQ
   alias Dian.Repo
   alias Dian.Profiles.User
@@ -17,7 +18,16 @@ defmodule DianWeb.EventController do
     end
   end
 
-  defp handle_event(%{"message_type" => "group", "raw_message" => message, "group_id" => group_id}) do
+  # TODO: refactor
+  # TODO: support image/at/etc.
+  defp handle_event(%{"message_type" => "group"} = event) do
+    %{
+      "raw_message" => message,
+      "group_id" => group_id,
+      "time" => marked_at,
+      "sender" => %{"nickname" => operator_nickname, "user_id" => operator_number}
+    } = event
+
     captured = Regex.named_captures(~r/\[CQ:reply,id=(?<message_id>-?\d+)\]/, message)
 
     with %{"message_id" => message_id} <- captured,
@@ -32,18 +42,23 @@ defmodule DianWeb.EventController do
         "message_id" => message_number,
         "message" => content,
         "time" => sent_at,
-        "sender" => %{"nickname" => nickname, "user_id" => user_number}
+        "sender" => %{"nickname" => sender_nickname, "user_id" => sender_number}
       } = message
 
       user =
-        Repo.get_by(User, number: user_number) ||
-          Repo.insert!(%User{number: user_number, nickname: nickname})
+        Repo.get_by(User, number: sender_number) ||
+          Repo.insert!(%User{number: sender_number, nickname: sender_nickname})
+
+      operator =
+        Repo.get_by(User, number: operator_number) ||
+          Repo.insert!(%User{number: operator_number, nickname: operator_nickname})
 
       group =
         Repo.get_by(Group, number: group_number) ||
           Repo.insert!(%Group{number: group_number, name: group_name})
 
       sent_at = sent_at |> DateTime.from_unix!() |> DateTime.to_naive()
+      marked_at = marked_at |> DateTime.from_unix!() |> DateTime.to_naive()
 
       message =
         Repo.insert!(%Message{
@@ -53,6 +68,15 @@ defmodule DianWeb.EventController do
           sender_id: user.id,
           group_id: group.id
         })
+
+      diaan =
+        Repo.insert!(%Diaan{
+          message_id: message.id,
+          operator_id: operator.id,
+          marked_at: marked_at
+        })
+
+      dbg(diaan)
 
       QQ.set_essence_msg(message.number)
 

@@ -4,7 +4,7 @@ defmodule Dian.Repo.Migrations.CreateFavoritesDiaans do
   def change do
     create table(:favorites_diaans) do
       add :marked_at, :naive_datetime
-      add :message_id, references(:profiles_users, on_delete: :nothing)
+      add :message_id, references(:messenger_messages, on_delete: :nothing)
       add :operator_id, references(:profiles_users, on_delete: :nothing)
 
       timestamps()

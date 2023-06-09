@@ -17,7 +17,7 @@ defmodule DianWeb.Router do
   scope "/", DianWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", HomeLive
   end
 
   scope "/", DianWeb do
