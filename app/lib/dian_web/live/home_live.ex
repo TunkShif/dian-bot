@@ -1,7 +1,6 @@
 defmodule DianWeb.HomeLive do
   use DianWeb, :live_view
 
-  alias Dian.QQ
   alias Dian.Favorites
   alias DianWeb.Presence
 
@@ -32,8 +31,8 @@ defmodule DianWeb.HomeLive do
       </ul>
     </section>
     <section class="py-2">
-      <p class="text-xs text-center text-slate-600">
-        现在一共有 <span class="text-slate-800 font-medium"><%= @online_count %></span> 人在翻阅合订本
+      <p class="text-xs text-center text-zinc-600 dark:text-zinc-500">
+        现在一共有 <span class="text-slate-800 dark:text-zinc-400 font-medium"><%= @online_count %></span> 人在翻阅合订本
       </p>
     </section>
     """
@@ -41,18 +40,5 @@ defmodule DianWeb.HomeLive do
 
   def handle_info(%{topic: "joined", event: "presence_diff"}, socket) do
     {:noreply, socket |> assign(online_count: Presence.count())}
-  end
-
-  defp format_datetime(datetime) do
-    date = datetime |> NaiveDateTime.to_date() |> Date.to_string()
-
-    time =
-      datetime
-      |> NaiveDateTime.to_time()
-      |> Time.add(8, :hour)
-      |> Time.truncate(:second)
-      |> Time.to_string()
-
-    "#{date} #{time}"
   end
 end

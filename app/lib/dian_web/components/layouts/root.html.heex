@@ -10,8 +10,11 @@
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
+    <script>
+      "dark"===localStorage.theme||!("theme"in localStorage)&&window.matchMedia("(prefers-color-scheme: dark)").matches?document.documentElement.classList.add("dark"):document.documentElement.classList.remove("dark");
+    </script>
   </head>
-  <body class="relative bg-gray-50 antialiased">
+  <body class="relative antialiased bg-white dark:bg-zinc-950 text-zinc-500 dark:text-zinc-400">
     <%= @inner_content %>
   </body>
 </html>

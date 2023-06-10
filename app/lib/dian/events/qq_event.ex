@@ -20,7 +20,7 @@ defmodule Dian.Events.QQEvent do
 
     %GroupOperationEvent{
       message: %{
-        number: message_number,
+        number: message_number
       },
       group: %{
         number: group_number

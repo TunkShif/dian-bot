@@ -91,7 +91,12 @@ defmodule Dian.MessengerTest do
 
     test "update_message/2 with valid data updates the message" do
       message = message_fixture()
-      update_attrs = %{content: "some updated content", number: 43, sent_at: ~N[2023-06-08 14:09:00]}
+
+      update_attrs = %{
+        content: "some updated content",
+        number: 43,
+        sent_at: ~N[2023-06-08 14:09:00]
+      }
 
       assert {:ok, %Message{} = message} = Messenger.update_message(message, update_attrs)
       assert message.content == "some updated content"
