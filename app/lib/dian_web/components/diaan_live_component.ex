@@ -56,7 +56,7 @@ defmodule DianWeb.DiaanLiveComponent do
     assigns = assign(assigns, user: user)
 
     ~H"""
-    <span class="inline-block text-blue-700 dark:text-sky-600 cursor-pointer hover:text-blue-600 dark:hover:text-sky-500 [&+p]:inline-block [&+p]:ml-2">
+    <span class="inline-block mr-2 text-blue-700 dark:text-sky-600 cursor-pointer hover:text-blue-600 dark:hover:text-sky-500 [&+p]:inline-block">
       @<%= @user["nickname"] %>
     </span>
     """
