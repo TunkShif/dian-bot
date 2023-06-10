@@ -20,20 +20,21 @@ if System.get_env("PHX_SERVER") do
   config :dian, DianWeb.Endpoint, server: true
 end
 
-go_cqhttp_base_url =
-  System.get_env("GO_CQHTTP_BASE_URL") ||
-    raise """
-    environment variable GO_CQHTTP_BASE_URL is missing.
-    """
+env = fn name ->
+  System.get_env(name) || raise "environment variable #{name} is missing."
+end
 
-go_cqhttp_access_token =
-  System.get_env("GO_CQHTTP_ACCESS_TOKEN") ||
-    raise """
-    environment variable GO_CQHTTP_ACCESS_TOKEN is missing.
-    """
+go_cqhttp_base_url = env.("GO_CQHTTP_BASE_URL")
+go_cqhttp_access_token = env.("GO_CQHTTP_ACCESS_TOKEN")
 
 # Configure go-cqhttp
 config :dian, Dian.QQ, base_url: go_cqhttp_base_url, access_token: go_cqhttp_access_token
+
+supabase_base_url = env.("SUPABASE_BASE_URL")
+supabase_api_key = env.("SUPABASE_API_KEY")
+
+# Configure supabase
+config :dian, Dian.Supabase, base_url: supabase_base_url, api_key: supabase_api_key
 
 if config_env() == :prod do
   database_url =

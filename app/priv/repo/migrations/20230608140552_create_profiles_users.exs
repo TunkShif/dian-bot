@@ -3,7 +3,7 @@ defmodule Dian.Repo.Migrations.CreateProfilesUsers do
 
   def change do
     create table(:profiles_users) do
-      add :number, :integer, null: false
+      add :number, :string, null: false
       add :nickname, :string
 
       timestamps()

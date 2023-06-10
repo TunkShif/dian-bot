@@ -4,7 +4,7 @@ defmodule Dian.Messenger.Group do
 
   schema "messenger_groups" do
     field :name, :string
-    field :number, :integer
+    field :number, :string
 
     has_many :messages, Dian.Messenger.Message
 

@@ -2,7 +2,7 @@
   "message_type": "group",
   "sub_type": "normal",
   "raw_message": {
-    ".regex": "^\\[CQ:reply,id=",
+    ".contains": "CQ:reply",
     ".contains": "/设精"
   }
 }

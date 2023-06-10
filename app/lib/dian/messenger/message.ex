@@ -3,8 +3,8 @@ defmodule Dian.Messenger.Message do
   import Ecto.Changeset
 
   schema "messenger_messages" do
-    field :content, :string
-    field :number, :integer
+    field :content, {:array, :map}
+    field :number, :string
     field :sent_at, :naive_datetime
 
     belongs_to :sender, Dian.Profiles.User

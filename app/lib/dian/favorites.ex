@@ -18,7 +18,11 @@ defmodule Dian.Favorites do
 
   """
   def list_favorites_diaans do
-    Repo.all(from d in Diaan, preload: [:operator, message: [:sender, :group]])
+    Repo.all(
+      from d in Diaan,
+        preload: [:operator, message: [:sender, :group]],
+        order_by: [desc: d.marked_at]
+    )
   end
 
   @doc """

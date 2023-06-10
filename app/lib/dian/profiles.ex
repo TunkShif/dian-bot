@@ -4,16 +4,22 @@ defmodule Dian.Profiles do
   """
 
   import Ecto.Query, warn: false
+  alias Dian.QQ
   alias Dian.Repo
 
   alias Dian.Profiles.User
 
-  def find_user_by_number(number) do
-    Repo.one(
-      from u in User,
-        where: ^number == u.number,
-        select: u
-    )
+  def get_or_create_user(number) do
+    if user = Repo.get_by(User, number: "#{number}") do
+      user
+    else
+      with {:ok, user} <- QQ.get_user(number),
+           {:ok, user} <- Repo.insert(struct(User, user)) do
+        user
+      else
+        _ -> nil
+      end
+    end
   end
 
   @doc """

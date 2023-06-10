@@ -4,10 +4,58 @@ defmodule Dian.Messenger do
   """
 
   import Ecto.Query, warn: false
-  alias Dian.Repo
 
-  alias Dian.Messenger.Group
-  alias Dian.Messenger.Message
+  require Logger
+
+  alias Dian.QQ
+  alias Dian.Repo
+  alias Dian.Profiles
+  alias Dian.Messenger.{Group, Message}
+  alias Dian.QQ.{MessageParser, MessageProcessor}
+
+  # TODO: refactor
+  def get_or_create_message(number) do
+    if message = Repo.get_by(Message, number: "#{number}") do
+      message
+    else
+      with {:ok, message} <- QQ.get_message(number),
+           {:ok, parsed} <- MessageParser.parse(message.raw_content) do
+        content = MessageProcessor.process(parsed)
+        sender = Profiles.get_or_create_user(message.sender.number)
+        group = get_or_create_group(message.group.number)
+
+        {:ok, message} =
+          Repo.insert(%Message{
+            number: number,
+            content: content,
+            sent_at: message.sent_at,
+            sender_id: sender.id,
+            group_id: group.id
+          })
+
+        message
+      else
+        error ->
+          Logger.error(error)
+          nil
+      end
+    end
+  end
+
+  def get_or_create_group(number) do
+    if group = Repo.get_by(Group, number: "#{number}") do
+      group
+    else
+      with {:ok, group} <- QQ.get_group(number),
+           {:ok, group} <- Repo.insert(struct(Group, group)) do
+        group
+      else
+        error ->
+          Logger.error(error)
+          nil
+      end
+    end
+  end
 
   @doc """
   Returns the list of messenger_groups.

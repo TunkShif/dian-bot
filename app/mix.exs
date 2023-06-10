@@ -50,7 +50,8 @@ defmodule Dian.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:nanoid, "~> 2.0.5"},
       {:tesla, "~> 1.4"},
-      {:finch, "~> 0.16"}
+      {:finch, "~> 0.16"},
+      {:nimble_parsec, "~> 1.0"}
     ]
   end
 

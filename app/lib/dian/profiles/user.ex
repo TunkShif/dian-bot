@@ -4,7 +4,7 @@ defmodule Dian.Profiles.User do
 
   schema "profiles_users" do
     field :nickname, :string
-    field :number, :integer
+    field :number, :string
 
     timestamps()
   end

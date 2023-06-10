@@ -4,7 +4,7 @@ defmodule Dian.Repo.Migrations.CreateMessengerGroups do
   def change do
     create table(:messenger_groups) do
       add :name, :string
-      add :number, :integer, null: false
+      add :number, :string, null: false
 
       timestamps()
     end
