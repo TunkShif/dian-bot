@@ -32,7 +32,8 @@ defmodule DianWeb.HomeLive do
     </section>
     <section class="py-2">
       <p class="text-xs text-center text-zinc-600 dark:text-zinc-500">
-        现在一共有 <span class="text-slate-800 dark:text-zinc-400 font-medium"><%= @online_count %></span> 人在翻阅合订本
+        现在一共有 <span class="text-slate-800 dark:text-zinc-400 font-medium"><%= @online_count %></span>
+        人在翻阅合订本
       </p>
     </section>
     """

@@ -17,7 +17,9 @@ defmodule DianWeb.DiaanLiveComponent do
             />
           </div>
           <div class="flex flex-col justify-between">
-            <span class="text-zinc-700 dark:text-zinc-400"><%= @diaan.message.sender.nickname %></span>
+            <span class="text-zinc-700 dark:text-zinc-400">
+              <%= @diaan.message.sender.nickname %>
+            </span>
             <span class="text-zinc-600 text-xs dark:text-zinc-500">
               <%= format_datetime(@diaan.message.sent_at) %> 发送
             </span>
@@ -54,7 +56,7 @@ defmodule DianWeb.DiaanLiveComponent do
     assigns = assign(assigns, user: user)
 
     ~H"""
-    <span class="inline-block text-blue-700 cursor-pointer hover:text-blue-600 [&+p]:inline-block [&+p]:ml-2">
+    <span class="inline-block text-blue-700 dark:text-sky-600 cursor-pointer hover:text-blue-600 dark:hover:text-sky-500 [&+p]:inline-block [&+p]:ml-2">
       @<%= @user["nickname"] %>
     </span>
     """
