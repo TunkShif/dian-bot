@@ -9,7 +9,13 @@ defmodule DianWeb.Presence do
     otp_app: :dian,
     pubsub_server: Dian.PubSub
 
+  @pubsub Dian.PubSub
+
   defp topic, do: "joined"
+
+  def subscribe() do
+    Phoenix.PubSub.subscribe(@pubsub, topic())
+  end
 
   def join() do
     track(self(), topic(), Nanoid.generate(), %{})

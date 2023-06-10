@@ -9,6 +9,7 @@ defmodule DianWeb.HomeLive do
 
   def mount(_params, _session, socket) do
     if connected?(socket) do
+      Presence.subscribe()
       Presence.join()
     end
 
@@ -22,8 +23,8 @@ defmodule DianWeb.HomeLive do
     ~H"""
     <section>
       <ul id="diaans" phx-update="stream" class="flex flex-col gap-4">
-        <li :for={{dom_id, diaan} <- @streams.diaans}>
-          <div id={dom_id} class="bg-white p-2.5 rounded flex flex-col gap-4">
+        <li :for={{dom_id, diaan} <- @streams.diaans} id={dom_id}>
+          <div class="bg-white p-2.5 rounded flex flex-col gap-4">
             <header class="flex gap-2">
               <div class="w-11 h-11 rounded-full border border-zinc-50">
                 <img
@@ -58,7 +59,16 @@ defmodule DianWeb.HomeLive do
         </li>
       </ul>
     </section>
+    <section class="py-4">
+      <p class="text-xs text-center text-slate-600">
+        现在一共有 <span class="text-slate-800 font-medium"><%= @online_count %></span> 人在翻阅合订本
+      </p>
+    </section>
     """
+  end
+
+  def handle_info(%{topic: "joined", event: "presence_diff"}, socket) do
+    {:noreply, socket |> assign(online_count: Presence.count())}
   end
 
   defp format_datetime(datetime) do
