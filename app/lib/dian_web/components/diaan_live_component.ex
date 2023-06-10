@@ -13,7 +13,11 @@ defmodule DianWeb.DiaanLiveComponent do
           <div class="w-11 h-11 rounded-full border border-zinc-900/10">
             <img
               src={QQ.get_user_avator_by_number(@diaan.message.sender.number)}
-              class="w-full h-full aspect-square rounded-full"
+              loading="lazy"
+              alt="just an avatar image, most probably a picture of anime waifu"
+              class="w-full h-full aspect-square rounded-full animate__faster"
+              phx-mounted={JS.dispatch("poke:mounted")}
+              phx-remove={JS.dispatch("poke:removed")}
             />
           </div>
           <div class="flex flex-col justify-between">
@@ -67,7 +71,11 @@ defmodule DianWeb.DiaanLiveComponent do
 
     ~H"""
     <figure>
-      <img src={@image["url"]} />
+      <img
+        src={@image["url"]}
+        loading="lazy"
+        alt="just a meme, but sorry I can't describe the picture"
+      />
     </figure>
     """
   end
