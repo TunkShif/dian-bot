@@ -23,7 +23,7 @@ defmodule DianWeb.CoreComponents do
   def theme_toggle(assigns) do
     ~H"""
     <button
-      class="inline-flex p-1.5 justify-center items-center hover:bg-zinc-50 rounded-md text-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-white"
+      class="inline-flex p-1.5 justify-center items-center hover:bg-zinc-50 rounded-md text-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-white transition-colors duration-200 ease-in-out"
       phx-click={JS.dispatch("theme:toggle")}
     >
       <span class="sr-only">theme toggle button</span>
