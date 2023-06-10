@@ -42,7 +42,7 @@ defmodule DianWeb.HomeLive do
 
             <section class="px-2">
               <p class="break-words">
-                <%= diaan.message.content %>
+                <%= raw(diaan.message.content) %>
               </p>
             </section>
 
@@ -59,7 +59,7 @@ defmodule DianWeb.HomeLive do
         </li>
       </ul>
     </section>
-    <section class="py-4">
+    <section class="py-2">
       <p class="text-xs text-center text-slate-600">
         现在一共有 <span class="text-slate-800 font-medium"><%= @online_count %></span> 人在翻阅合订本
       </p>
