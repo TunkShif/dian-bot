@@ -69,16 +69,15 @@ defmodule DianWeb.EventController do
           group_id: group.id
         })
 
-      diaan =
+      _diaan =
         Repo.insert!(%Diaan{
           message_id: message.id,
           operator_id: operator.id,
           marked_at: marked_at
         })
 
-      dbg(diaan)
-
       QQ.set_essence_msg(message.number)
+      # QQ.send_group_msg(group_number, "[CQ:at,qq=#{operator_number}] 已入典")
 
       {:ok, :ok}
     else

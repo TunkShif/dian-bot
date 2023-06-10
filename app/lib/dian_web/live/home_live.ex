@@ -3,11 +3,19 @@ defmodule DianWeb.HomeLive do
 
   alias Dian.QQ
   alias Dian.Favorites
+  alias DianWeb.Presence
 
   # TODO: realtime
 
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :diaans, Favorites.list_favorites_diaans())}
+    if connected?(socket) do
+      Presence.join()
+    end
+
+    {:ok,
+     socket
+     |> assign(online_count: Presence.count())
+     |> stream(:diaans, Favorites.list_favorites_diaans())}
   end
 
   def render(assigns) do

@@ -41,4 +41,14 @@ defmodule Dian.QQ do
         error
     end
   end
+
+  def send_group_msg(id, content) do
+    case post("/send_group_msg", %{group_id: id, message: content}) do
+      {:ok, %{status: 200, body: body}} ->
+        {:ok, body}
+
+      error ->
+        error
+    end
+  end
 end

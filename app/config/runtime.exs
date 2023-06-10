@@ -20,6 +20,21 @@ if System.get_env("PHX_SERVER") do
   config :dian, DianWeb.Endpoint, server: true
 end
 
+go_cqhttp_base_url =
+  System.get_env("GO_CQHTTP_BASE_URL") ||
+    raise """
+    environment variable GO_CQHTTP_BASE_URL is missing.
+    """
+
+go_cqhttp_access_token =
+  System.get_env("GO_CQHTTP_ACCESS_TOKEN") ||
+    raise """
+    environment variable GO_CQHTTP_ACCESS_TOKEN is missing.
+    """
+
+# Configure go-cqhttp
+config :dian, Dian.QQ, base_url: go_cqhttp_base_url, access_token: go_cqhttp_access_token
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||
@@ -35,21 +50,6 @@ if config_env() == :prod do
     url: database_url,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
     socket_options: maybe_ipv6
-
-  go_cqhttp_base_url =
-    System.get_env("GO_CQHTTP_BASE_URL") ||
-      raise """
-      environment variable GO_CQHTTP_BASE_URL is missing.
-      """
-
-  go_cqhttp_access_token =
-    System.get_env("GO_CQHTTP_ACCESS_TOKEN") ||
-      raise """
-      environment variable GO_CQHTTP_ACCESS_TOKEN is missing.
-      """
-
-  # Configure go-cqhttp
-  config :dian, Dian.QQ, base_url: go_cqhttp_base_url, access_token: go_cqhttp_access_token
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
