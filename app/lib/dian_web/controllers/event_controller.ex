@@ -77,7 +77,7 @@ defmodule DianWeb.EventController do
         })
 
       QQ.set_essence_msg(message.number)
-      # QQ.send_group_msg(group_number, "[CQ:at,qq=#{operator_number}] 已入典")
+      QQ.send_group_msg(group_number, "[CQ:at,qq=#{operator_number}] 已入典")
 
       {:ok, :ok}
     else
