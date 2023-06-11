@@ -35,7 +35,7 @@ defmodule DianWeb.HomeLive do
       </ul>
     </section>
 
-    <section class="my-4 flex justify-center items-center">
+    <section class="my-8 flex justify-center items-center">
       <button
         :if={@cursor}
         phx-click="load_more"
@@ -44,10 +44,26 @@ defmodule DianWeb.HomeLive do
           "flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5",
           "shadow-sm ring-1 ring-inset ring-zinc-300 dark:ring-zinc-700 text-zinc-700 dark:text-zinc-50",
           "bg-white hover:bg-zinc-50 active:bg-zinc-100 disabled:bg-white dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:active:bg-zinc-950 dark:disabled:bg-zinc-900",
-          "focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 inline-flex items-center"
+          "focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 inline-flex items-center gap-2"
         ]}
       >
-        多来点
+        <svg
+          class="animate-spin h-4 w-4 hidden phx-click-loading:block"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+          </circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          >
+          </path>
+        </svg>
+        <span class="inline-block phx-click-loading:hidden"> 多来点 </span>
+        <span class="hidden phx-click-loading:inline-block"> 加载中... </span>
       </button>
       <p :if={@cursor == nil} class="text-xs text-right text-zinc-600 dark:text-zinc-500">
         已经到底了别翻了
