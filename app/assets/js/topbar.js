@@ -4,11 +4,11 @@ let topBarScheduled = undefined
 
 // Show progress bar on live navigation and form submits. Only displays if still
 // loading after 120 msec
-topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" })
+topbar.config({ barColors: { 0: "#059669" }, shadowColor: "rgba(0, 0, 0, .3)" })
 
 window.addEventListener("phx:page-loading-start", () => {
   if (!topBarScheduled) {
-    topBarScheduled = setTimeout(() => topbar.show(), 200)
+    topBarScheduled = setTimeout(() => topbar.show(), 400)
   }
 })
 window.addEventListener("phx:page-loading-stop", () => {
