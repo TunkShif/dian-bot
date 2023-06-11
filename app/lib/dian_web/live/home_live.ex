@@ -23,7 +23,7 @@ defmodule DianWeb.HomeLive do
   def render(assigns) do
     ~H"""
     <section>
-      <ul id="diaans" phx-update="stream" class="flex flex-col gap-4">
+      <ul id="diaans" phx-update="stream" class="mx-auto flex flex-col gap-4 w-auto md:w-[720px]">
         <.live_component
           :for={{dom_id, diaan} <- @streams.diaans}
           module={DianWeb.DiaanLiveComponent}

@@ -31,6 +31,7 @@ defmodule Dian.Favorites do
 
   """
   def list_favorites_diaans do
+    # TODO: use join
     Repo.all(
       from(d in Diaan,
         preload: [:operator, message: [:sender, :group]],
