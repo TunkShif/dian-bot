@@ -4,13 +4,46 @@
 
 :root {
   --bg-gradient: linear-gradient(120deg, theme(colors.white) 0%, theme(colors.zinc.50 / 80) 100%);
+  --c-scrollbar-bg: theme(colors.zinc.50);
+  --c-scrollbar-thumb: theme(colors.zinc.300);
+  --c-scrollbar-thumb-hover: theme(colors.zinc.400);
+  --c-scrollbar-thumb-active: theme(colors.zinc.500);
 }
 
 .dark {
   --bg-gradient: linear-gradient(120deg, theme(colors.zinc.950 / 80) 0%, black 100%);
+  --c-scrollbar-bg: theme(colors.zinc.900);
+  --c-scrollbar-thumb: theme(colors.zinc.700);
+  --c-scrollbar-thumb-hover: theme(colors.zinc.600);
+  --c-scrollbar-thumb-active: theme(colors.zinc.500);
 }
 
 body {
   background: var(--bg-gradient);
   background-blend-mode: multiply, multiply;
+}
+
+::-webkit-scrollbar {
+  width: theme(width.3);
+}
+
+::-webkit-scrollbar:horizontal {
+  height: theme(height.3);
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: var(--c-scrollbar-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--c-scrollbar-thumb);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--c-scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--c-scrollbar-thumb-active);
 }

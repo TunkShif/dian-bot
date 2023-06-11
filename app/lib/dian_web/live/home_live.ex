@@ -44,7 +44,8 @@ defmodule DianWeb.HomeLive do
           "flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5",
           "shadow-sm ring-1 ring-inset ring-zinc-300 dark:ring-zinc-700 text-zinc-700 dark:text-zinc-50",
           "bg-white hover:bg-zinc-50 active:bg-zinc-100 disabled:bg-white dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:active:bg-zinc-950 dark:disabled:bg-zinc-900",
-          "focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 inline-flex items-center gap-2"
+          "focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 inline-flex items-center gap-2",
+          "transition-colors duration-200 ease-in-out"
         ]}
       >
         <svg
