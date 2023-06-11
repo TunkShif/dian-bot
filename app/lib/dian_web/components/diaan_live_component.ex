@@ -80,9 +80,22 @@ defmodule DianWeb.DiaanLiveComponent do
     """
   end
 
-  defp diaan_content(assigns) do
-    ~H"""
+  defp diaan_content(%{item: %{"type" => type}} = assigns) do
+    assigns = assign(assigns, type: type)
 
+    ~H"""
+    <div class={[
+      "flex items-center pl-4 py-3 rounded-md border border-zinc-200 dark:border-zinc-700",
+      "bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-sm first:mb-2 gap-2"
+    ]}>
+      <span class="inline-flex items-center align-text-top text-emerald-600">
+        <.icon name="hero-question-mark-circle-mini" class="w-4 h-4" />
+      </span>
+      <span>显示不了特殊类型消息: </span>
+      <code class="inline bg-white dark:bg-zinc-900 px-1.5 rounded border border-zinc-200 dark:border-zinc-800">
+        <%= @type %>
+      </code>
+    </div>
     """
   end
 end

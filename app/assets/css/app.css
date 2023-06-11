@@ -2,4 +2,15 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* This file is for your main application CSS */
+:root {
+  --bg-gradient: linear-gradient(120deg, theme(colors.white) 0%, theme(colors.zinc.50 / 80) 100%);
+}
+
+.dark {
+  --bg-gradient: linear-gradient(120deg, theme(colors.zinc.950 / 80) 0%, black 100%);
+}
+
+body {
+  background: var(--bg-gradient);
+  background-blend-mode: multiply, multiply;
+}
