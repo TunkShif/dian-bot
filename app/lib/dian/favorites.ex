@@ -21,23 +21,22 @@ defmodule Dian.Favorites do
     Phoenix.PubSub.broadcast(Dian.PubSub, topic(group), {:added, diaan})
   end
 
-  @doc """
-  Returns the list of favorites_diaans.
-
-  ## Examples
-
-      iex> list_favorites_diaans()
-      [%Diaan{}, ...]
-
-  """
-  def list_favorites_diaans do
+  def list_favorites_diaans(cursor \\ nil) do
     # TODO: use join
-    Repo.all(
-      from(d in Diaan,
+    query =
+      from d in Diaan,
         preload: [:operator, message: [:sender, :group]],
-        order_by: [desc: d.marked_at]
+        order_by: [desc: d.marked_at, desc: d.id]
+
+    opts =
+      Keyword.merge(
+        [cursor_fields: [{:marked_at, :desc}, {:id, :desc}], limit: 20],
+        if(cursor, do: [after: cursor], else: [])
       )
-    )
+
+    %{entries: entries, metadata: metadata} = Repo.paginate(query, opts)
+
+    {entries, metadata}
   end
 
   @doc """
