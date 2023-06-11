@@ -8,6 +8,19 @@ defmodule Dian.Favorites do
 
   alias Dian.Favorites.Diaan
 
+  def topic(group) do
+    "diaan:#{group}"
+  end
+
+  def subscribe(group \\ "*") do
+    Phoenix.PubSub.subscribe(Dian.PubSub, topic(group))
+  end
+
+  # TODO: event struct
+  def broadcast(group \\ "*", diaan) do
+    Phoenix.PubSub.broadcast(Dian.PubSub, topic(group), {:added, diaan})
+  end
+
   @doc """
   Returns the list of favorites_diaans.
 
@@ -19,9 +32,10 @@ defmodule Dian.Favorites do
   """
   def list_favorites_diaans do
     Repo.all(
-      from d in Diaan,
+      from(d in Diaan,
         preload: [:operator, message: [:sender, :group]],
         order_by: [desc: d.marked_at]
+      )
     )
   end
 
@@ -57,6 +71,16 @@ defmodule Dian.Favorites do
     %Diaan{}
     |> Diaan.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, diaan} ->
+        diaan = diaan |> Repo.preload([:operator, message: [:group, :sender]])
+        broadcast(diaan)
+        broadcast(diaan.message.group.number, diaan)
+        {:ok, diaan}
+
+      error ->
+        error
+    end
   end
 
   @doc """

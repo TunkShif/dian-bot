@@ -14,7 +14,7 @@ defmodule Dian.Favorites.Diaan do
   @doc false
   def changeset(diaan, attrs) do
     diaan
-    |> cast(attrs, [:marked_at])
+    |> cast(attrs, [:marked_at, :message_id, :operator_id])
     |> validate_required([:marked_at])
   end
 end

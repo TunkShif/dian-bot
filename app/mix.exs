@@ -51,7 +51,8 @@ defmodule Dian.MixProject do
       {:nanoid, "~> 2.0.5"},
       {:tesla, "~> 1.4"},
       {:finch, "~> 0.16"},
-      {:nimble_parsec, "~> 1.0"}
+      {:nimble_parsec, "~> 1.0"},
+      {:paginator, "~> 1.2.0"}
     ]
   end
 

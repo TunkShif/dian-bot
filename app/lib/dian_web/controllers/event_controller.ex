@@ -4,11 +4,10 @@ defmodule DianWeb.EventController do
   require Logger
 
   alias Dian.QQ
-  alias Dian.Repo
   alias Dian.Profiles
   alias Dian.Messenger
+  alias Dian.Favorites
 
-  alias Dian.Favorites.Diaan
   alias Dian.Events.QQEvent
   alias Dian.Events.QQEvent.GroupOperationEvent
 
@@ -23,7 +22,10 @@ defmodule DianWeb.EventController do
 
       error ->
         Logger.error(error)
-        send_resp(conn, 500, %{success: false, message: "failed"})
+
+        conn
+        |> put_status(500)
+        |> json(%{success: false, message: "failed"})
     end
   end
 
@@ -35,19 +37,18 @@ defmodule DianWeb.EventController do
 
     QQ.set_essence_message(message.number)
 
-    diaan =
-      Repo.insert!(%Diaan{
-        marked_at: marked_at,
-        message_id: message.id,
-        operator_id: operator.id
-      })
+    case Favorites.create_diaan(%{
+           marked_at: marked_at,
+           message_id: message.id,
+           operator_id: operator.id
+         }) do
+      {:ok, _diaan} ->
+        QQ.send_group_message(group.number, "[CQ:at,qq=#{operator.number}] 已入典")
+        {:ok, "success"}
 
-    if diaan do
-      QQ.send_group_message(group.number, "[CQ:at,qq=#{operator.number}] 已入典")
-
-      {:ok, "success"}
-    else
-      {:error, "failed"}
+      error ->
+        Logger.error(error)
+        {:error, "failed"}
     end
   end
 

@@ -10,6 +10,8 @@ defmodule DianWeb.HomeLive do
     if connected?(socket) do
       Presence.subscribe()
       Presence.join()
+
+      Favorites.subscribe()
     end
 
     {:ok,
@@ -41,5 +43,9 @@ defmodule DianWeb.HomeLive do
 
   def handle_info(%{topic: "joined", event: "presence_diff"}, socket) do
     {:noreply, socket |> assign(online_count: Presence.count())}
+  end
+
+  def handle_info({:added, diaan}, socket) do
+    {:noreply, socket |> stream_insert(:diaans, diaan, at: 0)}
   end
 end
