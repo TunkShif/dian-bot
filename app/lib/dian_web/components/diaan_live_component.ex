@@ -31,7 +31,10 @@ defmodule DianWeb.DiaanLiveComponent do
           </div>
         </header>
 
-        <section id={"#{@id}-content"} class="prose prose-zinc max-w-none break-words dark:prose-invert px-2">
+        <section
+          id={"#{@id}-content"}
+          class="prose prose-zinc max-w-none break-words dark:prose-invert px-2"
+        >
           <.diaan_content :for={item <- @diaan.message.content} item={item} />
         </section>
 
@@ -50,7 +53,7 @@ defmodule DianWeb.DiaanLiveComponent do
   end
 
   defp diaan_content(%{item: %{"type" => "text", "data" => data}} = assigns) do
-    assigns = assign(assigns, data: data |> Enum.map(&Markdown.to_html!/1) |> Enum.join(""))
+    assigns = assign(assigns, data: data |> Enum.join("") |> Markdown.to_html!())
 
     ~H"""
     <%= raw(@data) %>
