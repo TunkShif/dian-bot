@@ -52,7 +52,9 @@ defmodule Dian.MixProject do
       {:tesla, "~> 1.4"},
       {:finch, "~> 0.16"},
       {:nimble_parsec, "~> 1.0"},
-      {:paginator, "~> 1.2.0"}
+      {:paginator, "~> 1.2.0"},
+      {:earmark, "~> 1.4"},
+      {:html_sanitize_ex, "~> 1.4"}
     ]
   end
 

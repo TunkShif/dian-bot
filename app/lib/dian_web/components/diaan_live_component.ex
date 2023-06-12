@@ -4,6 +4,7 @@ defmodule DianWeb.DiaanLiveComponent do
   import Dian.Helpers
 
   alias Dian.QQ
+  alias Dian.Markdown
 
   def render(assigns) do
     ~H"""
@@ -30,7 +31,7 @@ defmodule DianWeb.DiaanLiveComponent do
           </div>
         </header>
 
-        <section class="px-2">
+        <section id={"#{@id}-content"} class="prose prose-zinc dark:prose-invert px-2">
           <.diaan_content :for={item <- @diaan.message.content} item={item} />
         </section>
 
@@ -49,10 +50,22 @@ defmodule DianWeb.DiaanLiveComponent do
   end
 
   defp diaan_content(%{item: %{"type" => "text", "data" => data}} = assigns) do
-    assigns = assign(assigns, data: data)
+    data =
+      data ++
+        [
+          ~S"""
+          ```elixir
+          defmodule DianWeb.DiaanLiveComponent do
+            console.log('hello')
+          end
+          ```
+          """
+        ]
+
+    assigns = assign(assigns, data: data |> Enum.map(&Markdown.to_html!/1) |> Enum.join(""))
 
     ~H"""
-    <p :for={text <- @data} class="break-words text-zinc-700 dark:text-zinc-400"><%= text %></p>
+    <%= raw(@data) %>
     """
   end
 
