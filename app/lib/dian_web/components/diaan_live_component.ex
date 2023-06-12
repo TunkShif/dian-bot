@@ -50,18 +50,6 @@ defmodule DianWeb.DiaanLiveComponent do
   end
 
   defp diaan_content(%{item: %{"type" => "text", "data" => data}} = assigns) do
-    data =
-      data ++
-        [
-          ~S"""
-          ```elixir
-          defmodule DianWeb.DiaanLiveComponent do
-            console.log('hello')
-          end
-          ```
-          """
-        ]
-
     assigns = assign(assigns, data: data |> Enum.map(&Markdown.to_html!/1) |> Enum.join(""))
 
     ~H"""
