@@ -53,7 +53,7 @@ defmodule DianWeb.DiaanLiveComponent do
   end
 
   defp diaan_content(%{item: %{"type" => "text", "data" => data}} = assigns) do
-    assigns = assign(assigns, data: data |> Enum.join("") |> Markdown.to_html!())
+    assigns = assign(assigns, data: data |> Enum.join("\n") |> Markdown.to_html!())
 
     ~H"""
     <%= raw(@data) %>
