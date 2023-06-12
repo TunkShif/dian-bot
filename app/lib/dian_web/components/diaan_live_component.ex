@@ -31,7 +31,7 @@ defmodule DianWeb.DiaanLiveComponent do
           </div>
         </header>
 
-        <section id={"#{@id}-content"} class="prose prose-zinc max-w-none dark:prose-invert px-2">
+        <section id={"#{@id}-content"} class="prose prose-zinc max-w-none break-words dark:prose-invert px-2">
           <.diaan_content :for={item <- @diaan.message.content} item={item} />
         </section>
 
