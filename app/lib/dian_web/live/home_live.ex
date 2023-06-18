@@ -36,18 +36,7 @@ defmodule DianWeb.HomeLive do
     </section>
 
     <section class="my-8 flex justify-center items-center">
-      <button
-        :if={@cursor}
-        phx-click="load_more"
-        class={[
-          "focus:outline-none focus-visible:outline-0 disabled:cursor-not-allowed disabled:opacity-75",
-          "flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5",
-          "shadow-sm ring-1 ring-inset ring-zinc-300 dark:ring-zinc-700 text-zinc-700 dark:text-zinc-50",
-          "bg-white hover:bg-zinc-50 active:bg-zinc-100 disabled:bg-white dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:active:bg-zinc-950 dark:disabled:bg-zinc-900",
-          "focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 inline-flex items-center gap-2",
-          "transition-colors duration-200 ease-in-out"
-        ]}
-      >
+      <.button :if={@cursor} phx-click="load_more">
         <svg
           class="animate-spin h-4 w-4 hidden phx-click-loading:block"
           xmlns="http://www.w3.org/2000/svg"
@@ -65,8 +54,8 @@ defmodule DianWeb.HomeLive do
         </svg>
         <span class="inline-block phx-click-loading:hidden"> 多来点 </span>
         <span class="hidden phx-click-loading:inline-block"> 加载中... </span>
-      </button>
-      <p :if={@cursor == nil} class="text-xs text-right text-zinc-600 dark:text-zinc-500">
+      </.button>
+      <p :if={@cursor == nil} class="text-xs text-right text-primary">
         已经到底了别翻了
       </p>
     </section>
@@ -78,10 +67,8 @@ defmodule DianWeb.HomeLive do
           </span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
         </span>
-        <p class="text-xs text-right text-zinc-600 dark:text-zinc-500">
-          现在一共有
-          <span class="text-slate-800 dark:text-zinc-400 font-medium"><%= @online_count %></span>
-          人在翻阅合订本
+        <p class="text-xs text-right text-primary">
+          现在一共有 <span class="text-emphasis font-medium"><%= @online_count %></span> 人在翻阅合订本
         </p>
       </div>
     </section>

@@ -22,10 +22,10 @@ defmodule DianWeb.DiaanLiveComponent do
             />
           </div>
           <div class="flex flex-col justify-between">
-            <span class="text-zinc-700 dark:text-zinc-400">
+            <span class="text-emphasis">
               <%= @diaan.message.sender.nickname %>
             </span>
-            <span class="text-zinc-600 text-xs dark:text-zinc-500">
+            <span class="text-primary">
               <%= format_datetime(@diaan.message.sent_at) %> 发送
             </span>
           </div>
@@ -39,11 +39,11 @@ defmodule DianWeb.DiaanLiveComponent do
         </section>
 
         <footer class="flex justify-between items-center">
-          <span class="text-zinc-600 text-xs dark:text-zinc-500">
+          <span class="text-primary text-xs">
             来自 <%= @diaan.message.group.name %>
           </span>
 
-          <span class="text-zinc-600 text-xs dark:text-zinc-500">
+          <span class="text-primary text-xs">
             由 <%= @diaan.operator.nickname %> 设置
           </span>
         </footer>
@@ -53,7 +53,7 @@ defmodule DianWeb.DiaanLiveComponent do
   end
 
   defp diaan_content(%{item: %{"type" => "text", "data" => data}} = assigns) do
-    assigns = assign(assigns, data: data |> Enum.join("\n") |> Markdown.to_html!())
+    assigns = assign(assigns, data: data |> Enum.join("\n\n") |> Markdown.to_html!())
 
     ~H"""
     <%= raw(@data) %>
@@ -90,7 +90,7 @@ defmodule DianWeb.DiaanLiveComponent do
     ~H"""
     <div class={[
       "flex items-center pl-4 py-3 rounded-md border border-zinc-200 dark:border-zinc-700",
-      "bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-sm first:mb-2 gap-2"
+      "bg-zinc-50 dark:bg-zinc-800 text-emphasis text-sm first:mb-2 gap-2"
     ]}>
       <span class="inline-flex items-center align-text-top text-emerald-600">
         <.icon name="hero-question-mark-circle-mini" class="w-4 h-4" />

@@ -6,10 +6,15 @@ const fs = require("fs")
 const path = require("path")
 
 module.exports = {
-  darkMode: "class",
+  darkMode: ["class", '[data-theme="dark"]'],
   content: ["./js/**/*.js", "../lib/*_web.ex", "../lib/*_web/**/*.*ex"],
   theme: {
     extend: {
+      textColor: {
+        primary: "var(--c-text-primary)",
+        secondary: "var(--c-text-secondary)",
+        emphasis: "var(--c-text-emphasis)"
+      },
       typography: (theme) => ({
         DEFAULT: {
           css: {

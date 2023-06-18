@@ -10,7 +10,7 @@
     </.live_title>
 
     <script>
-      "dark"===localStorage.theme||!("theme"in localStorage)&&window.matchMedia("(prefers-color-scheme: dark)").matches?document.documentElement.classList.add("dark"):document.documentElement.classList.remove("dark");
+      "dark"===localStorage.theme||!("theme"in localStorage)&&window.matchMedia("(prefers-color-scheme: dark)").matches?(document.documentElement.dataset.theme="dark"):undefined;
     </script>
 
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
@@ -30,7 +30,7 @@
       />
     </noscript>
   </head>
-  <body class="relative antialiased text-zinc-500 dark:text-zinc-400">
+  <body class="relative antialiased text-secondary">
     <%= @inner_content %>
   </body>
 </html>

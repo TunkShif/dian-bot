@@ -23,7 +23,7 @@ defmodule DianWeb.CoreComponents do
   def theme_toggle(assigns) do
     ~H"""
     <button
-      class="inline-flex p-1.5 justify-center items-center hover:bg-zinc-50 rounded-md text-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-white transition-colors duration-200 ease-in-out"
+      class="inline-flex p-1.5 justify-center items-center hover:bg-zinc-50 rounded-md text-emphasis dark:hover:bg-zinc-800 dark:hover:text-white transition-colors duration-200 ease-in-out"
       phx-click={JS.dispatch("theme:toggle")}
     >
       <span class="sr-only">theme toggle button</span>
@@ -228,8 +228,14 @@ defmodule DianWeb.CoreComponents do
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
-        "text-sm font-semibold leading-6 text-white active:text-white/80",
+        "inline-flex items-center gap-2",
+        "flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5",
+        "shadow-sm ring-1 ring-inset ring-zinc-300 dark:ring-zinc-700 text-zinc-700 dark:text-zinc-50",
+        "bg-white hover:bg-zinc-50 active:bg-zinc-100 disabled:bg-white",
+        "dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:active:bg-zinc-950 dark:disabled:bg-zinc-900",
+        "transition-colors duration-200 ease-in-out",
+        "focus:outline-none focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400",
+        "phx-submit-loading:opacity-75 disabled:cursor-not-allowed disabled:opacity-75",
         @class
       ]}
       {@rest}
