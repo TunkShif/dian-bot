@@ -18,6 +18,9 @@ defmodule DianWeb.Router do
     pipe_through :browser
 
     live "/", HomeLive
+
+    live "/users/login", LoginLive
+    live "/users/register", RegisterLive
   end
 
   scope "/", DianWeb do

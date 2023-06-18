@@ -54,7 +54,9 @@ defmodule Dian.MixProject do
       {:nimble_parsec, "~> 1.0"},
       {:paginator, "~> 1.2.0"},
       {:earmark, "~> 1.4"},
-      {:html_sanitize_ex, "~> 1.4"}
+      {:html_sanitize_ex, "~> 1.4"},
+      {:bcrypt_elixir, "~> 3.0"},
+      {:sobelow, "~> 0.12", only: [:dev, :test], runtime: false}
     ]
   end
 

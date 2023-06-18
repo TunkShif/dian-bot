@@ -1,37 +1,12 @@
 defmodule DianWeb.CoreComponents do
   @moduledoc """
   Provides core UI components.
-
-  At the first glance, this module may seem daunting, but its goal is
-  to provide some core building blocks in your application, such modals,
-  tables, and forms. The components are mostly markup and well documented
-  with doc strings and declarative assigns. You may customize and style
-  them in any way you want, based on your application growth and needs.
-
-  The default components use Tailwind CSS, a utility-first CSS framework.
-  See the [Tailwind CSS documentation](https://tailwindcss.com) to learn
-  how to customize them or feel free to swap in another framework altogether.
-
-  Icons are provided by [heroicons](https://heroicons.com). See `icon/1` for usage.
   """
   use Phoenix.Component
 
   import DianWeb.Gettext
 
   alias Phoenix.LiveView.JS
-
-  def theme_toggle(assigns) do
-    ~H"""
-    <button
-      class="inline-flex p-1.5 justify-center items-center hover:bg-zinc-50 rounded-md text-emphasis dark:hover:bg-zinc-800 dark:hover:text-white transition-colors duration-200 ease-in-out"
-      phx-click={JS.dispatch("theme:toggle")}
-    >
-      <span class="sr-only">theme toggle button</span>
-      <.icon name="hero-sun-mini" class="dark:block hidden w-5 h-5" />
-      <.icon name="hero-moon-mini" class="dark:hidden w-5 h-5" />
-    </button>
-    """
-  end
 
   @doc """
   Renders a modal.

@@ -9,7 +9,7 @@ defmodule DianWeb.DiaanLiveComponent do
   def render(assigns) do
     ~H"""
     <li id={@id} class="w-full">
-      <div class="bg-white dark:bg-zinc-900 px-2.5 py-4 flex flex-col gap-4 rounded border border-zinc-200 dark:border-zinc-800">
+      <div class="card-primary px-2.5 py-4 flex flex-col gap-4">
         <header class="flex gap-2">
           <div class="w-11 h-11 rounded-full border border-zinc-900/10">
             <img

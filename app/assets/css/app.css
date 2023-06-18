@@ -2,6 +2,12 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@layer components {
+  .card-primary {
+    @apply bg-white dark:bg-zinc-900 rounded border border-zinc-200 dark:border-zinc-800;
+  }
+}
+
 :root {
   --bg-gradient: linear-gradient(120deg, theme(colors.white) 0%, theme(colors.zinc.50 / 80) 100%);
 

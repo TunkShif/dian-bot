@@ -6,6 +6,8 @@ defmodule Dian.Profiles.User do
     field :nickname, :string
     field :number, :string
 
+    belongs_to :user, Dian.Accounts.User
+
     timestamps()
   end
 
