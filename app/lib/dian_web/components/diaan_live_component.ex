@@ -25,7 +25,7 @@ defmodule DianWeb.DiaanLiveComponent do
             <span class="text-emphasis">
               <%= @diaan.message.sender.nickname %>
             </span>
-            <span class="text-primary">
+            <span class="text-primary text-xs">
               <%= format_datetime(@diaan.message.sent_at) %> 发送
             </span>
           </div>
