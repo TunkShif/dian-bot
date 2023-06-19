@@ -36,18 +36,23 @@ defmodule DianWeb.HeaderComponents do
   def account_dropdown(assigns) do
     ~H"""
     <div>
-      <.icon_button phx-click={JS.exec("data-toggle", to: "#account-dropdown-content")}>
+      <.icon_button phx-click={JS.exec("data-show", to: "#account-dropdown-content")}>
         <.icon name="hero-user-mini" class="w-5 h-5" />
       </.icon_button>
       <div
         id="account-dropdown-content"
-        class="card-primary hidden absolute z-50 top-16 right-2 px-1.5 py-2"
-        data-toggle={
-          JS.toggle(
-            in:
+        class="card-emphasis hidden absolute z-50 top-16 right-2 px-1.5 py-2"
+        data-show={
+          JS.show(
+            transition:
               {"ease-in duration-200 transform", "opacity-0 -translate-y-1",
                "opacity-100 translate-y-0"},
-            out: {"ease-out duration-200 transform", "opacity-100", "opacity-0"},
+            time: 200
+          )
+        }
+        data-hide={
+          JS.hide(
+            transition: {"ease-out duration-200 transform", "opacity-100", "opacity-0"},
             time: 200
           )
         }
@@ -56,9 +61,9 @@ defmodule DianWeb.HeaderComponents do
           <ul class="w-full flex flex-col text-primary">
             <.focus_wrap
               id="account-dropdown-content-focus-wrap"
-              phx-window-keydown={JS.exec("data-toggle", to: "#account-dropdown-content")}
+              phx-window-keydown={JS.exec("data-hide", to: "#account-dropdown-content")}
               phx-key="escape"
-              phx-click-away={JS.exec("data-toggle", to: "#account-dropdown-content")}
+              phx-click-away={JS.exec("data-hide", to: "#account-dropdown-content")}
             >
               <li class="w-full">
                 <.link
@@ -102,10 +107,10 @@ defmodule DianWeb.HeaderComponents do
     """
   end
 
-  attr :class, :string, default: nil
-  attr :rest, :global, include: ~w(disabled form name value)
+  attr(:class, :string, default: nil)
+  attr(:rest, :global, include: ~w(disabled form name value))
 
-  slot :inner_block, required: true
+  slot(:inner_block, required: true)
 
   def icon_button(assigns) do
     ~H"""

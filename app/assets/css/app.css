@@ -6,6 +6,10 @@
   .card-primary {
     @apply bg-white dark:bg-zinc-900 rounded border border-zinc-200 dark:border-zinc-800;
   }
+
+  .card-emphasis {
+    @apply bg-white dark:bg-zinc-900 rounded border border-zinc-300 dark:border-zinc-700;
+  }
 }
 
 :root {
@@ -24,8 +28,8 @@
 [data-theme="dark"] {
   --bg-gradient: linear-gradient(120deg, theme(colors.zinc.950 / 80) 0%, black 100%);
 
-  --c-text-primary: theme(colors.zinc.400);
-  --c-text-secondary: theme(colors.zinc.500);
+  --c-text-primary: theme(colors.zinc.300);
+  --c-text-secondary: theme(colors.zinc.400);
   --c-text-emphasis: theme(colors.zinc.200);
 
   --c-scrollbar-bg: theme(colors.zinc.900);

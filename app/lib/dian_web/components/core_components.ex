@@ -209,7 +209,7 @@ defmodule DianWeb.CoreComponents do
         "bg-white hover:bg-zinc-50 active:bg-zinc-100 disabled:bg-white",
         "dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:active:bg-zinc-950 dark:disabled:bg-zinc-900",
         "transition-colors duration-200 ease-in-out",
-        "focus:outline-none focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400",
+        "focus:outline-none focus:outline-0 focus-visible:ring-2 focus-visible:ring-zinc-500 dark:focus-visible:ring-zinc-400",
         "phx-submit-loading:opacity-75 disabled:cursor-not-allowed disabled:opacity-75",
         @class
       ]}
