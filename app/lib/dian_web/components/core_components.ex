@@ -9,6 +9,59 @@ defmodule DianWeb.CoreComponents do
   alias Phoenix.LiveView.JS
 
   @doc """
+  Renders a button.
+
+  ## Examples
+
+      <.button>Send!</.button>
+      <.button phx-click="go" class="ml-2">Send!</.button>
+  """
+  attr(:type, :string, default: nil)
+  attr(:class, :string, default: nil)
+  attr(:has_spinner, :boolean, default: true)
+  attr(:rest, :global, include: ~w(disabled form name value))
+
+  slot(:inner_block, required: true)
+
+  def button(assigns) do
+    ~H"""
+    <button
+      type={@type}
+      class={[
+        "inline-flex items-center gap-2",
+        "flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5",
+        "shadow-sm ring-1 ring-inset ring-zinc-300 dark:ring-zinc-700 text-zinc-700 dark:text-zinc-50",
+        "bg-white hover:bg-zinc-50 active:bg-zinc-100 disabled:bg-white",
+        "dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:active:bg-zinc-950 dark:disabled:bg-zinc-900",
+        "transition-colors duration-200 ease-in-out",
+        "focus:outline-none focus:outline-0 focus-visible:ring-2 focus-visible:ring-zinc-500 dark:focus-visible:ring-zinc-400",
+        "phx-click-loading:opacity-60 phx-submit-loading:opacity-60 disabled:cursor-not-allowed disabled:opacity-60",
+        @class
+      ]}
+      {@rest}
+    >
+      <svg
+        :if={@has_spinner}
+        class="animate-spin h-4 w-4 hidden phx-click-loading:block phx-submit-loading:block"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+        </circle>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        >
+        </path>
+      </svg>
+      <%= render_slot(@inner_block) %>
+    </button>
+    """
+  end
+
+  @doc """
   Renders a modal.
 
   ## Examples
@@ -102,20 +155,20 @@ defmodule DianWeb.CoreComponents do
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
       class={[
-        "fixed top-2 right-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1",
-        @kind == :info && "bg-emerald-50 text-emerald-800 ring-emerald-500 fill-cyan-900",
-        @kind == :error && "bg-rose-50 text-rose-900 shadow-md ring-rose-500 fill-rose-900"
+        "fixed bottom-5 md:bottom-auto md:top-4 inset-x-0 p-2 m-auto w-80 z-[99] ring-1 rounded shadow-md",
+        @kind == :info && "bg-sky-50 text-sky-800 ring-sky-500 fill-cyan-900",
+        @kind == :error && "bg-rose-50 text-rose-900 ring-rose-500 fill-rose-900"
       ]}
       {@rest}
     >
       <p :if={@title} class="flex items-center gap-1.5 text-sm font-semibold leading-6">
-        <.icon :if={@kind == :info} name="hero-information-circle-mini" class="h-4 w-4" />
-        <.icon :if={@kind == :error} name="hero-exclamation-circle-mini" class="h-4 w-4" />
+        <.icon :if={@kind == :info} name="hero-information-circle-mini" class="h-5 w-5" />
+        <.icon :if={@kind == :error} name="hero-exclamation-circle-mini" class="h-5 w-5" />
         <%= @title %>
       </p>
       <p class="mt-2 text-sm leading-5"><%= msg %></p>
-      <button type="button" class="group absolute top-1 right-1 p-2" aria-label={gettext("close")}>
-        <.icon name="hero-x-mark-solid" class="h-5 w-5 opacity-40 group-hover:opacity-70" />
+      <button type="button" class="group absolute top-1 right-1" aria-label={gettext("close")}>
+        <.icon name="hero-x-mark-solid" class="h-4 w-4 opacity-40 group-hover:opacity-70" />
       </button>
     </div>
     """
@@ -132,8 +185,8 @@ defmodule DianWeb.CoreComponents do
 
   def flash_group(assigns) do
     ~H"""
-    <.flash kind={:info} title="Success!" flash={@flash} />
-    <.flash kind={:error} title="Error!" flash={@flash} />
+    <.flash kind={:info} title="好!" flash={@flash} />
+    <.flash kind={:error} title="坏!" flash={@flash} />
     <.flash
       id="disconnected"
       kind={:error}
@@ -181,42 +234,6 @@ defmodule DianWeb.CoreComponents do
         </div>
       </div>
     </.form>
-    """
-  end
-
-  @doc """
-  Renders a button.
-
-  ## Examples
-
-      <.button>Send!</.button>
-      <.button phx-click="go" class="ml-2">Send!</.button>
-  """
-  attr(:type, :string, default: nil)
-  attr(:class, :string, default: nil)
-  attr(:rest, :global, include: ~w(disabled form name value))
-
-  slot(:inner_block, required: true)
-
-  def button(assigns) do
-    ~H"""
-    <button
-      type={@type}
-      class={[
-        "inline-flex items-center gap-2",
-        "flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5",
-        "shadow-sm ring-1 ring-inset ring-zinc-300 dark:ring-zinc-700 text-zinc-700 dark:text-zinc-50",
-        "bg-white hover:bg-zinc-50 active:bg-zinc-100 disabled:bg-white",
-        "dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:active:bg-zinc-950 dark:disabled:bg-zinc-900",
-        "transition-colors duration-200 ease-in-out",
-        "focus:outline-none focus:outline-0 focus-visible:ring-2 focus-visible:ring-zinc-500 dark:focus-visible:ring-zinc-400",
-        "phx-submit-loading:opacity-75 disabled:cursor-not-allowed disabled:opacity-75",
-        @class
-      ]}
-      {@rest}
-    >
-      <%= render_slot(@inner_block) %>
-    </button>
     """
   end
 
