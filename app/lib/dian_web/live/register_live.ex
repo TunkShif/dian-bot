@@ -6,12 +6,14 @@ defmodule DianWeb.RegisterLive do
   alias Dian.Accounts
   alias Dian.Profiles
 
+  @validation_timeout 2 * 60 * 1000
+
   def mount(_params, _session, socket) do
     groups = Messenger.list_messenger_groups()
     selected_group = List.first(groups)
 
     # "input_number" -> "validating" -> "setting_password"
-    step = "setting_password"
+    step = "input_number"
 
     {:ok,
      assign(socket,
@@ -21,9 +23,7 @@ defmodule DianWeb.RegisterLive do
          "group" => selected_group,
          "qq_number" => "",
          "validation_code" => ""
-       },
-       # TODO: delete this
-       form: Accounts.User.registration_changeset(%Accounts.User{}, %{}) |> to_form()
+       }
      )}
   end
 
@@ -173,7 +173,7 @@ defmodule DianWeb.RegisterLive do
       <div class="mt-4 flex gap-4">
         <div class="w-14 h-14 rounded-full border border-zinc-900/10">
           <img
-            src={QQ.get_user_avator_by_number(1_395_084_414)}
+            src={QQ.get_user_avator_by_number(@profile.number)}
             loading="lazy"
             alt="just an avatar image, most probably a picture of anime waifu"
             class="w-full h-full aspect-square rounded-full animate__faster"
@@ -183,7 +183,9 @@ defmodule DianWeb.RegisterLive do
         </div>
 
         <div class="flex flex-col justify-around">
-          <h3 class="text-lg text-primary font-medium tracking-wide">Bonjour 啊!</h3>
+          <h3 class="text-lg text-primary font-medium tracking-wide">
+            Bonjour 啊, <%= @profile.nickname %>!
+          </h3>
           <p class="text-sm text-secondary">
             企鹅账号为 <span class="text-primary px-0.5"><%= "1395084414" %></span> 的旅行者
           </p>
@@ -278,34 +280,45 @@ defmodule DianWeb.RegisterLive do
   end
 
   def handle_event("next:send_validation_code", _params, socket) do
-    validation_code = Nanoid.generate()
+    # TODO: error handling
+    profile = Profiles.get_or_create_user(socket.assigns.input["qq_number"])
 
-    # TODO
-    Process.sleep(1000)
-    IO.inspect(validation_code)
+    if profile.user_id do
+      {:noreply, socket |> put_flash(:info, "已经绑定过了，快去登录吧!") |> redirect(to: ~p"/users/login")}
+    else
+      validation_code = Nanoid.generate()
 
-    {:noreply,
-     socket
-     |> assign(step: "validating", validation_code: validation_code)
-     |> put_flash(:info, "注意查收你的神秘代码")}
+      case QQ.send_private_message(
+             socket.assigns.input["qq_number"],
+             socket.assigns.input["group"].number,
+             "你的绑定神秘代码是：#{validation_code}（2 分钟内有效）"
+           ) do
+        {:ok, _response} ->
+          Process.send_after(self(), "invalidate", @validation_timeout)
+
+          {:noreply,
+           socket
+           |> assign(step: "validating", validation_code: validation_code, profile: profile)
+           |> put_flash(:info, "注意查收你的神秘代码")}
+
+        {:error, _reason} ->
+          {:noreply, socket |> put_flash(:error, "哎呀，出错了，重新试试")}
+      end
+    end
   end
 
   def handle_event("next:set_password", _params, socket) do
     socket =
       if socket.assigns.validation_code == socket.assigns.input["validation_code"] do
-        # TODO: error handling
-        profile = Profiles.get_or_create_user(socket.assigns.input["qq_number"])
-
         assign(socket,
           step: "setting_password",
           validation_code: nil,
-          profile: profile,
           form: Accounts.User.registration_changeset(%Accounts.User{}, %{}) |> to_form()
         )
       else
         socket
         |> put_flash(:error, "验证码错了")
-        |> assign(step: "input_number", validation_code: nil)
+        |> redirect(to: ~p"/users/register")
       end
 
     {:noreply, socket}
@@ -320,7 +333,22 @@ defmodule DianWeb.RegisterLive do
     {:noreply, socket |> assign(form: form)}
   end
 
-  def handle_event("submit:user", _params, socket) do
+  def handle_event("submit:user", %{"user" => params}, socket) do
+    qq_number = socket.assigns.input["qq_number"]
+
+    socket =
+      case Accounts.register_user(params, qq_number) do
+        {:ok, _user} ->
+          socket |> put_flash(:info, "注册成功啦，快去登录吧!") |> redirect(to: ~p"/users/login")
+
+        {:error, _reason} ->
+          socket |> put_flash(:error, "呃呃呃，出错了。。。") |> redirect(to: ~p"/users/register")
+      end
+
     {:noreply, socket}
+  end
+
+  def handle_info("invalidate", socket) do
+    {:noreply, socket |> put_flash(:error, "超时了，重新注册") |> redirect(to: ~p"/users/register")}
   end
 end

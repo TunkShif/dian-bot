@@ -10,7 +10,7 @@ defmodule Dian.Accounts.User do
 
     has_one :profile, Dian.Profiles.User
 
-    timestamps updated_at: false
+    timestamps()
   end
 
   def changeset(user, attrs) do

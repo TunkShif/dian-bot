@@ -14,7 +14,7 @@ defmodule Dian.Profiles.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:number, :nickname])
+    |> cast(attrs, [:number, :nickname, :user_id])
     |> validate_required([:number, :nickname])
   end
 end

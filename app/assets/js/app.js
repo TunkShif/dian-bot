@@ -4,6 +4,7 @@ import { LiveSocket } from "phoenix_live_view"
 
 import "./poke"
 import "./theme"
+import "./flash"
 import "./topbar"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")

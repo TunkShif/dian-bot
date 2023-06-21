@@ -4,9 +4,29 @@ defmodule Dian.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias Dian.Profiles
   alias Dian.Repo
 
   alias Dian.Accounts.User
+
+  def register_user(attrs, qq_number) do
+    profile = Profiles.get_or_create_user(qq_number)
+
+    if profile.user_id do
+      {:error, :exists}
+    else
+      with {:ok, user} <-
+             %User{}
+             |> User.registration_changeset(attrs)
+             |> Repo.insert(),
+           {:ok, _profile} <-
+             profile
+             |> Profiles.User.changeset(%{user_id: user.id})
+             |> Repo.update() do
+        {:ok, user}
+      end
+    end
+  end
 
   @doc """
   Returns the list of users.
