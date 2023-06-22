@@ -22,10 +22,13 @@ defmodule Dian.Favorites do
   end
 
   def list_favorites_diaans(cursor \\ nil) do
-    # TODO: use join
     query =
       from d in Diaan,
-        preload: [:operator, message: [:sender, :group]],
+        left_join: operator in assoc(d, :operator),
+        left_join: message in assoc(d, :message),
+        left_join: sender in assoc(message, :sender),
+        left_join: group in assoc(message, :group),
+        preload: [operator: operator, message: {message, sender: sender, group: group}],
         order_by: [desc: d.marked_at, desc: d.id]
 
     opts =

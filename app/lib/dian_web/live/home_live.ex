@@ -4,8 +4,6 @@ defmodule DianWeb.HomeLive do
   alias Dian.Favorites
   alias DianWeb.Presence
 
-  # TODO: realtime
-
   def mount(_params, _session, socket) do
     if connected?(socket) do
       Presence.subscribe()

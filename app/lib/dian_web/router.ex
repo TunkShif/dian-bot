@@ -1,32 +1,40 @@
 defmodule DianWeb.Router do
   use DianWeb, :router
 
+  import DianWeb.Auth
+
   pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_live_flash
-    plug :put_root_layout, html: {DianWeb.Layouts, :root}
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_live_flash)
+    plug(:put_root_layout, html: {DianWeb.Layouts, :root})
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
+    plug(:fetch_current_user)
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug(:accepts, ["json"])
   end
 
   scope "/", DianWeb do
-    pipe_through :browser
+    pipe_through(:browser)
 
-    live "/", HomeLive
+    live_session :default, on_mount: [{DianWeb.Auth, :mount_current_user}] do
+      live("/", HomeLive)
 
-    live "/users/login", LoginLive
-    live "/users/register", RegisterLive
+      live("/users/login", LoginLive)
+      live("/users/register", RegisterLive)
+    end
+
+    post("/users/login", AuthController, :create)
+    delete("/users/logout", AuthController, :delete)
   end
 
   scope "/", DianWeb do
-    pipe_through :api
+    pipe_through(:api)
 
-    post "/event/incoming", EventController, :incoming
+    post("/event/incoming", EventController, :incoming)
   end
 
   # Enable LiveDashboard in development
@@ -39,9 +47,9 @@ defmodule DianWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do
-      pipe_through :browser
+      pipe_through(:browser)
 
-      live_dashboard "/dashboard", metrics: DianWeb.Telemetry
+      live_dashboard("/dashboard", metrics: DianWeb.Telemetry)
     end
   end
 end

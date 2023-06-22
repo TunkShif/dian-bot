@@ -13,7 +13,7 @@ defmodule Dian.Messenger do
   alias Dian.Messenger.{Group, Message}
   alias Dian.QQ.{MessageParser, MessageProcessor}
 
-  # TODO: refactor
+  # TODO: refactor transaction
   def get_or_create_message(number) do
     if message = Repo.get_by(Message, number: "#{number}") do
       message

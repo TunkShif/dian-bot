@@ -187,7 +187,7 @@ defmodule DianWeb.RegisterLive do
             Bonjour 啊, <%= @profile.nickname %>!
           </h3>
           <p class="text-sm text-secondary">
-            企鹅账号为 <span class="text-primary px-0.5"><%= "1395084414" %></span> 的旅行者
+            企鹅账号为 <span class="text-primary px-0.5"><%= @profile.number %></span> 的旅行者
           </p>
         </div>
       </div>
