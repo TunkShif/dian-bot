@@ -22,9 +22,17 @@ defmodule Dian.Favorites do
   end
 
   def list_favorites_diaans(cursor \\ nil, params \\ %{}) do
-    group_filter = if(params["group_id"], do: [group_id: params["group_id"]], else: [])
-    sender_filter = if(params["sender_id"], do: [sender_id: params["sender_id"]], else: [])
-    filters = Keyword.merge(group_filter, sender_filter)
+    filters =
+      if(group_id = params["group_id"],
+        do: dynamic([d, operator, message], message.group_id == ^group_id),
+        else: true
+      )
+
+    filters =
+      if(sender_id = params["sender_id"],
+        do: dynamic([d, operator, message], ^filters and message.sender_id == ^sender_id),
+        else: true
+      )
 
     query =
       Diaan
@@ -65,6 +73,10 @@ defmodule Dian.Favorites do
 
   """
   def get_diaan!(id), do: Repo.get!(Diaan, id)
+
+  def get_diaan_by_message_id(id) do
+    Repo.get(Diaan, message_id: id)
+  end
 
   @doc """
   Creates a diaan.

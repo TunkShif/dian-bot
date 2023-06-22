@@ -21,6 +21,7 @@ defmodule Dian.Messenger do
       with {:ok, message} <- QQ.get_message(number),
            {:ok, parsed} <- MessageParser.parse(message.raw_content) do
         content = MessageProcessor.process(parsed)
+        raw_text = MessageProcessor.raw_text(content)
         sender = Profiles.get_or_create_user(message.sender.number)
         group = get_or_create_group(message.group.number)
 
@@ -28,6 +29,7 @@ defmodule Dian.Messenger do
           Repo.insert(%Message{
             number: number,
             content: content,
+            raw_text: raw_text,
             sent_at: message.sent_at,
             sender_id: sender.id,
             group_id: group.id

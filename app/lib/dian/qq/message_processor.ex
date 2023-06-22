@@ -8,6 +8,12 @@ defmodule Dian.QQ.MessageProcessor do
     |> Enum.map(&process_code/1)
   end
 
+  def raw_text(content) do
+    for(%{"type" => type, "data" => data} <- content, type == "text", do: data)
+    |> List.flatten()
+    |> Enum.join(" ")
+  end
+
   defp process_code(%{"type" => "text", "data" => data} = item) do
     %{item | "data" => String.split(data, "\n")}
   end
