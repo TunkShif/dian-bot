@@ -2,6 +2,8 @@ defmodule DianWeb.HomeLive do
   use DianWeb, :live_view
 
   alias Dian.Favorites
+  alias Dian.Accounts.User
+
   alias DianWeb.Presence
 
   def mount(_params, _session, socket) do
@@ -29,6 +31,7 @@ defmodule DianWeb.HomeLive do
           module={DianWeb.DiaanLiveComponent}
           id={dom_id}
           diaan={diaan}
+          with_menu={User.is_admin?(@current_user)}
         />
       </ul>
     </section>
@@ -70,5 +73,9 @@ defmodule DianWeb.HomeLive do
 
   def handle_info({:added, diaan}, socket) do
     {:noreply, socket |> stream_insert(:diaans, diaan, at: 0)}
+  end
+
+  def handle_info({:deleted, diaan}, socket) do
+    {:noreply, socket |> stream_delete(:diaans, diaan) |> put_flash(:info, "删除成功")}
   end
 end

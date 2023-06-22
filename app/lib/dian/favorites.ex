@@ -17,8 +17,8 @@ defmodule Dian.Favorites do
   end
 
   # TODO: event struct
-  def broadcast(group \\ "*", diaan) do
-    Phoenix.PubSub.broadcast(Dian.PubSub, topic(group), {:added, diaan})
+  def broadcast(group \\ "*", payload) do
+    Phoenix.PubSub.broadcast(Dian.PubSub, topic(group), payload)
   end
 
   def list_favorites_diaans(cursor \\ nil) do
@@ -77,8 +77,8 @@ defmodule Dian.Favorites do
     |> case do
       {:ok, diaan} ->
         diaan = diaan |> Repo.preload([:operator, message: [:group, :sender]])
-        broadcast(diaan)
-        broadcast(diaan.message.group.number, diaan)
+        broadcast({:added, diaan})
+        broadcast(diaan.message.group.number, {:added, diaan})
         {:ok, diaan}
 
       error ->
@@ -117,7 +117,9 @@ defmodule Dian.Favorites do
 
   """
   def delete_diaan(%Diaan{} = diaan) do
-    Repo.delete(diaan)
+    with {:ok, diaan} <- Repo.delete(diaan) do
+      broadcast({:deleted, diaan})
+    end
   end
 
   @doc """

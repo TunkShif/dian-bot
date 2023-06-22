@@ -61,6 +61,26 @@ defmodule DianWeb.CoreComponents do
     """
   end
 
+  attr(:class, :string, default: nil)
+  attr(:rest, :global)
+
+  slot(:inner_block, required: true)
+
+  def icon_button(assigns) do
+    ~H"""
+    <button
+      class={[
+        "inline-flex p-1.5 justify-center items-center hover:bg-zinc-100 rounded-md text-emphasis",
+        "dark:hover:bg-zinc-800 dark:hover:text-white transition-colors duration-200 ease-in-out",
+        @class
+      ]}
+      {@rest}
+    >
+      <%= render_slot(@inner_block) %>
+    </button>
+    """
+  end
+
   attr(:id, :string, required: true)
   attr(:show, :boolean, default: false)
   attr(:mount, :boolean, default: true)
@@ -151,9 +171,13 @@ defmodule DianWeb.CoreComponents do
       phx-mounted={@show && show_modal(@id)}
       phx-remove={hide_modal(@id)}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
-      class="relative z-50 hidden"
+      class="relative z-[100] hidden"
     >
-      <div id={"#{@id}-bg"} class="bg-zinc-50/90 fixed inset-0 transition-opacity" aria-hidden="true" />
+      <div
+        id={"#{@id}-bg"}
+        class="backdrop-blur-sm fixed inset-0 transition-opacity"
+        aria-hidden="true"
+      />
       <div
         class="fixed inset-0 overflow-y-auto"
         aria-labelledby={"#{@id}-title"}
@@ -216,7 +240,7 @@ defmodule DianWeb.CoreComponents do
       phx-mounted={JS.dispatch("flash:auto-clear")}
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
-      class="card-emphasis fixed bottom-5 md:bottom-auto md:top-4 inset-x-0 p-2 m-auto w-80 z-[99]"
+      class="card-emphasis fixed top-4 inset-x-0 p-2 m-auto w-80 z-[99]"
       {@rest}
     >
       <p :if={@title} class="flex items-center gap-1.5 text-sm font-semibold leading-6">

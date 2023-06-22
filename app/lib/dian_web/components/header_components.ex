@@ -114,24 +114,4 @@ defmodule DianWeb.HeaderComponents do
     </.popup>
     """
   end
-
-  attr(:class, :string, default: nil)
-  attr(:rest, :global, include: ~w(disabled form name value))
-
-  slot(:inner_block, required: true)
-
-  def icon_button(assigns) do
-    ~H"""
-    <button
-      class={[
-        "inline-flex p-1.5 justify-center items-center hover:bg-zinc-100 rounded-md text-emphasis",
-        "dark:hover:bg-zinc-800 dark:hover:text-white transition-colors duration-200 ease-in-out",
-        @class
-      ]}
-      {@rest}
-    >
-      <%= render_slot(@inner_block) %>
-    </button>
-    """
-  end
 end

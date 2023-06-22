@@ -2,6 +2,8 @@ defmodule Dian.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Dian.Accounts.User
+
   schema "users" do
     field :password, :string, virtual: true, redact: true
     field :password_confirmation, :string, virtual: true, redact: true
@@ -12,6 +14,9 @@ defmodule Dian.Accounts.User do
 
     timestamps()
   end
+
+  def is_admin?(%User{role: "admin"}), do: true
+  def is_admin?(_), do: false
 
   def changeset(user, attrs) do
     user
