@@ -216,4 +216,66 @@ defmodule DianWeb.HomeComponents do
     </dialog>
     """
   end
+
+  def search_panel(assigns) do
+    ~H"""
+    <.button class="w-full" phx-click={JS.dispatch("dialog:show", to: "#search-panel-dialog")}>
+      <:prefix>
+        <.icon name="hero-magnifying-glass-mini" class="w-4 h-4" />
+      </:prefix>
+      <span :if={@keyword} class="truncate">
+        <%= @keyword %>
+      </span>
+      <span :if={!@keyword} class="text-secondary">
+        按关键字搜索
+      </span>
+    </.button>
+
+    <dialog id="search-panel-dialog" class="fixed inset-0 flex justify-center items-center">
+      <div
+        class="card-emphasis mx-4 w-full md:w-[512px] h-96 flex flex-col rounded-lg"
+        phx-click-away={JS.dispatch("dialog:hide", to: "#search-panel-dialog")}
+      >
+        <header class="flex items-center w-full p-4 gap-2 border-b border-zinc-200 dark:border-zinc-800">
+          <.icon name="hero-magnifying-glass-mini" class="w-5 h-5 text-emphasis" />
+          <form
+            class="w-full"
+            phx-submit={
+              JS.push("submit:search") |> JS.dispatch("dialog:hide", to: "#search-panel-dialog")
+            }
+          >
+            <input
+              name="keyword"
+              class="inline-flex w-full bg-transparent outline-none truncate"
+              placeholder="输入关键字来查找精华消息"
+            />
+          </form>
+        </header>
+
+        <h3 class="flex items-center p-4 gap-2 border-b border-zinc-200 dark:border-zinc-800">
+          <.icon name="hero-fire-mini" class="w-5 h-5 text-red-600 dark:text-red-700" />
+          <span class="text-primary">大家都在搜</span>
+        </h3>
+
+        <div class="overflow-y-auto">
+          <ul class="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-800">
+            <li :for={hotword <- @hotwords}>
+              <button
+                class="w-full p-4 text-left truncate hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                phx-value-keyword={hotword}
+                phx-click={
+                  JS.push("submit:search") |> JS.dispatch("dialog:hide", to: "#search-panel-dialog")
+                }
+              >
+                <span class="text-sm font-medium text-emphasis">
+                  <%= hotword %>
+                </span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </dialog>
+    """
+  end
 end

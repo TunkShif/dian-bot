@@ -23,16 +23,28 @@ defmodule Dian.Favorites do
 
   def list_favorites_diaans(cursor \\ nil, params \\ %{}) do
     filters =
-      if(group_id = params["group_id"],
-        do: dynamic([d, operator, message], message.group_id == ^group_id),
-        else: true
-      )
+      if group_id = params["group_id"] do
+        dynamic([d, operator, message], message.group_id == ^group_id)
+      else
+        true
+      end
 
     filters =
-      if(sender_id = params["sender_id"],
-        do: dynamic([d, operator, message], ^filters and message.sender_id == ^sender_id),
-        else: true
-      )
+      if sender_id = params["sender_id"] do
+        dynamic([d, operator, message], ^filters and message.sender_id == ^sender_id)
+      else
+        true
+      end
+
+    filters =
+      if keyword = params["keyword"] do
+        dynamic(
+          [d, operator, message],
+          ^filters and fragment("? &@~ ?", message.raw_text, ^keyword)
+        )
+      else
+        true
+      end
 
     query =
       Diaan

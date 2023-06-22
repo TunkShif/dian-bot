@@ -7,6 +7,7 @@ defmodule DianWeb.HomeLive do
   alias Dian.Profiles
   alias Dian.Favorites
   alias Dian.Messenger
+  alias Dian.HotWords
   alias Dian.Accounts.User
 
   alias DianWeb.Presence
@@ -16,14 +17,24 @@ defmodule DianWeb.HomeLive do
       subscribe_all()
     end
 
-    {:ok, socket |> load_profiles() |> load_groups() |> load_diaans() |> load_presence()}
+    {:ok,
+     socket
+     |> assign(keyword: nil)
+     |> load_profiles()
+     |> load_groups()
+     |> load_diaans()
+     |> load_hotwords()
+     |> load_presence()}
   end
 
   def render(assigns) do
     ~H"""
     <div class="flex flex-col items-center gap-4">
-      <section class="grid grid-cols-2 gap-4 w-full md:w-[720px]">
-        <div class="">
+      <section class="grid grid-rows-2 md:grid-rows-1 grid-cols-2 gap-4 w-full md:w-[720px]">
+        <div class="col-span-2">
+          <.search_panel keyword={@keyword} hotwords={@hotwords} />
+        </div>
+        <div>
           <.group_select
             root="w-full"
             popup="mt-2"
@@ -32,8 +43,7 @@ defmodule DianWeb.HomeLive do
             on_select={JS.push("select:group")}
           />
         </div>
-
-        <div class="">
+        <div>
           <.profile_select
             root="w-full"
             popup="mt-2 right-2.5 md:right-auto"
@@ -87,6 +97,7 @@ defmodule DianWeb.HomeLive do
     Presence.subscribe()
     Presence.join()
     Favorites.subscribe()
+    HotWords.subscribe()
   end
 
   defp load_diaans(socket, opts \\ []) do
@@ -94,16 +105,25 @@ defmodule DianWeb.HomeLive do
     cursor = socket.assigns[:cursor]
     group = socket.assigns[:selected_group]
     profile = socket.assigns[:selected_profile]
+    keyword = socket.assigns[:keyword]
 
     {diaans, %{after: cursor}} =
       Favorites.list_favorites_diaans(cursor, %{
         "group_id" => group && group.id,
-        "sender_id" => profile && profile.id
+        "sender_id" => profile && profile.id,
+        "keyword" => keyword
       })
 
     socket
     |> assign(cursor: cursor)
     |> stream(:diaans, diaans, reset: reset)
+  end
+
+  defp load_hotwords(socket) do
+    hotwords = HotWords.list()
+
+    socket
+    |> assign(hotwords: hotwords)
   end
 
   defp load_groups(socket) do
@@ -142,6 +162,16 @@ defmodule DianWeb.HomeLive do
      |> load_diaans(reset: true)}
   end
 
+  def handle_event("submit:search", %{"keyword" => keyword}, socket) do
+    keyword =
+      unless keyword == "" do
+        keyword
+      end
+
+    HotWords.put(keyword)
+    {:noreply, socket |> assign(keyword: keyword, cursor: nil) |> load_diaans(reset: true)}
+  end
+
   def handle_event("delete:" <> id, _params, socket) do
     Favorites.get_diaan!(id)
     |> Favorites.delete_diaan()
@@ -159,5 +189,9 @@ defmodule DianWeb.HomeLive do
 
   def handle_info({:deleted, diaan}, socket) do
     {:noreply, socket |> stream_delete(:diaans, diaan) |> put_flash(:info, "删除成功")}
+  end
+
+  def handle_info("update:hotwords", socket) do
+    {:noreply, load_hotwords(socket)}
   end
 end
