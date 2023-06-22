@@ -33,7 +33,7 @@ defmodule Dian.Favorites do
       if sender_id = params["sender_id"] do
         dynamic([d, operator, message], ^filters and message.sender_id == ^sender_id)
       else
-        true
+        filters
       end
 
     filters =
@@ -43,7 +43,7 @@ defmodule Dian.Favorites do
           ^filters and fragment("? &@~ ?", message.raw_text, ^keyword)
         )
       else
-        true
+        filters
       end
 
     query =
