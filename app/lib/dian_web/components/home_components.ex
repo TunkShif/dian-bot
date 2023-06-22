@@ -231,9 +231,9 @@ defmodule DianWeb.HomeComponents do
       </span>
     </.button>
 
-    <dialog id="search-panel-dialog" class="fixed inset-0 flex justify-center items-center">
+    <dialog id="search-panel-dialog" class="fixed inset-0 flex justify-center md:items-center">
       <div
-        class="card-emphasis mx-4 w-full md:w-[512px] h-96 flex flex-col rounded-lg"
+        class="card-emphasis mx-4 mt-8 md:mt-0 w-full md:w-[512px] h-96 flex flex-col rounded-lg"
         phx-click-away={JS.dispatch("dialog:hide", to: "#search-panel-dialog")}
       >
         <header class="flex items-center w-full p-4 gap-2 border-b border-zinc-200 dark:border-zinc-800">
