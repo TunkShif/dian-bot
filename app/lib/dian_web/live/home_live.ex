@@ -1,6 +1,7 @@
 defmodule DianWeb.HomeLive do
   use DianWeb, :live_view
 
+  import DianWeb.HomeComponents
   import DianWeb.SharedComponents
 
   alias Dian.Messenger
@@ -36,9 +37,8 @@ defmodule DianWeb.HomeLive do
 
       <section class="w-full md:w-[720px]">
         <ul id="diaans-list" phx-update="stream" class="mx-auto w-full flex flex-col gap-4">
-          <.live_component
+          <.diaan_card
             :for={{dom_id, diaan} <- @streams.diaans}
-            module={DianWeb.DiaanLiveComponent}
             id={dom_id}
             diaan={diaan}
             with_menu={User.is_admin?(@current_user)}
@@ -69,6 +69,8 @@ defmodule DianWeb.HomeLive do
         </div>
       </section>
     </div>
+
+    <.at_popup_template />
     """
   end
 
@@ -111,6 +113,13 @@ defmodule DianWeb.HomeLive do
      socket
      |> assign(selected_group: selected_group, cursor: nil)
      |> load_diaans(reset: true)}
+  end
+
+  def handle_event("delete:" <> id, _params, socket) do
+    Favorites.get_diaan!(id)
+    |> Favorites.delete_diaan()
+
+    {:noreply, socket}
   end
 
   def handle_info(%{topic: "joined", event: "presence_diff"}, socket) do

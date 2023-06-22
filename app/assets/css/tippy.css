@@ -1,0 +1,7 @@
+.tippy-box[data-theme~="none"] {
+  background-color: transparent;
+}
+
+.tippy-box[data-theme~="none"] > .tippy-content {
+  padding: 0;
+}

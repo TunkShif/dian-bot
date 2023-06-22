@@ -1,0 +1,24 @@
+::-webkit-scrollbar {
+  width: theme(width.3);
+}
+
+::-webkit-scrollbar:horizontal {
+  height: theme(height.3);
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: var(--c-scrollbar-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--c-scrollbar-thumb);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--c-scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--c-scrollbar-thumb-active);
+}

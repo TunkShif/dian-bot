@@ -14,7 +14,7 @@ defmodule DianWeb.LoginLive do
           <p class="text-sm">欢迎来到提瓦特大陆</p>
         </header>
 
-        <.form for={@form} action={~p"/users/login"}>
+        <.form for={@form} action={~p"/users/login"} phx-update="ignore">
           <main class="mt-4 space-y-4">
             <div class="flex flex-col gap-2">
               <h3 class="text-primary md:text-lg font-medium">输入你的企鹅帐号</h3>

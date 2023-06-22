@@ -13,6 +13,11 @@
       "dark"===localStorage.theme||!("theme"in localStorage)&&window.matchMedia("(prefers-color-scheme: dark)").matches?(document.documentElement.dataset.theme="dark"):undefined;
     </script>
 
+    <script defer src="https://unpkg.com/@popperjs/core@2">
+    </script>
+    <script defer src="https://unpkg.com/tippy.js@6">
+    </script>
+
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
@@ -32,5 +37,6 @@
   </head>
   <body class="relative antialiased text-secondary">
     <%= @inner_content %>
+    <div id="tippy-container" phx-update="ignore"></div>
   </body>
 </html>

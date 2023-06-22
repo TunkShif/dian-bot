@@ -1,17 +1,17 @@
-defmodule DianWeb.DiaanLiveComponent do
-  use DianWeb, :live_component
+defmodule DianWeb.HomeComponents do
+  use DianWeb, :html
 
   import Dian.Helpers
 
   alias Dian.QQ
   alias Dian.Markdown
-  alias Dian.Favorites
+  alias Dian.Favorites.Diaan
 
-  def mount(socket) do
-    {:ok, socket |> assign(show_popup: nil)}
-  end
+  attr(:id, :string, required: true)
+  attr(:diaan, Diaan, required: true)
+  attr(:with_menu, :boolean, default: false)
 
-  def render(assigns) do
+  def diaan_card(assigns) do
     ~H"""
     <li id={@id} class="w-full">
       <div class="card-primary relative px-2.5 py-4 flex flex-col gap-4">
@@ -43,13 +43,7 @@ defmodule DianWeb.DiaanLiveComponent do
           id={"#{@id}-content"}
           class="prose prose-zinc max-w-none break-words dark:prose-invert px-2"
         >
-          <.diaan_content
-            :for={item <- @diaan.message.content}
-            id={@id}
-            item={item}
-            show_popup={@show_popup}
-            myself={@myself}
-          />
+          <.diaan_content :for={item <- @diaan.message.content} id={@id} item={item} />
         </section>
 
         <footer class="flex justify-between items-center">
@@ -63,8 +57,32 @@ defmodule DianWeb.DiaanLiveComponent do
         </footer>
       </div>
 
-      <.confirm_modal id={@id} myself={@myself} />
+      <.confirm_modal id={@id} diaan={@diaan} />
     </li>
+    """
+  end
+
+  def at_popup_template(assigns) do
+    ~H"""
+    <template id="at-popup-template">
+      <div class="card-emphasis px-2 py-1.5">
+        <div class="flex gap-2 items-center">
+          <div class="w-11 h-11 rounded-full border border-zinc-900/10">
+            <img
+              data-avatar
+              loading="lazy"
+              alt="just an avatar image, most probably a picture of anime waifu"
+              class="w-full h-full aspect-square rounded-full animate__faster"
+            />
+          </div>
+
+          <div class="flex gap-1.5">
+            <span class="text-emphasis" data-nickname></span>
+            <span class="text-secondary" data-number></span>
+          </div>
+        </div>
+      </div>
+    </template>
     """
   end
 
@@ -77,48 +95,19 @@ defmodule DianWeb.DiaanLiveComponent do
   end
 
   defp diaan_content(%{item: %{"type" => "at", "data" => user}} = assigns) do
-    popup_id = "#{assigns.id}-#{user["number"]}"
-    assigns = assign(assigns, user: user, popup_id: popup_id)
+    assigns = assign(assigns, user: user)
 
     ~H"""
-    <.popup
-      id={@popup_id}
-      mount={@show_popup == @popup_id}
-      on_show={JS.push("popup:#{@popup_id}", target: @myself)}
-      on_hide={JS.push("popup:reset", target: @myself)}
-      class=""
-      root="not-prose inline-block [&+p]:inline-block mr-2"
-      show
+    <button
+      phx-mounted={JS.dispatch("at-popup:mounted")}
+      phx-remove={JS.dispatch("at-popup:removed")}
+      data-avatar-url={QQ.get_user_avator_by_number(@user["number"])}
+      data-user-nickname={@user["nickname"]}
+      data-user-number={@user["number"]}
+      class="not-prose inline-block [&+p]:inline-block mr-2 text-blue-700 dark:text-sky-600 cursor-pointer hover:text-blue-600 dark:hover:text-sky-500"
     >
-      <:trigger :let={attrs}>
-        <button
-          class="text-blue-700 dark:text-sky-600 cursor-pointer hover:text-blue-600 dark:hover:text-sky-500"
-          {attrs}
-        >
-          @<%= @user["nickname"] %>
-        </button>
-      </:trigger>
-
-      <div class="card-emphasis px-2 py-1.5">
-        <div class="flex gap-2 items-center">
-          <div class="w-11 h-11 rounded-full border border-zinc-900/10">
-            <img
-              src={QQ.get_user_avator_by_number(@user["number"])}
-              loading="lazy"
-              alt="just an avatar image, most probably a picture of anime waifu"
-              class="w-full h-full aspect-square rounded-full animate__faster"
-              phx-mounted={JS.dispatch("poke:mounted")}
-              phx-remove={JS.dispatch("poke:removed")}
-            />
-          </div>
-
-          <div class="flex gap-1.5">
-            <span class="text-emphasis"><%= @user["nickname"] %></span>
-            <span class="text-secondary">(<%= @user["number"] %>)</span>
-          </div>
-        </div>
-      </div>
-    </.popup>
+      @<%= @user["nickname"] %>
+    </button>
     """
   end
 
@@ -218,7 +207,7 @@ defmodule DianWeb.DiaanLiveComponent do
         <footer class="flex justify-end">
           <.button phx-click={
             JS.dispatch("dialog:hide", to: "##{@id}-confirm-modal")
-            |> JS.push("delete", target: @myself)
+            |> JS.push("delete:#{@diaan.id}")
           }>
             确定
           </.button>
@@ -226,19 +215,5 @@ defmodule DianWeb.DiaanLiveComponent do
       </div>
     </dialog>
     """
-  end
-
-  def handle_event("popup:reset", _params, socket) do
-    {:noreply, socket |> assign(show_popup: nil)}
-  end
-
-  def handle_event("popup:" <> popup_id, _params, socket) do
-    {:noreply, socket |> assign(show_popup: popup_id)}
-  end
-
-  def handle_event("delete", _params, socket) do
-    diaan = socket.assigns.diaan
-    Favorites.delete_diaan(diaan)
-    {:noreply, socket}
   end
 end

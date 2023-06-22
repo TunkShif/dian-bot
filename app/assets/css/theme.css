@@ -1,0 +1,30 @@
+:root {
+  --bg-gradient: linear-gradient(120deg, theme(colors.white) 0%, theme(colors.zinc.50 / 80) 100%);
+
+  --c-text-primary: theme(colors.zinc.600);
+  --c-text-secondary: theme(colors.zinc.500);
+  --c-text-emphasis: theme(colors.zinc.800);
+
+  --c-scrollbar-bg: theme(colors.zinc.50);
+  --c-scrollbar-thumb: theme(colors.zinc.300);
+  --c-scrollbar-thumb-hover: theme(colors.zinc.400);
+  --c-scrollbar-thumb-active: theme(colors.zinc.500);
+}
+
+[data-theme="dark"] {
+  --bg-gradient: linear-gradient(120deg, theme(colors.zinc.950 / 80) 0%, black 100%);
+
+  --c-text-primary: theme(colors.zinc.300);
+  --c-text-secondary: theme(colors.zinc.400);
+  --c-text-emphasis: theme(colors.zinc.200);
+
+  --c-scrollbar-bg: theme(colors.zinc.900);
+  --c-scrollbar-thumb: theme(colors.zinc.700);
+  --c-scrollbar-thumb-hover: theme(colors.zinc.600);
+  --c-scrollbar-thumb-active: theme(colors.zinc.500);
+}
+
+[data-background] {
+  background: var(--bg-gradient);
+  background-blend-mode: multiply, multiply;
+}
