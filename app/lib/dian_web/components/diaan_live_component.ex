@@ -6,6 +6,10 @@ defmodule DianWeb.DiaanLiveComponent do
   alias Dian.QQ
   alias Dian.Markdown
 
+  def mount(socket) do
+    {:ok, socket |> assign(show_popup: nil)}
+  end
+
   def render(assigns) do
     ~H"""
     <li id={@id} class="w-full">
@@ -35,7 +39,13 @@ defmodule DianWeb.DiaanLiveComponent do
           id={"#{@id}-content"}
           class="prose prose-zinc max-w-none break-words dark:prose-invert px-2"
         >
-          <.diaan_content :for={item <- @diaan.message.content} item={item} />
+          <.diaan_content
+            :for={item <- @diaan.message.content}
+            id={@id}
+            item={item}
+            show_popup={@show_popup}
+            myself={@myself}
+          />
         </section>
 
         <footer class="flex justify-between items-center">
@@ -61,12 +71,48 @@ defmodule DianWeb.DiaanLiveComponent do
   end
 
   defp diaan_content(%{item: %{"type" => "at", "data" => user}} = assigns) do
-    assigns = assign(assigns, user: user)
+    popup_id = "#{assigns.id}-#{user["number"]}"
+    assigns = assign(assigns, user: user, popup_id: popup_id)
 
     ~H"""
-    <span class="inline-block mr-2 text-blue-700 dark:text-sky-600 cursor-pointer hover:text-blue-600 dark:hover:text-sky-500 [&+p]:inline-block">
-      @<%= @user["nickname"] %>
-    </span>
+    <.popup
+      id={@popup_id}
+      mount={@show_popup == @popup_id}
+      on_show={JS.push("popup:#{popup_id}", target: @myself)}
+      on_hide={JS.push("popup:reset", target: @myself)}
+      class=""
+      root="not-prose inline-block [&+p]:inline-block mr-2"
+      show
+    >
+      <:trigger :let={attrs}>
+        <button
+          class="text-blue-700 dark:text-sky-600 cursor-pointer hover:text-blue-600 dark:hover:text-sky-500"
+          {attrs}
+        >
+          @<%= @user["nickname"] %>
+        </button>
+      </:trigger>
+
+      <div class="card-emphasis px-2 py-1.5">
+        <div class="flex gap-2 items-center">
+          <div class="w-11 h-11 rounded-full border border-zinc-900/10">
+            <img
+              src={QQ.get_user_avator_by_number(@user["number"])}
+              loading="lazy"
+              alt="just an avatar image, most probably a picture of anime waifu"
+              class="w-full h-full aspect-square rounded-full animate__faster"
+              phx-mounted={JS.dispatch("poke:mounted")}
+              phx-remove={JS.dispatch("poke:removed")}
+            />
+          </div>
+
+          <div class="flex gap-1.5">
+            <span class="text-emphasis"><%= @user["nickname"] %></span>
+            <span class="text-secondary">(<%= @user["number"] %>)</span>
+          </div>
+        </div>
+      </div>
+    </.popup>
     """
   end
 
@@ -101,5 +147,13 @@ defmodule DianWeb.DiaanLiveComponent do
       </code>
     </div>
     """
+  end
+
+  def handle_event("popup:reset", _params, socket) do
+    {:noreply, socket |> assign(show_popup: nil)}
+  end
+
+  def handle_event("popup:" <> popup_id, _params, socket) do
+    {:noreply, socket |> assign(show_popup: popup_id)}
   end
 end

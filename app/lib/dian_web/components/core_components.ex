@@ -62,29 +62,38 @@ defmodule DianWeb.CoreComponents do
   end
 
   attr(:id, :string, required: true)
+  attr(:show, :boolean, default: false)
+  attr(:mount, :boolean, default: true)
   attr(:class, :string, default: "")
+  attr(:root, :string, default: "")
+  attr(:on_show, JS, default: %JS{})
+  attr(:on_hide, JS, default: %JS{})
   slot(:trigger, required: true)
   slot(:inner_block, required: true)
 
-  def popup(assigns) do
+  def popup(%{id: id} = assigns) do
+    popup_id = "##{id}-popup"
+
     api = %{
-      show: JS.exec("data-show", to: "##{assigns.id}-popup"),
-      hide: JS.exec("data-hide", to: "##{assigns.id}-popup")
+      show: JS.exec("data-show", to: popup_id) |> JS.exec("data-on-show"),
+      hide: JS.exec("data-hide", to: popup_id) |> JS.exec("data-on-hide", to: popup_id)
     }
 
     trigger_attrs = %{
       "aria-haspopup" => "true",
-      "phx-click" => api.show
+      "phx-click" => api.show,
+      "data-on-show" => assigns.on_show
     }
 
     assigns = assign(assigns, api: api, trigger_attrs: trigger_attrs)
 
     ~H"""
-    <div>
+    <div class={@root}>
       <%= render_slot(@trigger, @trigger_attrs) %>
       <div
+        :if={@mount}
         id={"#{@id}-popup"}
-        class={["hidden absolute z-50", @class]}
+        class={[if(@show, do: "", else: "hidden"), "absolute z-50", @class]}
         aria-expanded="false"
         phx-key="escape"
         phx-window-keydown={@api.hide}
@@ -98,6 +107,7 @@ defmodule DianWeb.CoreComponents do
             time: 200
           )
         }
+        data-on-hide={@on_hide}
         data-hide={
           JS.set_attribute({"aria-expanded", "false"})
           |> JS.hide(
@@ -242,12 +252,12 @@ defmodule DianWeb.CoreComponents do
     <.flash
       id="disconnected"
       kind={:error}
-      title="We can't find the internet"
+      title="网络走丢了!"
       phx-disconnected={show("#disconnected")}
       phx-connected={hide("#disconnected")}
       hidden
     >
-      Attempting to reconnect <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
+      <.icon name="hero-arrow-path" class="mr-1 h-4 w-4 animate-spin" /> 服务器出错了，尝试重连中
     </.flash>
     """
   end
