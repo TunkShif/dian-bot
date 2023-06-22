@@ -16,13 +16,13 @@ defmodule DianWeb.CoreComponents do
       <.button>Send!</.button>
       <.button phx-click="go" class="ml-2">Send!</.button>
   """
-  attr(:type, :string, default: nil)
-  attr(:class, :string, default: nil)
-  attr(:has_spinner, :boolean, default: false)
-  attr(:rest, :global, include: ~w(disabled form name value))
+  attr :type, :string, default: nil
+  attr :class, :string, default: nil
+  attr :has_spinner, :boolean, default: false
+  attr :rest, :global, include: ~w(disabled form name value)
 
-  slot(:prefix, required: false)
-  slot(:inner_block, required: true)
+  slot :prefix, required: false
+  slot :inner_block, required: true
 
   def button(assigns) do
     ~H"""
@@ -63,10 +63,10 @@ defmodule DianWeb.CoreComponents do
     """
   end
 
-  attr(:class, :string, default: nil)
-  attr(:rest, :global)
+  attr :class, :string, default: nil
+  attr :rest, :global
 
-  slot(:inner_block, required: true)
+  slot :inner_block, required: true
 
   def icon_button(assigns) do
     ~H"""
@@ -83,15 +83,16 @@ defmodule DianWeb.CoreComponents do
     """
   end
 
-  attr(:id, :string, required: true)
-  attr(:show, :boolean, default: false)
-  attr(:mount, :boolean, default: true)
-  attr(:class, :string, default: "")
-  attr(:root, :string, default: "")
-  attr(:on_show, JS, default: %JS{})
-  attr(:on_hide, JS, default: %JS{})
-  slot(:trigger, required: true)
-  slot(:inner_block, required: true)
+  attr :id, :string, required: true
+  attr :show, :boolean, default: false
+  attr :mount, :boolean, default: true
+  attr :class, :string, default: ""
+  attr :root, :string, default: ""
+  attr :on_show, JS, default: %JS{}
+  attr :on_hide, JS, default: %JS{}
+
+  slot :trigger, required: true
+  slot :inner_block, required: true
 
   def popup(%{id: id} = assigns) do
     popup_id = "##{id}-popup"
@@ -141,6 +142,52 @@ defmodule DianWeb.CoreComponents do
         <%= render_slot(@inner_block, @api) %>
       </div>
     </div>
+    """
+  end
+
+  attr :id, :string, required: true
+  attr :root, :string, default: nil
+  attr :popup, :string, default: nil
+  attr :content, :string, default: nil
+  attr :items, :list, required: true
+  attr :selected, :any, default: nil
+  attr :on_select, JS, default: %JS{}
+
+  slot :item, required: true
+  slot :extra, required: false
+  slot :trigger, required: true
+
+  def select_menu(assigns) do
+    ~H"""
+    <.popup :let={api} id={"#{@id}-popup"} root={@root} class={@popup}>
+      <:trigger :let={attrs}>
+        <%= render_slot(@trigger, %{attrs: attrs, selected: @selected}) %>
+      </:trigger>
+
+      <div class="card-emphasis w-auto px-1.5 py-2">
+        <ul class={["w-full flex flex-col text-primary", @content]}>
+          <.focus_wrap id={"#{@id}-focus-wrap"}>
+            <li :for={extra <- @extra} class="w-full">
+              <%= render_slot(extra, %{
+                attrs: %{
+                  "data-on-select" => assigns.on_select,
+                  "phx-click" => api.hide |> JS.exec("data-on-select")
+                }
+              }) %>
+            </li>
+            <li :for={item <- @items} class="w-full">
+              <%= render_slot(@item, %{
+                attrs: %{
+                  "data-on-select" => assigns.on_select,
+                  "phx-click" => api.hide |> JS.exec("data-on-select")
+                },
+                item: item
+              }) %>
+            </li>
+          </.focus_wrap>
+        </ul>
+      </div>
+    </.popup>
     """
   end
 

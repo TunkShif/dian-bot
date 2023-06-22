@@ -4,8 +4,9 @@ defmodule DianWeb.HomeLive do
   import DianWeb.HomeComponents
   import DianWeb.SharedComponents
 
-  alias Dian.Messenger
+  alias Dian.Profiles
   alias Dian.Favorites
+  alias Dian.Messenger
   alias Dian.Accounts.User
 
   alias DianWeb.Presence
@@ -15,24 +16,32 @@ defmodule DianWeb.HomeLive do
       subscribe_all()
     end
 
-    {:ok, socket |> load_groups() |> load_diaans() |> load_presence()}
+    {:ok, socket |> load_profiles() |> load_groups() |> load_diaans() |> load_presence()}
   end
 
   def render(assigns) do
     ~H"""
     <div class="flex flex-col items-center gap-4">
-      <section class="flex flex-col md:flex-row gap-2 w-full md:w-[720px]">
-        <div class="flex items-center flex-1 gap-2.5">
-          <span class="shrink-0 after:content-[':']">群组</span>
+      <section class="grid grid-cols-2 gap-4 w-full md:w-[720px]">
+        <div class="">
           <.group_select
-            class="w-full"
+            root="w-full"
+            popup="mt-2"
             groups={@groups}
             selected={@selected_group}
             on_select={JS.push("select:group")}
           />
         </div>
 
-        <div class="flex-1"></div>
+        <div class="">
+          <.profile_select
+            root="w-full"
+            popup="mt-2 right-2.5 md:right-auto"
+            profiles={@profiles}
+            selected={@selected_profile}
+            on_select={JS.push("select:profile")}
+          />
+        </div>
       </section>
 
       <section class="w-full md:w-[720px]">
@@ -84,9 +93,13 @@ defmodule DianWeb.HomeLive do
     reset = opts[:reset]
     cursor = socket.assigns[:cursor]
     group = socket.assigns[:selected_group]
+    profile = socket.assigns[:selected_profile]
 
     {diaans, %{after: cursor}} =
-      Favorites.list_favorites_diaans(cursor, %{"group_id" => group && group.id})
+      Favorites.list_favorites_diaans(cursor, %{
+        "group_id" => group && group.id,
+        "sender_id" => profile && profile.id
+      })
 
     socket
     |> assign(cursor: cursor)
@@ -96,6 +109,11 @@ defmodule DianWeb.HomeLive do
   defp load_groups(socket) do
     groups = Messenger.list_messenger_groups()
     assign(socket, groups: groups, selected_group: nil)
+  end
+
+  defp load_profiles(socket) do
+    profiles = Profiles.list_profiles_users()
+    assign(socket, profiles: profiles, selected_profile: nil)
   end
 
   defp load_presence(socket) do
@@ -112,6 +130,15 @@ defmodule DianWeb.HomeLive do
     {:noreply,
      socket
      |> assign(selected_group: selected_group, cursor: nil)
+     |> load_diaans(reset: true)}
+  end
+
+  def handle_event("select:profile", %{"profile_id" => profile_id}, socket) do
+    selected_profile = socket.assigns.profiles |> Enum.find(&("#{&1.id}" === profile_id))
+
+    {:noreply,
+     socket
+     |> assign(selected_profile: selected_profile, cursor: nil)
      |> load_diaans(reset: true)}
   end
 

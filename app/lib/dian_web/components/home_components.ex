@@ -7,9 +7,9 @@ defmodule DianWeb.HomeComponents do
   alias Dian.Markdown
   alias Dian.Favorites.Diaan
 
-  attr(:id, :string, required: true)
-  attr(:diaan, Diaan, required: true)
-  attr(:with_menu, :boolean, default: false)
+  attr :id, :string, required: true
+  attr :diaan, Diaan, required: true
+  attr :with_menu, :boolean, default: false
 
   def diaan_card(assigns) do
     ~H"""
