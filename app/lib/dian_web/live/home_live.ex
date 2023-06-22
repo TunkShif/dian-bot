@@ -55,7 +55,7 @@ defmodule DianWeb.HomeLive do
         </ul>
       </section>
 
-      <section class="flex justify-center items-center">
+      <section class="w-full flex justify-center items-center">
         <.button :if={@cursor} phx-click="load:more" has_spinner>
           <span class="inline-block phx-click-loading:hidden"> 多来点 </span>
           <span class="hidden phx-click-loading:inline-block"> 加载中... </span>
@@ -65,7 +65,7 @@ defmodule DianWeb.HomeLive do
         </p>
       </section>
 
-      <section class="my-4 flex justify-end items-center">
+      <section class="w-full my-4 flex justify-end items-center">
         <div class="inline-flex justify-center items-center gap-2">
           <span class="relative flex justify-center items-center h-2 w-2">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75">
