@@ -155,16 +155,16 @@ defmodule DianWeb.CoreComponents do
       phx-mounted={JS.dispatch("flash:auto-clear")}
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
-      class={[
-        "fixed bottom-5 md:bottom-auto md:top-4 inset-x-0 p-2 m-auto w-80 z-[99] ring-1 rounded shadow-md",
-        @kind == :info && "bg-sky-50 text-sky-800 ring-sky-500 fill-cyan-900",
-        @kind == :error && "bg-rose-50 text-rose-900 ring-rose-500 fill-rose-900"
-      ]}
+      class="card-emphasis fixed bottom-5 md:bottom-auto md:top-4 inset-x-0 p-2 m-auto w-80 z-[99]"
       {@rest}
     >
       <p :if={@title} class="flex items-center gap-1.5 text-sm font-semibold leading-6">
-        <.icon :if={@kind == :info} name="hero-information-circle-mini" class="h-5 w-5" />
-        <.icon :if={@kind == :error} name="hero-exclamation-circle-mini" class="h-5 w-5" />
+        <.icon :if={@kind == :info} name="hero-check-circle-mini" class="h-5 w-5 text-emerald-600" />
+        <.icon
+          :if={@kind == :error}
+          name="hero-exclamation-circle-mini"
+          class="h-5 w-5 text-rose-600"
+        />
         <%= @title %>
       </p>
       <p class="mt-2 text-sm leading-5"><%= msg %></p>
