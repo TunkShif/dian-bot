@@ -61,6 +61,57 @@ defmodule DianWeb.CoreComponents do
     """
   end
 
+  attr(:id, :string, required: true)
+  attr(:class, :string, default: "")
+  slot(:trigger, required: true)
+  slot(:inner_block, required: true)
+
+  def popup(assigns) do
+    api = %{
+      show: JS.exec("data-show", to: "##{assigns.id}-popup"),
+      hide: JS.exec("data-hide", to: "##{assigns.id}-popup")
+    }
+
+    trigger_attrs = %{
+      "aria-haspopup" => "true",
+      "phx-click" => api.show
+    }
+
+    assigns = assign(assigns, api: api, trigger_attrs: trigger_attrs)
+
+    ~H"""
+    <div>
+      <%= render_slot(@trigger, @trigger_attrs) %>
+      <div
+        id={"#{@id}-popup"}
+        class={["hidden absolute z-50", @class]}
+        aria-expanded="false"
+        phx-key="escape"
+        phx-window-keydown={@api.hide}
+        phx-click-away={@api.hide}
+        data-show={
+          JS.set_attribute({"aria-expanded", "true"})
+          |> JS.show(
+            transition:
+              {"ease-in duration-200 transform", "opacity-0 -translate-y-1",
+               "opacity-100 translate-y-0"},
+            time: 200
+          )
+        }
+        data-hide={
+          JS.set_attribute({"aria-expanded", "false"})
+          |> JS.hide(
+            transition: {"ease-out duration-200 transform", "opacity-100", "opacity-0"},
+            time: 200
+          )
+        }
+      >
+        <%= render_slot(@inner_block, @api) %>
+      </div>
+    </div>
+    """
+  end
+
   @doc """
   Renders a modal.
 
