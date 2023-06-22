@@ -18,9 +18,10 @@ defmodule DianWeb.CoreComponents do
   """
   attr(:type, :string, default: nil)
   attr(:class, :string, default: nil)
-  attr(:has_spinner, :boolean, default: true)
+  attr(:has_spinner, :boolean, default: false)
   attr(:rest, :global, include: ~w(disabled form name value))
 
+  slot(:prefix, required: false)
   slot(:inner_block, required: true)
 
   def button(assigns) do
@@ -29,7 +30,7 @@ defmodule DianWeb.CoreComponents do
       type={@type}
       class={[
         "inline-flex items-center gap-2",
-        "flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5",
+        "font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5",
         "shadow-sm ring-1 ring-inset ring-zinc-300 dark:ring-zinc-700 text-zinc-700 dark:text-zinc-50",
         "bg-white hover:bg-zinc-50 active:bg-zinc-100 disabled:bg-white",
         "dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:active:bg-zinc-950 dark:disabled:bg-zinc-900",
@@ -40,6 +41,7 @@ defmodule DianWeb.CoreComponents do
       ]}
       {@rest}
     >
+      <%= render_slot(@prefix) %>
       <svg
         :if={@has_spinner}
         class="animate-spin h-4 w-4 hidden phx-click-loading:block phx-submit-loading:block"

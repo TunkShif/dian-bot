@@ -21,15 +21,23 @@ defmodule Dian.Favorites do
     Phoenix.PubSub.broadcast(Dian.PubSub, topic(group), payload)
   end
 
-  def list_favorites_diaans(cursor \\ nil) do
+  def list_favorites_diaans(cursor \\ nil, params \\ %{}) do
+    group_filter = if(params["group_id"], do: [group_id: params["group_id"]], else: [])
+    sender_filter = if(params["sender_id"], do: [sender_id: params["sender_id"]], else: [])
+    filters = Keyword.merge(group_filter, sender_filter)
+
     query =
-      from d in Diaan,
-        left_join: operator in assoc(d, :operator),
-        left_join: message in assoc(d, :message),
-        left_join: sender in assoc(message, :sender),
-        left_join: group in assoc(message, :group),
-        preload: [operator: operator, message: {message, sender: sender, group: group}],
-        order_by: [desc: d.marked_at, desc: d.id]
+      Diaan
+      |> join(:left, [d], operator in assoc(d, :operator))
+      |> join(:inner, [d, operator], message in assoc(d, :message), on: ^filters)
+      |> join(:left, [d, operator, message], sender in assoc(message, :sender))
+      |> join(:left, [d, operator, message, sender], group in assoc(message, :group))
+      |> preload([d, operator, message, sender, group],
+        operator: operator,
+        message: {message, sender: sender, group: group}
+      )
+      |> order_by([d], desc: d.marked_at, desc: d.id)
+      |> select([d], d)
 
     opts =
       Keyword.merge(
