@@ -233,13 +233,14 @@ defmodule DianWeb.HomeComponents do
 
     <dialog id="search-panel-dialog" class="fixed inset-0 flex justify-center md:items-center">
       <div
-        class="card-emphasis mx-4 mt-8 md:mt-0 w-full md:w-[512px] h-96 flex flex-col rounded-lg"
+        class="card-emphasis mx-4 mt-8 md:mt-0 w-full md:w-[512px] h-[80vh] flex flex-col rounded-lg"
         phx-click-away={JS.dispatch("dialog:hide", to: "#search-panel-dialog")}
       >
         <header class="flex items-center w-full p-4 gap-2 border-b border-zinc-200 dark:border-zinc-800">
           <.icon name="hero-magnifying-glass-mini" class="w-5 h-5 text-emphasis" />
           <form
             class="w-full"
+            autocomplete="off"
             phx-submit={
               JS.push("submit:search") |> JS.dispatch("dialog:hide", to: "#search-panel-dialog")
             }
@@ -248,6 +249,7 @@ defmodule DianWeb.HomeComponents do
               name="keyword"
               class="inline-flex w-full bg-transparent outline-none truncate"
               placeholder="输入关键字来查找精华消息"
+              autocomplete="off"
             />
           </form>
         </header>
