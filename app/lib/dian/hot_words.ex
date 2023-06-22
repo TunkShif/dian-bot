@@ -26,10 +26,12 @@ defmodule Dian.HotWords do
   end
 
   def put(keyword) when is_binary(keyword) do
-    check_size()
+    unless check_exists(keyword) do
+      check_size()
 
-    if String.length(keyword) < @max_keyword_length do
-      Agent.update(__MODULE__, &%{&1 | list: [keyword | &1.list], count: &1.count + 1})
+      if String.length(keyword) < @max_keyword_length do
+        Agent.update(__MODULE__, &%{&1 | list: [keyword | &1.list], count: &1.count + 1})
+      end
     end
 
     broadcast()
@@ -37,6 +39,22 @@ defmodule Dian.HotWords do
 
   def put(_) do
     :ok
+  end
+
+  defp shift(keyword) do
+    Agent.update(
+      __MODULE__,
+      &%{&1 | list: List.delete(&1.list, keyword) |> then(fn list -> [keyword | list] end)}
+    )
+  end
+
+  defp check_exists(keyword) do
+    if keyword in list() do
+      shift(keyword)
+      true
+    else
+      false
+    end
   end
 
   defp check_size() do
