@@ -7,7 +7,7 @@ defmodule DianWeb.HomeLive do
   alias Dian.Profiles
   alias Dian.Favorites
   alias Dian.Messenger
-  alias Dian.HotWords
+  alias Dian.Statistics
   alias Dian.Accounts.User
 
   alias DianWeb.Presence
@@ -97,7 +97,7 @@ defmodule DianWeb.HomeLive do
     Presence.subscribe()
     Presence.join()
     Favorites.subscribe()
-    HotWords.subscribe()
+    Statistics.subscribe("hotword")
   end
 
   defp load_diaans(socket, opts \\ []) do
@@ -120,7 +120,7 @@ defmodule DianWeb.HomeLive do
   end
 
   defp load_hotwords(socket) do
-    hotwords = HotWords.list()
+    hotwords = Statistics.list_hotwords() |> Enum.map(& &1.keyword)
 
     socket
     |> assign(hotwords: hotwords)
@@ -163,13 +163,17 @@ defmodule DianWeb.HomeLive do
   end
 
   def handle_event("submit:search", %{"keyword" => keyword}, socket) do
-    keyword =
+    keyword = String.trim(keyword)
+
+    socket =
       unless keyword == "" do
-        keyword
+        Statistics.create_hotword(%{keyword: keyword})
+        socket |> assign(keyword: keyword, cursor: nil) |> load_diaans(reset: true)
+      else
+        socket
       end
 
-    HotWords.put(keyword)
-    {:noreply, socket |> assign(keyword: keyword, cursor: nil) |> load_diaans(reset: true)}
+    {:noreply, socket}
   end
 
   def handle_event("delete:" <> id, _params, socket) do
