@@ -57,7 +57,7 @@ defmodule Dian.Statistics do
         count = Repo.one(from h in Hotword, select: count())
 
         if count >= 15 do
-          oldest = Repo.one(from h in Hotword, order_by: [desc: h.updated_at], limit: 1)
+          oldest = Repo.one(from h in Hotword, order_by: [asc: h.updated_at], limit: 1)
           Repo.delete!(oldest)
         end
 
