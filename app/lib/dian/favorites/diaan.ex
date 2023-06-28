@@ -5,6 +5,8 @@ defmodule Dian.Favorites.Diaan do
   schema "favorites_diaans" do
     field :marked_at, :naive_datetime
 
+    has_many :reactions, Dian.Interactions.Reaction
+
     belongs_to :message, Dian.Messenger.Message
     belongs_to :operator, Dian.Profiles.User
 

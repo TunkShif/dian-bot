@@ -52,9 +52,11 @@ defmodule Dian.Favorites do
       |> join(:inner, [d, operator], message in assoc(d, :message), on: ^filters)
       |> join(:left, [d, operator, message], sender in assoc(message, :sender))
       |> join(:left, [d, operator, message, sender], group in assoc(message, :group))
-      |> preload([d, operator, message, sender, group],
+      |> join(:left, [d, operator, message, sender, group], reactions in assoc(d, :reactions))
+      |> preload([d, operator, message, sender, group, reactions],
         operator: operator,
-        message: {message, sender: sender, group: group}
+        message: {message, sender: sender, group: group},
+        reactions: reactions
       )
       |> order_by([d], desc: d.marked_at, desc: d.id)
       |> select([d], d)
@@ -108,7 +110,7 @@ defmodule Dian.Favorites do
     |> Repo.insert()
     |> case do
       {:ok, diaan} ->
-        diaan = diaan |> Repo.preload([:operator, message: [:group, :sender]])
+        diaan = diaan |> Repo.preload([:operator, :reactions, message: [:group, :sender]])
         broadcast({:added, diaan})
         broadcast(diaan.message.group.number, {:added, diaan})
         {:ok, diaan}

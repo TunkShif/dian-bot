@@ -5,11 +5,13 @@ defmodule DianWeb.HomeComponents do
 
   alias Dian.QQ
   alias Dian.Markdown
+  alias Dian.Accounts.User
   alias Dian.Favorites.Diaan
+  alias Dian.Interactions.Reaction
 
   attr :id, :string, required: true
   attr :diaan, Diaan, required: true
-  attr :with_menu, :boolean, default: false
+  attr :current_user, User, default: nil
 
   def diaan_card(assigns) do
     ~H"""
@@ -36,7 +38,7 @@ defmodule DianWeb.HomeComponents do
             </span>
           </div>
 
-          <.action_menu :if={@with_menu} id={@id} />
+          <.action_menu :if={User.is_admin?(@current_user)} id={@id} />
         </header>
 
         <section
@@ -46,20 +48,35 @@ defmodule DianWeb.HomeComponents do
           <.diaan_content :for={item <- @diaan.message.content} id={@id} item={item} />
         </section>
 
-        <footer class="flex justify-between items-center">
-          <span class="text-primary text-xs">
-            来自 <%= @diaan.message.group.name %>
-          </span>
+        <footer class="flex flex-col gap-4">
+          <div class="w-full flex justify-between items-center">
+            <span class="text-primary text-xs">
+              来自 <%= @diaan.message.group.name %>
+            </span>
 
-          <span class="text-primary text-xs">
-            由 <%= @diaan.operator.nickname %> 设置
-          </span>
+            <span class="text-primary text-xs">
+              由 <%= @diaan.operator.nickname %> 设置
+            </span>
+          </div>
+
+          <.reactions
+            id={@id}
+            diaan_id={@diaan.id}
+            reactions={process_reactions(@diaan.reactions)}
+            current_user={@current_user}
+          />
         </footer>
       </div>
 
       <.confirm_modal id={@id} diaan={@diaan} />
     </li>
     """
+  end
+
+  defp process_reactions(reactions) do
+    for {code, items} <- Enum.group_by(reactions, & &1.code) do
+      {code, Enum.count(items)}
+    end
   end
 
   def at_popup_template(assigns) do
@@ -278,6 +295,64 @@ defmodule DianWeb.HomeComponents do
         </div>
       </div>
     </dialog>
+    """
+  end
+
+  def reactions(assigns) do
+    ~H"""
+    <div class="w-full">
+      <ul class="flex flex-wrap gap-2 justify-center items-center">
+        <li>
+          <.emoji_select id={@id} diaan_id={@diaan_id} />
+        </li>
+
+        <li :for={{code, count} <- @reactions}>
+          <% {emoji, label} = Reaction.emoji(code) %>
+          <.button class="rounded-full">
+            <span><%= emoji %></span>
+            <span class="text-xs"><%= label %></span>
+            <span><%= count %></span>
+          </.button>
+        </li>
+      </ul>
+    </div>
+    """
+  end
+
+  defp emoji_select(assigns) do
+    ~H"""
+    <.popup
+      :let={api}
+      id={ "#{@id}-emoji-select" }
+      class="left-0 right-0 flex justify-center items-center"
+      display="flex"
+    >
+      <:trigger :let={attrs}>
+        <.button class="rounded-full px-1.5 py-1.5" {attrs}>
+          <.icon name="hero-face-smile" class="w-5 h-5" />
+        </.button>
+      </:trigger>
+      <div class="card-emphasis p-2 mt-1">
+        <ul class="flex gap-1">
+          <li :for={{code, emoji, label} <- Reaction.emojis()} class="shrink-0">
+            <.icon_button
+              class="gap-1"
+              phx-value-code={code}
+              phx-value-action="add"
+              phx-value-diaan_id={@diaan_id}
+              phx-click={api.hide |> JS.push("submit:reaction")}
+            >
+              <span>
+                <%= emoji %>
+              </span>
+              <span>
+                <%= label %>
+              </span>
+            </.icon_button>
+          </li>
+        </ul>
+      </div>
+    </.popup>
     """
   end
 end

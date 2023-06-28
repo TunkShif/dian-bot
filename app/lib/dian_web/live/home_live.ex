@@ -8,9 +8,11 @@ defmodule DianWeb.HomeLive do
   alias Dian.Favorites
   alias Dian.Messenger
   alias Dian.Statistics
-  alias Dian.Accounts.User
+  alias Dian.Interactions
 
   alias DianWeb.Presence
+
+  @authenticated_actions ["submit:reaction"]
 
   def mount(_params, _session, socket) do
     if connected?(socket) do
@@ -60,7 +62,7 @@ defmodule DianWeb.HomeLive do
             :for={{dom_id, diaan} <- @streams.diaans}
             id={dom_id}
             diaan={diaan}
-            with_menu={User.is_admin?(@current_user)}
+            current_user={@current_user}
           />
         </ul>
       </section>
@@ -98,6 +100,7 @@ defmodule DianWeb.HomeLive do
     Presence.join()
     Favorites.subscribe()
     Statistics.subscribe("hotword")
+    Interactions.subscribe("reaction")
   end
 
   defp load_diaans(socket, opts \\ []) do
@@ -140,6 +143,11 @@ defmodule DianWeb.HomeLive do
     assign(socket, online_count: Presence.count())
   end
 
+  def handle_event(event, _params, %{assigns: %{current_user: nil}} = socket)
+      when event in @authenticated_actions do
+    {:noreply, put_flash(socket, :error, "登录了才能用")}
+  end
+
   def handle_event("load:more", _parms, socket) do
     {:noreply, load_diaans(socket)}
   end
@@ -176,6 +184,23 @@ defmodule DianWeb.HomeLive do
     {:noreply, socket}
   end
 
+  def handle_event("submit:reaction", %{"action" => "add"} = params, socket) do
+    current_user = socket.assigns.current_user
+    %{"diaan_id" => diaan_id, "code" => code} = params
+
+    socket =
+      case Interactions.create_reaction(%{
+             code: code,
+             diaan_id: diaan_id,
+             user_id: current_user.id
+           }) do
+        {:ok, _} -> socket
+        {:error, _} -> put_flash(socket, :info, "只许点一次哦")
+      end
+
+    {:noreply, socket}
+  end
+
   def handle_event("delete:" <> id, _params, socket) do
     Favorites.get_diaan!(id)
     |> Favorites.delete_diaan()
@@ -189,6 +214,10 @@ defmodule DianWeb.HomeLive do
 
   def handle_info({:added, diaan}, socket) do
     {:noreply, socket |> stream_insert(:diaans, diaan, at: 0)}
+  end
+
+  def handle_info({:updated, diaan}, socket) do
+    {:noreply, socket |> stream_insert(:diaans, diaan)}
   end
 
   def handle_info({:deleted, diaan}, socket) do

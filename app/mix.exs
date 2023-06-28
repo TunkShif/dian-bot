@@ -56,6 +56,7 @@ defmodule Dian.MixProject do
       {:earmark, "~> 1.4"},
       {:html_sanitize_ex, "~> 1.4"},
       {:bcrypt_elixir, "~> 3.0"},
+      {:twix, "~> 0.3.0"},
       {:sobelow, "~> 0.12", only: [:dev, :test], runtime: false}
     ]
   end
