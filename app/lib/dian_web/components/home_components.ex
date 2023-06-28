@@ -333,7 +333,7 @@ defmodule DianWeb.HomeComponents do
         </.button>
       </:trigger>
       <div class="card-emphasis p-2 mt-1">
-        <ul class="flex gap-1">
+        <ul class="flex flex-wrap gap-1">
           <li :for={{code, emoji, label} <- Reaction.emojis()} class="shrink-0">
             <.icon_button
               class="gap-1"
