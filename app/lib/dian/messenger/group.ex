@@ -17,4 +17,12 @@ defmodule Dian.Messenger.Group do
     |> cast(attrs, [:name, :number])
     |> validate_required([:name, :number])
   end
+
+  def to_serializable(%__MODULE__{} = group) do
+    %{
+      id: group.id,
+      name: group.name,
+      number: group.number
+    }
+  end
 end

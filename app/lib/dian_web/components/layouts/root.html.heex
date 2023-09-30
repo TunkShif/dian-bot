@@ -1,42 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" class="[scrollbar-gutter:stable]">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
 
-    <.live_title suffix=" · Phoenix Framework">
-      <%= assigns[:page_title] || "Dian" %>
+    <.live_title suffix=" · My Little Red Book">
+      <%= assigns[:page_title] || "典" %>
     </.live_title>
-
-    <script>
-      "dark"===localStorage.theme||!("theme"in localStorage)&&window.matchMedia("(prefers-color-scheme: dark)").matches?(document.documentElement.dataset.theme="dark"):undefined;
-    </script>
-
-    <script defer src="https://unpkg.com/@popperjs/core@2">
-    </script>
-    <script defer src="https://unpkg.com/tippy.js@6">
-    </script>
 
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
-
-    <link
-      rel="preload"
-      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-      as="style"
-      onload="this.onload=null;this.rel='stylesheet'"
-    />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-      />
-    </noscript>
   </head>
-  <body class="relative antialiased text-secondary">
+
+  <body class="relative antialiased">
     <%= @inner_content %>
-    <div id="tippy-container" phx-update="ignore"></div>
   </body>
 </html>

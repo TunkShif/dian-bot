@@ -1,9 +1,7 @@
 defmodule DianWeb.PageController do
   use DianWeb, :controller
 
-  def home(conn, _params) do
-    # The home page is often custom made,
-    # so skip the default app layout.
-    render(conn, :home, layout: false)
+  def index(conn, _params) do
+    render(conn, :app, layout: false)
   end
 end

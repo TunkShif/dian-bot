@@ -15,4 +15,11 @@ defmodule Dian.Statistics.Hotword do
     |> validate_required([:keyword])
     |> validate_length(:keyword, max: 12)
   end
+
+  def to_serializable(%__MODULE__{} = hotword) do
+    %{
+      id: hotword.id,
+      keyword: hotword.keyword
+    }
+  end
 end

@@ -1,13 +1,7 @@
 import { Socket } from "phoenix"
 import "phoenix_html"
 import { LiveSocket } from "phoenix_live_view"
-
-import "./poke"
-import "./theme"
-import "./flash"
-import "./modal"
-import "./topbar"
-import "./at-popup"
+import { mountApp } from "./entry"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
@@ -21,8 +15,6 @@ let liveSocket = new LiveSocket("/live", Socket, {
 
 liveSocket.connect()
 
-// expose liveSocket on window for web console debug logs and latency simulation:
-// >> liveSocket.enableDebug()
-// >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
-// >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
+
+mountApp()

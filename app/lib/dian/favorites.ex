@@ -21,17 +21,25 @@ defmodule Dian.Favorites do
     Phoenix.PubSub.broadcast(Dian.PubSub, topic(group), payload)
   end
 
-  def list_favorites_diaans(cursor \\ nil, params \\ %{}) do
+  def list_favorites_diaans(params \\ %{}) do
     filters =
-      if group_id = params["group_id"] do
+      if group_id = params["group"] do
         dynamic([d, operator, message], message.group_id == ^group_id)
       else
         true
       end
 
     filters =
-      if sender_id = params["sender_id"] do
+      if sender_id = params["sender"] do
         dynamic([d, operator, message], ^filters and message.sender_id == ^sender_id)
+      else
+        filters
+      end
+
+    filters =
+      if date = params["date"] do
+        date = Date.from_iso8601!(date)
+        dynamic([d, operator, message], ^filters and fragment("DATE(?) = ?", d.marked_at, ^date))
       else
         filters
       end
@@ -47,27 +55,31 @@ defmodule Dian.Favorites do
       end
 
     query =
-      Diaan
-      |> join(:left, [d], operator in assoc(d, :operator))
-      |> join(:inner, [d, operator], message in assoc(d, :message), on: ^filters)
-      |> join(:left, [d, operator, message], sender in assoc(message, :sender))
-      |> join(:left, [d, operator, message, sender], group in assoc(message, :group))
-      |> join(:left, [d, operator, message, sender, group], reactions in assoc(d, :reactions))
-      |> preload([d, operator, message, sender, group, reactions],
-        operator: operator,
-        message: {message, sender: sender, group: group},
-        reactions: reactions
-      )
-      |> order_by([d], desc: d.marked_at, desc: d.id)
-      |> select([d], d)
+      from d in Diaan,
+        left_join: operator in assoc(d, :operator),
+        inner_join: message in assoc(d, :message),
+        left_join: sender in assoc(message, :sender),
+        left_join: group in assoc(message, :group),
+        left_join: reactions in assoc(d, :reactions),
+        preload: [
+          operator: operator,
+          message: {message, sender: sender, group: group},
+          reactions: reactions
+        ],
+        where: ^filters,
+        order_by: [desc: d.marked_at, desc: d.id],
+        select: d
 
-    opts =
-      Keyword.merge(
-        [cursor_fields: [{:marked_at, :desc}, {:id, :desc}], limit: 20],
-        if(cursor, do: [after: cursor], else: [])
-      )
+    params =
+      if page = params["page"] do
+        [page: page]
+      else
+        []
+      end
 
-    %{entries: entries, metadata: metadata} = Repo.paginate(query, opts)
+    page = Repo.paginate(query, params)
+    entries = page.entries
+    metadata = page |> Map.drop([:__struct__, :entries])
 
     {entries, metadata}
   end

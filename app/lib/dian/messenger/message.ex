@@ -20,4 +20,13 @@ defmodule Dian.Messenger.Message do
     |> cast(attrs, [:number, :content, :sent_at, :raw_text])
     |> validate_required([:number, :content, :sent_at])
   end
+
+  def to_serializable(%__MODULE__{} = message) do
+    %{
+      content: message.content,
+      sender: message.sender |> Dian.Profiles.User.to_serializable(),
+      group: message.group |> Dian.Messenger.Group.to_serializable(),
+      sent_at: message.sent_at
+    }
+  end
 end

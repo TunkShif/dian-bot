@@ -3,5 +3,5 @@ defmodule Dian.Repo do
     otp_app: :dian,
     adapter: Ecto.Adapters.Postgres
 
-  use Paginator
+  use Scrivener
 end

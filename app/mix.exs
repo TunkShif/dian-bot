@@ -52,7 +52,7 @@ defmodule Dian.MixProject do
       {:tesla, "~> 1.4"},
       {:finch, "~> 0.16"},
       {:nimble_parsec, "~> 1.0"},
-      {:paginator, "~> 1.2.0"},
+      {:scrivener_ecto, "~> 2.7"},
       {:earmark, "~> 1.4"},
       {:html_sanitize_ex, "~> 1.4"},
       {:bcrypt_elixir, "~> 3.0"},
@@ -73,7 +73,7 @@ defmodule Dian.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
+      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing", "cmd --cd assets npm install"],
       "assets.build": ["tailwind default", "esbuild default"],
       "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
     ]
