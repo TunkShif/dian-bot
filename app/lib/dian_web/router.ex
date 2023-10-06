@@ -17,45 +17,6 @@ defmodule DianWeb.Router do
     plug :accepts, ["json"]
   end
 
-  # scope "/", DianWeb do
-  #   pipe_through :browser
-  #
-  #   live_session :default, on_mount: [{DianWeb.Auth, :mount_current_user}] do
-  #     live "/home", HomeLive
-  #
-  #     live "/users/login", LoginLive
-  #     live "/users/register", RegisterLive
-  #   end
-  #
-  #   post "/users/login", AuthController, :create
-  #   delete "/users/logout", AuthController, :delete
-  # end
-
-  scope "/", DianWeb do
-    pipe_through :api
-
-    post "/event/incoming", EventController, :incoming
-  end
-
-  scope "/api", DianWeb do
-    pipe_through :api
-
-    resources "/diaans", DiaanController, only: [:index, :show, :update, :delete]
-
-    get "/messenger/groups", MessengerController, :list_groups
-    get "/messenger/users", MessengerController, :list_users
-
-    get "/statistics/hotwords", StatisticsController, :list_hotwords
-    get "/statistics/dashboard", StatisticsController, :get_dashboard_statistics
-    get "/statistics/user/:id", StatisticsController, :get_user_statistics
-  end
-
-  scope "/", DianWeb do
-    pipe_through :browser
-
-    get "/*path", PageController, :index
-  end
-
   # Enable LiveDashboard in development
   if Application.compile_env(:dian, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put
@@ -70,5 +31,31 @@ defmodule DianWeb.Router do
 
       live_dashboard "/dashboard", metrics: DianWeb.Telemetry
     end
+  end
+
+  scope "/", DianWeb do
+    pipe_through :api
+
+    post "/event/incoming", EventController, :incoming
+  end
+
+  scope "/api", DianWeb do
+    pipe_through :api
+
+    resources "/diaans", DiaanController, only: [:index, :show, :update, :delete]
+
+    get "/messenger/groups", MessengerController, :list_groups
+    get "/messenger/users", MessengerController, :list_users
+    get "/messenger/messages/:number", MessengerController, :get_message
+
+    get "/statistics/hotwords", StatisticsController, :list_hotwords
+    get "/statistics/dashboard", StatisticsController, :get_dashboard_statistics
+    get "/statistics/user/:id", StatisticsController, :get_user_statistics
+  end
+
+  scope "/", DianWeb do
+    pipe_through :browser
+
+    get "/*path", PageController, :index
   end
 end

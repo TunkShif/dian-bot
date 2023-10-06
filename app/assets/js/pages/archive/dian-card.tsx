@@ -1,8 +1,9 @@
 import { WithUserHoverCard } from "@/components/shared/user-card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { MessageContent, type Dian } from "@/services"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { MessageContent, MessengerService, type Dian } from "@/services"
 import { formatDate } from "@/utils/date"
+import { useQuery } from "@tanstack/react-query"
 import React from "react"
 
 export const DianCard: React.FC<{ dian: Dian }> = ({ dian }) => {
@@ -25,13 +26,21 @@ export const DianCard: React.FC<{ dian: Dian }> = ({ dian }) => {
           </div>
         </div>
       </CardHeader>
+
       <CardContent className="px-4">
         <div>
           {message.content.map((content, i) => (
-            <Content key={`${dian.id}-${i}`} id={dian.id} content={content} />
+            <Content
+              key={`${dian.id}-${message.id}-${i}`}
+              id={`${dian.id}-${message.id}`}
+              content={content}
+            />
           ))}
         </div>
-        <div className="pt-4 flex justify-between text-xs">
+      </CardContent>
+
+      <CardFooter className="px-4">
+        <div className="w-full flex justify-between text-xs">
           <div>来自 {group.name}</div>
           <div>
             由{" "}
@@ -41,7 +50,7 @@ export const DianCard: React.FC<{ dian: Dian }> = ({ dian }) => {
             设置
           </div>
         </div>
-      </CardContent>
+      </CardFooter>
     </Card>
   )
 }
@@ -64,7 +73,48 @@ const Image: React.FC<{ url: string }> = ({ url }) => {
   return <img src={url} alt="maybe a meme" loading="lazy" />
 }
 
-const Content: React.FC<{ id: number; content: MessageContent }> = ({ id, content }) => {
+const Reply: React.FC<{ number: string | null }> = ({ number }) => {
+  const { data, isFetching } = useQuery(MessengerService.queries.message(number))
+  console.log(isFetching)
+  if (!number) return null
+  return (
+    <Card className="shadow-sm mb-2">
+      {isFetching ? (
+        "loading..."
+      ) : (
+        <>
+          <CardHeader className="p-4">
+            <div className="flex gap-2 items-center">
+              <Avatar className="w-9 h-9">
+                <AvatarImage src={data!.sender.avatar_url} />
+                <AvatarFallback>{data!.sender.nickname.slice(0, 2)}</AvatarFallback>
+              </Avatar>
+              <WithUserHoverCard user={data!.sender}>
+                <span className="text-sm hover:underline cursor-pointer">
+                  {data!.sender.nickname}
+                </span>
+              </WithUserHoverCard>
+            </div>
+          </CardHeader>
+
+          <CardContent className="px-4 pb-4">
+            <div>
+              {data!.content.map((content, i) => (
+                <Content
+                  key={`${data!.id}-reply-${i}`}
+                  id={`${data!.id}-reply`}
+                  content={content}
+                />
+              ))}
+            </div>
+          </CardContent>
+        </>
+      )}
+    </Card>
+  )
+}
+
+const Content: React.FC<{ id: string; content: MessageContent }> = ({ id, content }) => {
   const { type, data } = content
 
   switch (type) {
@@ -74,5 +124,9 @@ const Content: React.FC<{ id: number; content: MessageContent }> = ({ id, conten
       return <At user={data} />
     case "image":
       return <Image url={data.url} />
+    case "reply":
+      return <Reply number={data.exists ? data.number : null} />
+    default:
+      return null
   }
 }

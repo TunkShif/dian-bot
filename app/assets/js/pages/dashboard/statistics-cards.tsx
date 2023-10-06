@@ -31,7 +31,7 @@ export const DailyActivityCard = () => {
           <p className="text-xs text-muted-foreground">
             相比昨天{" "}
             <span className="font-medium text-foreground">
-              {difference > 0 ? "+" : "-"}
+              {difference > 0 ? "+" : null}
               {difference}
             </span>
           </p>

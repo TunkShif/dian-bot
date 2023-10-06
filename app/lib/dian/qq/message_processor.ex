@@ -1,11 +1,14 @@
 defmodule Dian.QQ.MessageProcessor do
+  alias Dian.Messenger
   alias Dian.Supabase
   alias Dian.Profiles
 
   # TODO: error handling
   def process(content) when is_list(content) do
-    content
-    |> Enum.map(&process_code/1)
+    for code <- content do
+      Task.async(fn -> process_code(code) end)
+    end
+    |> Task.await_many()
   end
 
   def raw_text(content) do
@@ -49,6 +52,20 @@ defmodule Dian.QQ.MessageProcessor do
       item
       | "data" => %{
           "url" => Supabase.get_public_object_url("images", filename)
+        }
+    }
+  end
+
+  defp process_code(%{"type" => "reply", "data" => data} = item) do
+    number = data["id"]
+
+    exists? = Messenger.get_or_create_message(number) != nil
+
+    %{
+      item
+      | "data" => %{
+          "exists" => exists?,
+          "number" => number
         }
     }
   end

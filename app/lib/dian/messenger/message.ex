@@ -23,6 +23,7 @@ defmodule Dian.Messenger.Message do
 
   def to_serializable(%__MODULE__{} = message) do
     %{
+      id: message.id,
       content: message.content,
       sender: message.sender |> Dian.Profiles.User.to_serializable(),
       group: message.group |> Dian.Messenger.Group.to_serializable(),

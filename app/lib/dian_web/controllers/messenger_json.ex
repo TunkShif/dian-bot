@@ -1,5 +1,5 @@
 defmodule DianWeb.MessengerJSON do
-  alias Dian.Messenger.Group
+  alias Dian.Messenger.{Group, Message}
   alias Dian.Profiles.User
 
   def groups(%{groups: groups}) do
@@ -8,5 +8,9 @@ defmodule DianWeb.MessengerJSON do
 
   def users(%{users: users}) do
     %{data: for(user <- users, do: User.to_serializable(user))}
+  end
+
+  def message(%{message: message}) do
+    %{data: Message.to_serializable(message)}
   end
 end

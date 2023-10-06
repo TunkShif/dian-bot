@@ -8,4 +8,8 @@ defmodule Dian.MessengerService do
   def list_users() do
     Profiles.list_profiles_users()
   end
+
+  def get_message(number) do
+    Messenger.get_or_create_message(number)
+  end
 end

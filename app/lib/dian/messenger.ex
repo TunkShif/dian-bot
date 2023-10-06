@@ -16,7 +16,7 @@ defmodule Dian.Messenger do
   # TODO: refactor transaction
   def get_or_create_message(number) do
     if message = Repo.get_by(Message, number: "#{number}") do
-      message
+      message |> Repo.preload([:sender, :group])
     else
       with {:ok, message} <- QQ.get_message(number),
            {:ok, parsed} <- MessageParser.parse(message.raw_content) do

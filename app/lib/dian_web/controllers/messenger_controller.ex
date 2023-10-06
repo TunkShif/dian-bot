@@ -12,4 +12,9 @@ defmodule DianWeb.MessengerController do
     users = MessengerService.list_users()
     render(conn, :users, users: users)
   end
+
+  def get_message(conn, %{"number" => number}) do
+    message = MessengerService.get_message(number)
+    render(conn, :message, message: message)
+  end
 end
