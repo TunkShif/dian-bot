@@ -3,6 +3,13 @@
   "sub_type": "normal",
   "raw_message": {
     ".contains": "CQ:reply",
-    ".contains": "/设精"
+    ".or": [
+      {
+        ".contains": "/sj"
+      },
+      {
+        ".contains": "/rd"
+      }
+    ]
   }
 }

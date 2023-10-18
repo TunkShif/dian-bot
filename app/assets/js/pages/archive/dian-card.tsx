@@ -75,7 +75,6 @@ const Image: React.FC<{ url: string }> = ({ url }) => {
 
 const Reply: React.FC<{ number: string | null }> = ({ number }) => {
   const { data, isFetching } = useQuery(MessengerService.queries.message(number))
-  console.log(isFetching)
   if (!number) return null
   return (
     <Card className="shadow-sm mb-2">

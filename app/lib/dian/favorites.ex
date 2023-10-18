@@ -8,19 +8,6 @@ defmodule Dian.Favorites do
 
   alias Dian.Favorites.Diaan
 
-  def topic(group) do
-    "diaan:#{group}"
-  end
-
-  def subscribe(group \\ "*") do
-    Phoenix.PubSub.subscribe(Dian.PubSub, topic(group))
-  end
-
-  # TODO: event struct
-  def broadcast(group \\ "*", payload) do
-    Phoenix.PubSub.broadcast(Dian.PubSub, topic(group), payload)
-  end
-
   def list_favorites_diaans(params \\ %{}) do
     filters =
       if group_id = params["group"] do
@@ -84,6 +71,30 @@ defmodule Dian.Favorites do
     {entries, metadata}
   end
 
+  def list_favorites_images(params) do
+    query =
+      from d in Diaan,
+        left_join: operator in assoc(d, :operator),
+        inner_join: message in assoc(d, :message),
+        left_join: sender in assoc(message, :sender),
+        left_join: group in assoc(message, :group),
+        left_join: reactions in assoc(d, :reactions),
+        preload: [
+          operator: operator,
+          message: {message, sender: sender, group: group},
+          reactions: reactions
+        ],
+        where: is_nil(message.raw_text) or message.raw_text == "",
+        order_by: [desc: d.marked_at, desc: d.id],
+        select: d
+
+    page = Repo.paginate(query, params)
+    entries = page.entries
+    metadata = page |> Map.drop([:__struct__, :entries])
+
+    {entries, metadata}
+  end
+
   @doc """
   Gets a single diaan.
 
@@ -99,6 +110,25 @@ defmodule Dian.Favorites do
 
   """
   def get_diaan!(id), do: Repo.get!(Diaan, id)
+
+  def get_diaan(id) do
+    query =
+      from d in Diaan,
+        left_join: operator in assoc(d, :operator),
+        inner_join: message in assoc(d, :message),
+        left_join: sender in assoc(message, :sender),
+        left_join: group in assoc(message, :group),
+        left_join: reactions in assoc(d, :reactions),
+        preload: [
+          operator: operator,
+          message: {message, sender: sender, group: group},
+          reactions: reactions
+        ],
+        where: d.id == ^id,
+        select: d
+
+    Repo.one(query)
+  end
 
   def get_diaan_by_message_id(id) do
     Repo.get(Diaan, message_id: id)
@@ -123,8 +153,6 @@ defmodule Dian.Favorites do
     |> case do
       {:ok, diaan} ->
         diaan = diaan |> Repo.preload([:operator, :reactions, message: [:group, :sender]])
-        broadcast({:added, diaan})
-        broadcast(diaan.message.group.number, {:added, diaan})
         {:ok, diaan}
 
       error ->
@@ -163,9 +191,7 @@ defmodule Dian.Favorites do
 
   """
   def delete_diaan(%Diaan{} = diaan) do
-    with {:ok, diaan} <- Repo.delete(diaan) do
-      broadcast({:deleted, diaan})
-    end
+    Repo.delete(diaan)
   end
 
   @doc """

@@ -2,6 +2,8 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@import "react-photo-view/dist/react-photo-view.css";
+
 @layer base {
   :root {
     --bg-gradient: linear-gradient(120deg, theme(colors.white) 0%, theme(colors.zinc.50 / 80) 100%);

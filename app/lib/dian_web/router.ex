@@ -42,6 +42,7 @@ defmodule DianWeb.Router do
   scope "/api", DianWeb do
     pipe_through :api
 
+    get "/diaans/images", DiaanController, :list_images
     resources "/diaans", DiaanController, only: [:index, :show, :update, :delete]
 
     get "/messenger/groups", MessengerController, :list_groups

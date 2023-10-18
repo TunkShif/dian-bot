@@ -171,8 +171,6 @@ defmodule Dian.Statistics do
         |> Repo.insert()
       end
 
-    broadcast("hotword", "update:hotwords")
-
     result
   end
 end

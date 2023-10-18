@@ -5,12 +5,7 @@ import { mountApp } from "./entry"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
-  params: { _csrf_token: csrfToken },
-  dom: {
-    onBeforeElUpdated(from, to) {
-      if (from.localName === "dialog") to.open = from.open
-    }
-  }
+  params: { _csrf_token: csrfToken }
 })
 
 liveSocket.connect()
