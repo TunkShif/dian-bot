@@ -1,10 +1,16 @@
 import { WithUserHoverCard } from "@/components/shared/user-card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { preferencesAtom } from "@/pages/atoms"
 import { MessageContent, MessengerService, type Dian } from "@/services"
 import { formatDate } from "@/utils/date"
 import { useQuery } from "@tanstack/react-query"
-import React from "react"
+import { useAtomValue } from "jotai/react"
+import { micromark } from "micromark"
+import { gfm, gfmHtml } from "micromark-extension-gfm"
+import { math, mathHtml } from "micromark-extension-math"
+import React, { useMemo } from "react"
+import { PhotoProvider, PhotoView } from "react-photo-view"
 
 export const DianCard: React.FC<{ dian: Dian }> = ({ dian }) => {
   const { message, operator } = dian
@@ -28,15 +34,17 @@ export const DianCard: React.FC<{ dian: Dian }> = ({ dian }) => {
       </CardHeader>
 
       <CardContent className="px-4">
-        <div>
-          {message.content.map((content, i) => (
-            <Content
-              key={`${dian.id}-${message.id}-${i}`}
-              id={`${dian.id}-${message.id}`}
-              content={content}
-            />
-          ))}
-        </div>
+        <PhotoProvider>
+          <div>
+            {message.content.map((content, i) => (
+              <Content
+                key={`${dian.id}-${message.id}-${i}`}
+                id={`${dian.id}-${message.id}`}
+                content={content}
+              />
+            ))}
+          </div>
+        </PhotoProvider>
       </CardContent>
 
       <CardFooter className="px-4">
@@ -56,7 +64,24 @@ export const DianCard: React.FC<{ dian: Dian }> = ({ dian }) => {
 }
 
 const Text: React.FC<{ text: string }> = ({ text }) => {
-  return <p className="leading-7">{text}</p>
+  const preferences = useAtomValue(preferencesAtom)
+
+  const html = useMemo(
+    () =>
+      preferences.renderMarkdown
+        ? micromark(text, {
+          extensions: [gfm(), math()],
+          htmlExtensions: [gfmHtml(), mathHtml()]
+        })
+        : text,
+    [text, preferences.renderMarkdown]
+  )
+
+  return preferences.renderMarkdown ? (
+    <p className="prose prose-zinc dark:prose-invert" dangerouslySetInnerHTML={{ __html: html }} />
+  ) : (
+    <p className="leading-7">{html}</p>
+  )
 }
 
 const At: React.FC<{ user: { nickname: string; number: string } }> = ({ user }) => {
@@ -70,7 +95,11 @@ const At: React.FC<{ user: { nickname: string; number: string } }> = ({ user }) 
 }
 
 const Image: React.FC<{ url: string }> = ({ url }) => {
-  return <img src={url} alt="maybe a meme" loading="lazy" />
+  return (
+    <PhotoView src={url}>
+      <img src={url} alt="maybe a meme" loading="lazy" />
+    </PhotoView>
+  )
 }
 
 const Reply: React.FC<{ number: string | null }> = ({ number }) => {
