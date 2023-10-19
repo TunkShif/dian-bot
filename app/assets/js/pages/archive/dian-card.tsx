@@ -1,6 +1,8 @@
 import { WithUserHoverCard } from "@/components/shared/user-card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { DianCardMenu } from "@/pages/archive/dian-card-menu"
+import { ShareDialog } from "@/pages/archive/share-dialog"
 import { preferencesAtom } from "@/pages/atoms"
 import { MessageContent, MessengerService, type Dian } from "@/services"
 import { formatDate } from "@/utils/date"
@@ -17,49 +19,57 @@ export const DianCard: React.FC<{ dian: Dian }> = ({ dian }) => {
   const { sender, group } = message
 
   return (
-    <Card className="rounded-lg shadow-sm">
-      <CardHeader className="p-4">
-        <div className="flex gap-2">
-          <Avatar className="w-11 h-11">
-            <AvatarImage src={sender.avatar_url} />
-            <AvatarFallback>{sender.nickname.slice(0, 2)}</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col justify-between">
-            <WithUserHoverCard user={sender}>
-              <span className="hover:underline cursor-pointer">{sender.nickname}</span>
-            </WithUserHoverCard>
-            <span className="text-xs">{formatDate(message.sent_at)} 发送</span>
+    <>
+      <Card data-dian-id={dian.id} className="rounded-lg shadow-sm">
+        <CardHeader className="p-4 relative">
+          <div className="flex gap-2">
+            <Avatar className="w-11 h-11">
+              <AvatarImage src={sender.avatar_url} />
+              <AvatarFallback>{sender.nickname.slice(0, 2)}</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col justify-between">
+              <WithUserHoverCard user={sender}>
+                <span className="hover:underline cursor-pointer">{sender.nickname}</span>
+              </WithUserHoverCard>
+              <span className="text-xs">{formatDate(message.sent_at)} 发送</span>
+            </div>
           </div>
-        </div>
-      </CardHeader>
 
-      <CardContent className="px-4">
-        <PhotoProvider>
-          <div>
-            {message.content.map((content, i) => (
-              <Content
-                key={`${dian.id}-${message.id}-${i}`}
-                id={`${dian.id}-${message.id}`}
-                content={content}
-              />
-            ))}
+          <div className="absolute top-2 right-2">
+            <DianCardMenu id={dian.id} />
           </div>
-        </PhotoProvider>
-      </CardContent>
+        </CardHeader>
 
-      <CardFooter className="px-4">
-        <div className="w-full flex justify-between text-xs">
-          <div>来自 {group.name}</div>
-          <div>
-            由{" "}
-            <WithUserHoverCard user={operator}>
-              <span className="hover:underline cursor-pointer">{operator.nickname}</span>
-            </WithUserHoverCard>{" "}
-            设置
+        <CardContent className="px-4">
+          <PhotoProvider>
+            <div>
+              {message.content.map((content, i) => (
+                <Content
+                  key={`${dian.id}-${message.id}-${i}`}
+                  id={`${dian.id}-${message.id}`}
+                  content={content}
+                />
+              ))}
+            </div>
+          </PhotoProvider>
+        </CardContent>
+
+        <CardFooter className="px-4">
+          <div className="w-full flex justify-between text-xs">
+            <div>来自 {group.name}</div>
+            <div>
+              由{" "}
+              <WithUserHoverCard user={operator}>
+                <span className="hover:underline cursor-pointer">{operator.nickname}</span>
+              </WithUserHoverCard>{" "}
+              设置
+            </div>
           </div>
-        </div>
-      </CardFooter>
-    </Card>
+        </CardFooter>
+      </Card>
+
+      <ShareDialog id={dian.id} />
+    </>
   )
 }
 

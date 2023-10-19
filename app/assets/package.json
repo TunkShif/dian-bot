@@ -27,6 +27,7 @@
     "cmdk": "^0.2.0",
     "date-fns": "^2.30.0",
     "foxact": "^0.2.20",
+    "html-to-image": "^1.11.11",
     "jotai": "^2.4.3",
     "ky": "^1.0.1",
     "lucide-react": "^0.279.0",
@@ -40,6 +41,7 @@
     "react-responsive": "^9.0.2",
     "react-router-dom": "^6.16.0",
     "recharts": "^2.8.0",
+    "satori": "^0.10.9",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7"
   }
