@@ -1,4 +1,3 @@
-import { setup } from "@/setup"
 import { Socket } from "phoenix"
 import "phoenix_html"
 import { LiveSocket } from "phoenix_live_view"
@@ -10,7 +9,5 @@ let liveSocket = new LiveSocket("/live", Socket, {
 })
 liveSocket.connect()
 window.liveSocket = liveSocket
-
-setup()
 
 mountApp()

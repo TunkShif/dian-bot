@@ -12,6 +12,23 @@
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
+    <script defer>
+      const setupFonts = async () => {
+        const root = await navigator.storage.getDirectory()
+        try {
+          await root.getFileHandle("sarasa-ui-sc-regular.ttf")
+        } catch (e) {
+          const file = await root.getFileHandle("sarasa-ui-sc-regular.ttf", { create: true })
+          const writer = await file.createWritable()
+
+          const font = await fetch("/fonts/sarasa-ui-sc-regular.ttf").then((res) => res.blob())
+          await writer.write(font)
+          await writer.close()
+        }
+      }
+
+      setupFonts()
+    </script>
   </head>
 
   <body class="relative antialiased">
