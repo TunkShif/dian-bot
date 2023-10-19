@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
@@ -30,6 +31,26 @@ export const Preferences = () => {
                 setPreferences((pref) => ({ ...pref, renderMarkdown: value }))
               }
             />
+          </div>
+        </section>
+
+        <Separator className="my-6" />
+        <section className="flex justify-between items-center gap-2">
+          <div className="space-y-1.5">
+            <CardTitle>清除缓存</CardTitle>
+            <CardDescription>清除页面缓存</CardDescription>
+          </div>
+
+          <div className="shrink-0 grow-0">
+            <Button
+              onClick={async () => {
+                const root = await navigator.storage.getDirectory()
+                root.removeEntry("sarasa-ui-sc-regular.ttf")
+                alert("清理成功！")
+              }}
+            >
+              清除
+            </Button>
           </div>
         </section>
       </CardContent>

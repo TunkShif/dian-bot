@@ -11,3 +11,5 @@ liveSocket.connect()
 window.liveSocket = liveSocket
 
 mountApp()
+
+new Worker("/assets/worker.js")
