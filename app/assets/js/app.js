@@ -1,3 +1,4 @@
+import { setup } from "@/setup"
 import { Socket } from "phoenix"
 import "phoenix_html"
 import { LiveSocket } from "phoenix_live_view"
@@ -7,9 +8,9 @@ let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken }
 })
-
 liveSocket.connect()
-
 window.liveSocket = liveSocket
+
+setup()
 
 mountApp()

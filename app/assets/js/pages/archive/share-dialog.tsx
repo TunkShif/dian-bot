@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle
 } from "@/components/ui/dialog"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Dian, DianService } from "@/services"
 import { queryClient } from "@/utils/client"
 import { formatDate } from "@/utils/date"
@@ -71,7 +72,18 @@ const SharePreview: React.FC<{ id: string }> = ({ id }) => {
   return (
     <div className="overflow-auto">
       {isLoading ? (
-        "Loading..."
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center space-x-4">
+            <Skeleton className="h-12 w-12 rounded-full" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-4 w-52" />
+            </div>
+          </div>
+          <Skeleton className="h-4 w-64" />
+          <Skeleton className="h-4 w-64" />
+          <Skeleton className="h-4 w-80" />
+        </div>
       ) : (
         <div className="overflow-hidden" dangerouslySetInnerHTML={{ __html: image! }} />
       )}
@@ -82,14 +94,18 @@ const SharePreview: React.FC<{ id: string }> = ({ id }) => {
 const initFont = async () => [
   {
     name: "Sarasa UI SC",
-    data: await fetch("/assets/fonts/sarasa-ui-sc-regular.ttf").then((res) => res.arrayBuffer())
+    data: await navigator.storage
+      .getDirectory()
+      .then((root) => root.getFileHandle("sarasa-ui-sc-regular.ttf"))
+      .then((handle) => handle.getFile())
+      .then((file) => file.arrayBuffer())
   }
 ]
 
 const renderSvg = async (dian: Dian) => {
-  return await satori(<Dian dian={dian} />, {
+  return satori(<Dian dian={dian} />, {
     width: 360,
-    height: 400,
+    height: 320,
     fonts: await initFont()
   })
 }
