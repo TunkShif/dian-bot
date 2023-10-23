@@ -45,18 +45,18 @@ defmodule Dian.MixProject do
       {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
+      {:swoosh, "~> 1.3"},
+      {:resend, "~> 0.2.1"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:nanoid, "~> 2.0.5"},
-      {:tesla, "~> 1.4"},
       {:finch, "~> 0.16"},
-      {:nimble_parsec, "~> 1.0"},
-      {:scrivener_ecto, "~> 2.7"},
-      {:earmark, "~> 1.4"},
-      {:html_sanitize_ex, "~> 1.4"},
+      {:tesla, "~> 1.4"},
+      {:oban, "~> 2.16"},
       {:bcrypt_elixir, "~> 3.0"},
-      {:twix, "~> 0.3.0"},
+      {:scrivener_ecto, "~> 2.7"},
+      {:nimble_parsec, "~> 1.0"},
       {:sobelow, "~> 0.12", only: [:dev, :test], runtime: false}
     ]
   end
@@ -73,7 +73,11 @@ defmodule Dian.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing", "cmd --cd assets npm install"],
+      "assets.setup": [
+        "tailwind.install --if-missing",
+        "esbuild.install --if-missing",
+        "cmd --cd assets npm install"
+      ],
       "assets.build": ["tailwind default", "esbuild default"],
       "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
     ]

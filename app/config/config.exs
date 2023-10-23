@@ -20,6 +20,21 @@ config :dian, DianWeb.Endpoint,
   pubsub_server: Dian.PubSub,
   live_view: [signing_salt: "AQQeMusE"]
 
+# Configures the mailer
+#
+# By default it uses the "Local" adapter which stores the emails
+# locally. You can see the emails in your browser, at "/dev/mailbox".
+#
+# For production it's recommended to configure a different adapter
+# at the `config/runtime.exs`.
+config :dian, Dian.Mailer, adapter: Swoosh.Adapters.Local
+
+# Configure Oban
+config :dian, Oban,
+  queues: [default: 10],
+  plugins: [Oban.Plugins.Pruner],
+  repo: Dian.Repo
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
@@ -50,7 +65,7 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :tesla, :adapter, {Tesla.Adapter.Finch, name: FinchClient}
+config :tesla, :adapter, {Tesla.Adapter.Finch, name: Dian.Finch}
 
 config :nanoid,
   size: 7,

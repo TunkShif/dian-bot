@@ -1,7 +1,5 @@
-defmodule Dian.QQ.MessageProcessor do
-  alias Dian.Messenger
-  alias Dian.Supabase
-  alias Dian.Profiles
+defmodule Dian.Messenger.Message.Processor do
+  alias Dian.{Messenger, Supabase}
 
   # TODO: error handling
   def process(content) when is_list(content) do
@@ -23,7 +21,7 @@ defmodule Dian.QQ.MessageProcessor do
 
   defp process_code(%{"type" => "at", "data" => data} = item) do
     number = data["qq"]
-    user = Profiles.get_or_create_user(number)
+    {:ok, user} = Messenger.get_user(number)
 
     %{
       item
@@ -42,7 +40,7 @@ defmodule Dian.QQ.MessageProcessor do
 
     unless exists? do
       %{status: 200, body: body, headers: headers} =
-        Finch.build(:get, url) |> Finch.request!(FinchClient)
+        Finch.build(:get, url) |> Finch.request!(Dian.Finch)
 
       {_, content_type} = headers |> Enum.find(&match?({"content-type", _}, &1))
       {:ok, _} = Supabase.create_object("images", filename, body, content_type)
@@ -52,20 +50,6 @@ defmodule Dian.QQ.MessageProcessor do
       item
       | "data" => %{
           "url" => Supabase.get_public_object_url("images", filename)
-        }
-    }
-  end
-
-  defp process_code(%{"type" => "reply", "data" => data} = item) do
-    number = data["id"]
-
-    exists? = Messenger.get_or_create_message(number) != nil
-
-    %{
-      item
-      | "data" => %{
-          "exists" => exists?,
-          "number" => number
         }
     }
   end

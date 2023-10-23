@@ -26,12 +26,12 @@ end
 
 go_cqhttp_base_url = env.("GO_CQHTTP_BASE_URL")
 go_cqhttp_access_token = env.("GO_CQHTTP_ACCESS_TOKEN")
-
-# Configure go-cqhttp
-config :dian, Dian.QQ, base_url: go_cqhttp_base_url, access_token: go_cqhttp_access_token
-
 supabase_base_url = env.("SUPABASE_BASE_URL")
 supabase_api_key = env.("SUPABASE_API_KEY")
+
+config :dian, Dian.Messenger.Client,
+  base_url: go_cqhttp_base_url,
+  access_token: go_cqhttp_access_token
 
 # Configure supabase
 config :dian, Dian.Supabase, base_url: supabase_base_url, api_key: supabase_api_key
@@ -51,6 +51,10 @@ if config_env() == :prod do
     url: database_url,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
     socket_options: maybe_ipv6
+
+  config :hello_world, HelloWorld.Mailer,
+    adapter: Resend.Swoosh.Adapter,
+    api_key: env.("RESEND_API_KEY")
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you

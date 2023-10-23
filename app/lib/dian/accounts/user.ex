@@ -10,7 +10,7 @@ defmodule Dian.Accounts.User do
     field :hashed_password, :string, redact: true
     field :role, :string, default: "user"
 
-    has_one :profile, Dian.Profiles.User
+    has_one :profile, Dian.Messenger.User
 
     timestamps()
   end

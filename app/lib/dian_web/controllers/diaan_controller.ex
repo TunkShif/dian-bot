@@ -1,15 +1,21 @@
 defmodule DianWeb.DiaanController do
   use DianWeb, :controller
 
-  alias Dian.DiaanService
+  alias Dian.{Favorites, Statistics}
+
+  # TODO
 
   def index(conn, params) do
-    {entries, metadata} = DiaanService.list_all(params)
+    if keyword = params["keyword"] do
+      Task.async(fn -> Statistics.create_hotword(%{keyword: keyword}) end)
+    end
+
+    {entries, metadata} = Favorites.list_favorites_diaans(params)
     render(conn, :index, diaans: entries, metadata: metadata)
   end
 
   def show(conn, params) do
-    entry = DiaanService.get_one(params)
+    entry = Favorites.get_diaan(params["id"])
 
     if entry do
       render(conn, :show, diaan: entry)
@@ -19,8 +25,8 @@ defmodule DianWeb.DiaanController do
     end
   end
 
-  def list_images(conn, params) do
-    {entries, metadata} = DiaanService.list_images(params)
+  def images(conn, params) do
+    {entries, metadata} = Favorites.list_favorites_images(params)
     render(conn, :index, diaans: entries, metadata: metadata)
   end
 end

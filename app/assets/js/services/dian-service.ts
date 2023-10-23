@@ -21,15 +21,15 @@ export type ListImagesParams = {
 
 export const DianService = {
   listAll(params?: ListAllDianParams) {
-    return ky.get("/api/diaans", { searchParams: params }).json<PaginatedData<Dian>>()
+    return ky.get("/api/favorites/diaans", { searchParams: params }).json<PaginatedData<Dian>>()
   },
   listImages(page?: string | number) {
     return ky
-      .get("/api/diaans/images", { searchParams: { page: page ?? 1, page_size: 30 } })
+      .get("/api/favorites/diaans/images", { searchParams: { page: page ?? 1, page_size: 30 } })
       .json<PaginatedData<Dian>>()
   },
   getOne(id: string | number) {
-    return ky.get(`/api/diaans/${id}`).json<Data<Dian>>()
+    return ky.get(`/api/favorites/diaans/${id}`).json<Data<Dian>>()
   },
   queries: {
     all: { queryKey: ["dians"] },

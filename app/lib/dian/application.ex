@@ -13,7 +13,8 @@ defmodule Dian.Application do
       {Phoenix.PubSub, name: Dian.PubSub},
       DianWeb.Endpoint,
       DianWeb.Presence,
-      {Finch, name: FinchClient}
+      {Finch, name: Dian.Finch},
+      {Oban, Application.fetch_env!(:dian, Oban)}
     ]
 
     opts = [strategy: :one_for_one, name: Dian.Supervisor]

@@ -21,7 +21,7 @@ defmodule Dian.Accounts do
              |> Repo.insert(),
            {:ok, _profile} <-
              profile
-             |> Profiles.User.changeset(%{user_id: user.id})
+             |> Dian.Messenger.User.changeset(%{user_id: user.id})
              |> Repo.update() do
         {:ok, user}
       end

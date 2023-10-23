@@ -23,6 +23,12 @@ config :dian, DianWeb.Endpoint,
   secret_key_base: "74Wf8OymJl0XdvU+Kyyfp2gT91VmO8IKiBk/4MthOcHVc1sUqNHaGpgPX34QSBAo",
   server: false
 
+# Disable swoosh api client as it is only required for production adapters.
+config :swoosh, :api_client, false
+
+# Prevent Oban from running jobs and plugins during test runs
+config :dian, Oban, testing: :inline
+
 # Print only warnings and errors during test
 config :logger, level: :warning
 

@@ -1,4 +1,4 @@
-defmodule Dian.QQ.MessageParser do
+defmodule Dian.Messenger.Message.Parser do
   import NimbleParsec
 
   ident = ascii_string([?a..?z, ?A..?Z], min: 1)

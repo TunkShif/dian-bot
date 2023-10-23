@@ -3,59 +3,81 @@ defmodule Dian.Messenger do
   The Messenger context.
   """
 
-  import Ecto.Query, warn: false
-
   require Logger
 
-  alias Dian.QQ
+  import Ecto.Query, warn: false
+
   alias Dian.Repo
-  alias Dian.Profiles
-  alias Dian.Messenger.{Group, Message}
-  alias Dian.QQ.{MessageParser, MessageProcessor}
+  alias Dian.Messenger.{Client, Message, User, Group}
 
-  # TODO: refactor transaction
-  def get_or_create_message(number) do
-    if message = Repo.get_by(Message, number: "#{number}") do
-      message |> Repo.preload([:sender, :group])
-    else
-      with {:ok, message} <- QQ.get_message(number),
-           {:ok, parsed} <- MessageParser.parse(message.raw_content) do
-        content = MessageProcessor.process(parsed)
-        raw_text = MessageProcessor.raw_text(content)
-        sender = Profiles.get_or_create_user(message.sender.number)
-        group = get_or_create_group(message.group.number)
-
-        {:ok, message} =
-          Repo.insert(%Message{
-            number: number,
-            content: content,
-            raw_text: raw_text,
-            sent_at: message.sent_at,
-            sender_id: sender.id,
-            group_id: group.id
-          })
-
-        message
-      else
-        error ->
-          Logger.error(error)
-          nil
-      end
+  def get_message(number) do
+    case Repo.get_by(Message, number: number) do
+      nil -> {:error, :not_found}
+      message -> {:ok, Repo.preload(message, [:sender, :group])}
     end
   end
 
-  def get_or_create_group(number) do
-    if group = Repo.get_by(Group, number: "#{number}") do
-      group
+  def import_message(number) do
+    with {:ok, message} <- Client.fetch_message(number),
+         {:ok, sender} <- get_user(message.sender),
+         {:ok, group} <- get_group(message.group),
+         {:ok, parsed_message} <- Message.Parser.parse(message.raw_content) do
+      content = Message.Processor.process(parsed_message)
+      raw_text = Message.Processor.raw_text(content)
+
+      attrs =
+        %{
+          number: number,
+          content: content,
+          raw_text: raw_text,
+          sent_at: message.sent_at,
+          sender_id: sender.id,
+          group_id: group.id
+        }
+
+      create_message(attrs)
+    end
+  end
+
+  def create_message(attrs \\ %{}) do
+    %Message{}
+    |> Message.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def get_user(number) do
+    user = Repo.get_by(User, number: number)
+
+    if user do
+      {:ok, user}
     else
-      with {:ok, group} <- QQ.get_group(number),
-           {:ok, group} <- Repo.insert(struct(Group, group)) do
-        group
-      else
-        error ->
-          Logger.error(error)
-          nil
-      end
+      import_user(number)
+    end
+  end
+
+  def import_user(number) do
+    with {:ok, user} <- Client.fetch_user(number) do
+      user
+      |> User.changeset(%{})
+      |> Repo.insert()
+    end
+  end
+
+  def get_group(number) do
+    group = Repo.get_by(Group, number: number)
+
+    if group do
+      {:ok, group}
+    else
+      import_group(number)
+    end
+  end
+
+  def import_group(number) do
+    with {:ok, group} <- Client.fetch_group(number) do
+      group
+      |> Group.changeset(%{})
+      |> Repo.insert()
     end
   end
 
@@ -70,6 +92,10 @@ defmodule Dian.Messenger do
   """
   def list_messenger_groups do
     Repo.all(Group)
+  end
+
+  def list_messenger_users do
+    Repo.all(User)
   end
 
   @doc """
@@ -181,24 +207,6 @@ defmodule Dian.Messenger do
 
   """
   def get_message!(id), do: Repo.get!(Message, id)
-
-  @doc """
-  Creates a message.
-
-  ## Examples
-
-      iex> create_message(%{field: value})
-      {:ok, %Message{}}
-
-      iex> create_message(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_message(attrs \\ %{}) do
-    %Message{}
-    |> Message.changeset(attrs)
-    |> Repo.insert()
-  end
 
   @doc """
   Updates a message.

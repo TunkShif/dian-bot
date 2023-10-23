@@ -4,7 +4,6 @@ defmodule DianWeb.CoreComponents do
   """
   use Phoenix.Component
 
-  import Twix
   import DianWeb.Gettext
 
   alias Phoenix.LiveView.JS
@@ -29,19 +28,17 @@ defmodule DianWeb.CoreComponents do
     ~H"""
     <button
       type={@type}
-      class={
-        tw([
-          "inline-flex items-center gap-2",
-          "font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5",
-          "shadow-sm ring-1 ring-inset ring-zinc-300 dark:ring-zinc-700 text-zinc-700 dark:text-zinc-50",
-          "bg-white hover:bg-zinc-50 active:bg-zinc-100 disabled:bg-white",
-          "dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:active:bg-zinc-950 dark:disabled:bg-zinc-900",
-          "transition-colors duration-200 ease-in-out",
-          "focus:outline-none focus:outline-0 focus-visible:ring-2 focus-visible:ring-zinc-500 dark:focus-visible:ring-zinc-400",
-          "phx-click-loading:opacity-60 phx-submit-loading:opacity-60 disabled:cursor-not-allowed disabled:opacity-60",
-          @class
-        ])
-      }
+      class={[
+        "inline-flex items-center gap-2",
+        "font-medium rounded-md text-sm gap-x-1.5 px-2.5 py-1.5",
+        "shadow-sm ring-1 ring-inset ring-zinc-300 dark:ring-zinc-700 text-zinc-700 dark:text-zinc-50",
+        "bg-white hover:bg-zinc-50 active:bg-zinc-100 disabled:bg-white",
+        "dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:active:bg-zinc-950 dark:disabled:bg-zinc-900",
+        "transition-colors duration-200 ease-in-out",
+        "focus:outline-none focus:outline-0 focus-visible:ring-2 focus-visible:ring-zinc-500 dark:focus-visible:ring-zinc-400",
+        "phx-click-loading:opacity-60 phx-submit-loading:opacity-60 disabled:cursor-not-allowed disabled:opacity-60",
+        @class
+      ]}
       {@rest}
     >
       <%= render_slot(@prefix) %>

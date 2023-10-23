@@ -30,24 +30,25 @@ defmodule DianWeb.Router do
       pipe_through :browser
 
       live_dashboard "/dashboard", metrics: DianWeb.Telemetry
+      forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
 
   scope "/", DianWeb do
     pipe_through :api
 
-    post "/event/incoming", EventController, :incoming
+    post "/event/incoming", EventController, :create
   end
 
   scope "/api", DianWeb do
     pipe_through :api
 
-    get "/diaans/images", DiaanController, :list_images
-    resources "/diaans", DiaanController, only: [:index, :show, :update, :delete]
+    get "/favorites/diaans/images", DiaanController, :images
+    resources "/favorites/diaans", DiaanController, only: [:index, :show, :update, :delete]
 
-    get "/messenger/groups", MessengerController, :list_groups
-    get "/messenger/users", MessengerController, :list_users
-    get "/messenger/messages/:number", MessengerController, :get_message
+    resources "/messenger/messages", MessageController, only: [:show], param: "number"
+    resources "/messenger/users", UserController, only: [:index]
+    resources "/messenger/groups", GroupController, only: [:index]
 
     get "/statistics/hotwords", StatisticsController, :list_hotwords
     get "/statistics/dashboard", StatisticsController, :get_dashboard_statistics

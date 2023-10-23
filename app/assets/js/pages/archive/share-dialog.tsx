@@ -104,7 +104,7 @@ const initFont = async () => [
 
 const renderSvg = async (dian: Dian) => {
   return satori(<Dian dian={dian} />, {
-    width: 360,
+    width: 400,
     height: 320,
     fonts: await initFont()
   })
@@ -115,8 +115,17 @@ const Dian: React.FC<{ dian: Dian }> = ({ dian }) => {
   const { sender, group } = message
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", color: "rgb(9, 9, 11)" }}>
-      <div style={{ display: "flex", gap: "8px", height: "44px", paddingBottom: "8px" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        padding: "12px",
+        color: "rgb(9, 9, 11)",
+        border: "1px hsl(240 5.9% 90%)",
+        borderRadius: "8px"
+      }}
+    >
+      <div style={{ display: "flex", gap: "8px", paddingBottom: "8px" }}>
         <div
           style={{
             display: "flex",
@@ -130,9 +139,16 @@ const Dian: React.FC<{ dian: Dian }> = ({ dian }) => {
         >
           ???
         </div>
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <p style={{ fontSize: "16px", lineHeight: "24px" }}>{sender.nickname}</p>
-          <p style={{ fontSize: "12px", lineHeight: "16px" }}>{formatDate(message.sent_at)}</p>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            gap: "0px"
+          }}
+        >
+          <p style={{ fontSize: "16px" }}>{sender.nickname}</p>
+          <p style={{ fontSize: "12px" }}>{formatDate(message.sent_at)}</p>
         </div>
       </div>
 

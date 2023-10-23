@@ -1,56 +1,24 @@
 defmodule DianWeb.EventController do
   use DianWeb, :controller
-
   require Logger
 
-  alias Dian.QQ
-  alias Dian.Profiles
-  alias Dian.Messenger
-  alias Dian.Favorites
+  alias Dian.Messenger.{Event, MessageEventWorker}
 
-  alias Dian.Events.QQEvent
-  alias Dian.Events.QQEvent.GroupOperationEvent
+  action_fallback DianWeb.FallbackController
 
-  # TODO: error handling
-
-  def incoming(conn, params) do
-    QQEvent.from(params)
-    |> handle_event()
-    |> case do
-      {:ok, result} ->
-        json(conn, %{success: true, message: result})
+  def create(conn, params) do
+    with {:ok, event} <- Event.parse(params),
+         job = MessageEventWorker.new(%{event: event, message: event.message}),
+         {:ok, _job} <- Oban.insert(job) do
+      conn
+      |> put_status(:ok)
+      |> json(%{data: nil, message: "Job enqueued."})
+    else
+      {:error, :unknown_event} ->
+        conn |> put_status(:accepted) |> json(%{data: nil, message: "Skipped unknown event."})
 
       error ->
-        Logger.error(error)
-
-        conn
-        |> put_status(500)
-        |> json(%{success: false, message: "failed"})
+        error
     end
   end
-
-  defp handle_event(%GroupOperationEvent{} = event) do
-    %{message: message, group: group, operator: operator, marked_at: marked_at} = event
-
-    message = Messenger.get_or_create_message(message.number)
-    operator = Profiles.get_or_create_user(operator.number)
-
-    QQ.set_essence_message(message.number)
-
-    case Favorites.create_diaan(%{
-           marked_at: marked_at,
-           message_id: message.id,
-           operator_id: operator.id
-         }) do
-      {:ok, _diaan} ->
-        QQ.send_group_message(group.number, "[CQ:at,qq=#{operator.number}] 已入典")
-        {:ok, "success"}
-
-      error ->
-        Logger.error(error)
-        {:error, "failed"}
-    end
-  end
-
-  defp handle_event(nil), do: {:ok, "skipped"}
 end
