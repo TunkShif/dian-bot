@@ -1,5 +1,5 @@
 import type { Data, ListData } from "@/services"
-import ky from "ky"
+import { httpClient } from "@/utils/client"
 
 export type User = {
   id: number
@@ -48,13 +48,13 @@ export type MessageContent =
 
 export const MessengerService = {
   listGroups() {
-    return ky.get("/api/messenger/groups").json<ListData<Group>>()
+    return httpClient.get("/api/messenger/groups").json<ListData<Group>>()
   },
   listUsers() {
-    return ky.get("/api/messenger/users").json<ListData<User>>()
+    return httpClient.get("/api/messenger/users").json<ListData<User>>()
   },
   getMessage(number: string) {
-    return ky.get(`/api/messenger/messages/${number}`).json<Data<Message | null>>()
+    return httpClient.get(`/api/messenger/messages/${number}`).json<Data<Message | null>>()
   },
   generateUserAvatarUrl(number: string, size: number = 100) {
     return `https://q.qlogo.cn/g?b=qq&nk=${number}&s=${size}`

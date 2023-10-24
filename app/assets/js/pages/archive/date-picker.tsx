@@ -21,7 +21,7 @@ export const DatePicker = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" className="shrink-0">
           <CalendarDaysIcon className="w-4 h-4" />
         </Button>
       </PopoverTrigger>

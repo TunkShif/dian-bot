@@ -5,6 +5,7 @@ import { useMemo } from "react"
 import { Link, useLoaderData, type LoaderFunctionArgs } from "react-router-dom"
 
 import { EyeIcon } from "lucide-react"
+import { Helmet } from "react-helmet-async"
 import { PhotoProvider, PhotoView } from "react-photo-view"
 
 export const galleryLoader = async ({ request }: LoaderFunctionArgs) => {
@@ -41,42 +42,47 @@ export const Gallery = () => {
   )
 
   return (
-    <div>
-      <PhotoProvider
-        toolbarRender={({ index, images }) => {
-          const id = images[index].originRef?.current?.dataset.dianId
-
-          return (
-            <>
-              <Link to={`/archive/${id}`}>
-                <EyeIcon className="w-6 h-6 opacity-75 hover:opacity-100" />
-                <span className="sr-only">Goto message</span>
-              </Link>
-            </>
-          )
-        }}
-      >
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-          {images.map(({ id, images }) => {
-            const {
-              data: { url }
-            } = images[0]
+    <>
+      <Helmet>
+        <title>Gallery | Dian</title>
+      </Helmet>
+      <div>
+        <PhotoProvider
+          toolbarRender={({ index, images }) => {
+            const id = images[index].originRef?.current?.dataset.dianId
 
             return (
-              <PhotoView key={id} src={url}>
-                <img
-                  className="w-40 h-40 md:w-64 md:h-64 object-contain border border-border rounded-sm"
-                  src={url}
-                  alt="maybe a meme"
-                  loading="lazy"
-                  data-dian-id={id}
-                />
-              </PhotoView>
+              <>
+                <Link to={`/archive/${id}`}>
+                  <EyeIcon className="w-6 h-6 opacity-75 hover:opacity-100" />
+                  <span className="sr-only">Goto message</span>
+                </Link>
+              </>
             )
-          })}
-        </div>
-      </PhotoProvider>
-    </div>
+          }}
+        >
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {images.map(({ id, images }) => {
+              const {
+                data: { url }
+              } = images[0]
+
+              return (
+                <PhotoView key={id} src={url}>
+                  <img
+                    className="w-40 h-40 md:w-64 md:h-64 object-contain border border-border rounded-sm"
+                    src={url}
+                    alt="maybe a meme"
+                    loading="lazy"
+                    data-dian-id={id}
+                  />
+                </PhotoView>
+              )
+            })}
+          </div>
+        </PhotoProvider>
+      </div>
+    </>
   )
 }
 

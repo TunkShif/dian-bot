@@ -1,3 +1,4 @@
+import { UserAvatar } from "@/components/shared/user-avatar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   HoverCard,
@@ -11,7 +12,7 @@ import { useQuery } from "@tanstack/react-query"
 import { AwardIcon, BananaIcon } from "lucide-react"
 import React from "react"
 
-type MaybeUser = Omit<User, "avatar_url" | "id"> & { id?: string | number; avatar_url?: string }
+type MaybeUser = Omit<User, "avatar_url"> & { avatar_url?: string }
 
 export const WithUserHoverCard: React.FC<React.PropsWithChildren<{ user: MaybeUser }>> = ({
   user,
@@ -40,16 +41,13 @@ export const UserCardContent: React.FC<{
   return (
     <div className="w-72 flex flex-col gap-4">
       <div className="flex gap-2 items-center">
-        <Avatar className="w-9 h-9">
-          <AvatarImage src={avatarUrl} />
-          <AvatarFallback delayMs={600}>{nickname.slice(0, 2)}</AvatarFallback>
-        </Avatar>
+        <UserAvatar user={{ ...user, avatar_url: avatarUrl }} />
         <div className="flex flex-col justify-start items-start">
           <span className="text-sm md:text-base">{nickname}</span>
           <span className="text-xs md:text-sm">({number})</span>
         </div>
       </div>
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-4 items-center empty:hidden">
         {(() => {
           if (!user.id) return null
           if (isLoading) return <LoadingSpinner className="py-2" />

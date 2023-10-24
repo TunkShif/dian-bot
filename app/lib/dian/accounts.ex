@@ -4,39 +4,61 @@ defmodule Dian.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias Dian.Profiles
+
   alias Dian.Repo
+  alias Dian.Messenger
+  alias Dian.Accounts.{User, UserToken, UserNotifier}
 
-  alias Dian.Accounts.User
+  def deliver_registration(id, url_fun) do
+    messenger_profile = Repo.get(Messenger.User, id)
 
-  def register_user(attrs, qq_number) do
-    profile = Profiles.get_or_create_user(qq_number)
+    unless messenger_profile.user_id do
+      email = "#{messenger_profile.number}@qq.com"
+      {encoded_token, user_token} = UserToken.build_email_token(email, "confirm")
 
-    if profile.user_id do
-      {:error, :exists}
-    else
-      with {:ok, user} <-
-             %User{}
-             |> User.registration_changeset(attrs)
-             |> Repo.insert(),
-           {:ok, _profile} <-
-             profile
-             |> Dian.Messenger.User.changeset(%{user_id: user.id})
-             |> Repo.update() do
-        {:ok, user}
+      with {:ok, _user_token} <- Repo.insert(user_token),
+           {:ok, _email} <-
+             UserNotifier.deliver_confirmation_instructions(email, url_fun.(encoded_token)) do
+        {:ok, messenger_profile}
       end
+    else
+      {:error, :exists}
     end
   end
 
-  def get_user_by_credentials(qq_number, password)
-      when is_binary(qq_number) and is_binary(password) do
-    profile = Profiles.get_or_create_user(qq_number) |> Repo.preload(:user)
-
-    cond do
-      profile.user_id == nil -> {:error, :not_found}
-      User.valid_password?(profile.user, password) -> {:ok, profile.user}
-      true -> {:error, :wrong_password}
+  def verify_user_token(token) do
+    with {:ok, query} <- UserToken.verify_email_token_query(token, "confirm"),
+         %UserToken{} = user_token <- Repo.one(query),
+         %{"number" => number} =
+           Regex.named_captures(~r/(?<number>\d+)@qq\.com/, user_token.sent_to),
+         %Messenger.User{} = messenger_profile <- Repo.get_by(Messenger.User, number: number) do
+      unless messenger_profile.user_id do
+        {:ok, messenger_profile}
+      else
+        {:error, :exists}
+      end
+    else
+      nil -> {:error, :not_found}
+      error -> error
     end
+  end
+
+  def register_user(token, attrs \\ {}) do
+    with {:ok, messenger_profile} <- verify_user_token(token),
+         {:ok, %{profile: user}} <-
+           Ecto.Multi.new()
+           |> Ecto.Multi.insert(:user, User.registration_changeset(%User{}, attrs))
+           |> Ecto.Multi.update(:profile, fn %{user: user} ->
+             Messenger.User.registration_changeset(messenger_profile, %{user_id: user.id})
+           end)
+           |> Repo.transaction() do
+      {:ok, user}
+    end
+  end
+
+  def get_user_by_password(id, password) when is_binary(password) do
+    profile = Repo.get(Messenger.User, id) |> Repo.preload(:user)
+    if User.valid_password?(profile.user, password), do: profile
   end
 
   @doc """

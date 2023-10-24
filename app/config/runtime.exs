@@ -1,5 +1,7 @@
 import Config
 
+# TODO: gocqhttp dev/prod config
+
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
 # system starts, so it is typically used to load production configuration
@@ -52,9 +54,12 @@ if config_env() == :prod do
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
     socket_options: maybe_ipv6
 
-  config :hello_world, HelloWorld.Mailer,
+  resend_api_key = env.("RESEND_API_KEY")
+
+  # Configure resend
+  config :dian, Dian.Mailer,
     adapter: Resend.Swoosh.Adapter,
-    api_key: env.("RESEND_API_KEY")
+    api_key: resend_api_key
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you

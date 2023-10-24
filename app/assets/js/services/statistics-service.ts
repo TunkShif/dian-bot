@@ -1,10 +1,7 @@
 import type { Data, ListData, User } from "@/services"
-import ky from "ky"
+import { httpClient } from "@/utils/client"
 
-export type Hotword = {
-  id: number
-  keyword: string
-}
+export type Hotword = string
 
 export type DashboardStatistics = {
   most_recent_active_user: User
@@ -15,13 +12,13 @@ export type DashboardStatistics = {
 
 export const StatisticsService = {
   listHotwords() {
-    return ky.get("/api/statistics/hotwords").json<ListData<Hotword>>()
+    return httpClient.get("/api/statistics/hotwords").json<ListData<Hotword>>()
   },
   getDashboardStatistics() {
-    return ky.get("/api/statistics/dashboard").json<Data<DashboardStatistics>>()
+    return httpClient.get("/api/statistics/dashboard").json<Data<DashboardStatistics>>()
   },
   getUserStatistcs(id: string | number) {
-    return ky
+    return httpClient
       .get(`/api/statistics/user/${id}`)
       .json<Data<{ as_operator: number; as_sender: number }>>()
   },

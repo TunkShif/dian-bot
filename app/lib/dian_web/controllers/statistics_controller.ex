@@ -3,6 +3,8 @@ defmodule DianWeb.StatisticsController do
 
   alias Dian.StatisticsService
 
+  action_fallback DianWeb.FallbackController
+
   def list_hotwords(conn, _params) do
     hotwords = StatisticsService.list_hotwords()
     render(conn, :hotwords, hotwords: hotwords)

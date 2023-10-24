@@ -1,10 +1,5 @@
-import { WithUserHoverCard } from "@/components/shared/user-card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { DianCardMenu } from "@/pages/archive/dian-card-menu"
-import { ShareDialog } from "@/pages/archive/share-dialog"
 import { preferencesAtom } from "@/pages/atoms"
-import { MessageContent, MessengerService, type Dian } from "@/services"
+import { MessageContent, MessengerService, type Dian, type User } from "@/services"
 import { formatDate } from "@/utils/date"
 import { useQuery } from "@tanstack/react-query"
 import { useAtomValue } from "jotai/react"
@@ -12,6 +7,12 @@ import { micromark } from "micromark"
 import { gfm, gfmHtml } from "micromark-extension-gfm"
 import { math, mathHtml } from "micromark-extension-math"
 import React, { useMemo } from "react"
+
+import { UserAvatar } from "@/components/shared/user-avatar"
+import { WithUserHoverCard } from "@/components/shared/user-card"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { DianCardMenu } from "@/pages/archive/dian-card-menu"
 import { PhotoProvider, PhotoView } from "react-photo-view"
 
 export const DianCard: React.FC<{ dian: Dian }> = ({ dian }) => {
@@ -23,10 +24,7 @@ export const DianCard: React.FC<{ dian: Dian }> = ({ dian }) => {
       <Card data-dian-id={dian.id} className="rounded-lg shadow-sm">
         <CardHeader className="p-4 relative">
           <div className="flex gap-2">
-            <Avatar className="w-11 h-11">
-              <AvatarImage src={sender.avatar_url} />
-              <AvatarFallback>{sender.nickname.slice(0, 2)}</AvatarFallback>
-            </Avatar>
+            <UserAvatar user={sender} className="w-11 h-11" />
             <div className="flex flex-col justify-between">
               <WithUserHoverCard user={sender}>
                 <span className="hover:underline cursor-pointer">{sender.nickname}</span>
@@ -67,8 +65,6 @@ export const DianCard: React.FC<{ dian: Dian }> = ({ dian }) => {
           </div>
         </CardFooter>
       </Card>
-
-      <ShareDialog id={dian.id} />
     </>
   )
 }
@@ -96,7 +92,7 @@ const Text: React.FC<{ text: string }> = ({ text }) => {
 
 const At: React.FC<{ user: { nickname: string; number: string } }> = ({ user }) => {
   return (
-    <WithUserHoverCard user={user}>
+    <WithUserHoverCard user={user as User}>
       <span className="text-blue-700 mr-2 cursor-pointer hover:underline [&+p]:inline-block">
         @{user.nickname}
       </span>

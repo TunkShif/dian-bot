@@ -6,22 +6,29 @@ defmodule DianWeb.FallbackController do
     conn
     |> put_status(:not_found)
     |> put_view(json: DianWeb.ErrorJSON)
-    |> render("404")
+    |> render("404.json")
   end
 
   def call(conn, {:error, :unauthorized}) do
     conn
     |> put_status(:unauthorized)
     |> put_view(json: DianWeb.ErrorJSON)
-    |> render("401")
+    |> render("401.json")
   end
 
-  def call(conn, {:error, reason}) do
-    Logger.error(reason)
+  def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(json: DianWeb.ErrorJSON)
+    |> render(:error, changeset: changeset)
+  end
+
+  def call(conn, error) do
+    Logger.error(inspect(error))
 
     conn
     |> put_status(:internal_server_error)
     |> put_view(json: DianWeb.ErrorJSON)
-    |> render("500")
+    |> render("500.json")
   end
 end

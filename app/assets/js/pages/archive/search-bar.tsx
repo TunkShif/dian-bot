@@ -54,14 +54,14 @@ export const SearchBar = () => {
               {isLoading ? (
                 <LoadingSpinner />
               ) : (
-                hotwords!.map(({ id, keyword }) => (
-                  <li key={id} className="w-full">
+                hotwords!.map((hotword, index) => (
+                  <li key={`${hotword}-${index}`} className="w-full">
                     <Link
-                      to={`?keyword=${keyword}`}
+                      to={`?keyword=${hotword}`}
                       className="flex p-4 text-left truncate hover:bg-zinc-50 dark:hover:bg-zinc-800"
                       onClick={() => setOpen(false)}
                     >
-                      {keyword}
+                      {hotword}
                     </Link>
                   </li>
                 ))

@@ -33,7 +33,6 @@ defmodule DianWeb.Auth do
     |> renew_session()
     |> put_token_in_session(token)
     |> maybe_write_remember_me_cookie(token, params)
-    |> put_flash(:info, "登录成功了")
     |> redirect(to: user_return_to || signed_in_path(conn))
   end
 
@@ -205,7 +204,6 @@ defmodule DianWeb.Auth do
       conn
     else
       conn
-      |> put_flash(:error, "登录了才能看")
       |> maybe_store_return_to()
       |> redirect(to: ~p"/users/login")
       |> halt()

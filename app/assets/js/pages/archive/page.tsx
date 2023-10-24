@@ -1,3 +1,4 @@
+import { useUpdateSearchParams } from "@/components/hooks/use-update-search-params"
 import {
   DianService,
   MessengerService,
@@ -11,14 +12,15 @@ import React from "react"
 import { Link, useLoaderData, type LoaderFunctionArgs } from "react-router-dom"
 
 import { Empty } from "@/components/shared/empty"
+import { UserSelect } from "@/components/shared/user-select"
 import { Button } from "@/components/ui/button"
 import { DatePicker } from "@/pages/archive/date-picker"
 import { DianCard } from "@/pages/archive/dian-card"
 import { GroupSelect } from "@/pages/archive/group-select"
 import { Paginations } from "@/pages/archive/pagination"
 import { SearchBar } from "@/pages/archive/search-bar"
-import { UserSelect } from "@/pages/archive/user-select"
 import { RotateCcwIcon } from "lucide-react"
+import { Helmet } from "react-helmet-async"
 
 export const archiveLoader = async ({ request }: LoaderFunctionArgs) => {
   const searchParams = new URL(request.url).searchParams
@@ -49,6 +51,7 @@ export const useArchiveLoaderData = () =>
 
 export const Archive = () => {
   const { params } = useArchiveLoaderData()
+  const updateSearchParams = useUpdateSearchParams()
   const { data } = useQuery(DianService.queries.list(params))
   const {
     entries: dians,
@@ -56,30 +59,43 @@ export const Archive = () => {
   } = data!
 
   return (
-    <div>
-      <section className="grid grid-rows-2 md:grid-rows-1 grid-cols-2 gap-4 w-full">
-        <div className="flex col-span-2 w-full gap-4">
-          <SearchBar />
-          <DatePicker />
-          <Button variant="outline" size="icon" title="重置" asChild>
-            <Link to="?">
-              <RotateCcwIcon className="w-4 h-4" />
-            </Link>
-          </Button>
-        </div>
+    <>
+      <Helmet>
+        <title>Archive | Dian</title>
+      </Helmet>
+      <div>
+        <section className="grid grid-rows-2 md:grid-rows-1 grid-cols-2 gap-4 w-full">
+          <div className="flex col-span-2 w-full gap-4">
+            <SearchBar />
+            <DatePicker />
+            <Button variant="outline" size="icon" title="重置" className="shrink-0" asChild>
+              <Link to="?">
+                <RotateCcwIcon className="w-4 h-4" />
+              </Link>
+            </Button>
+          </div>
 
-        <GroupSelect />
-        <UserSelect />
-      </section>
+          <GroupSelect />
+          <UserSelect
+            value={params.sender}
+            onValueChange={(value) => {
+              updateSearchParams((searchParams) => {
+                searchParams.set("sender", value)
+                searchParams.delete("page")
+              })
+            }}
+          />
+        </section>
 
-      <section className="mt-4">
-        <DianList dians={dians} />
-      </section>
+        <section className="mt-4">
+          <DianList dians={dians} />
+        </section>
 
-      <section className="flex mt-4 justify-end">
-        <Paginations page={page_number} count={total_entries} />
-      </section>
-    </div>
+        <section className="flex mt-4 justify-end">
+          <Paginations page={page_number} count={total_entries} />
+        </section>
+      </div>
+    </>
   )
 }
 

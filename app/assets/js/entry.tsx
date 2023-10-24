@@ -4,13 +4,16 @@ import { queryClient } from "@/utils/client"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
+import { HelmetProvider } from "react-helmet-async"
 
 const Root = () => {
   return (
     <StrictMode>
       <ThemeProvider>
         <QueryClientProvider client={queryClient}>
-          <Router />
+          <HelmetProvider>
+            <Router />
+          </HelmetProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </StrictMode>

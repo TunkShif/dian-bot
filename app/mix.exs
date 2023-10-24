@@ -47,6 +47,7 @@ defmodule Dian.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:swoosh, "~> 1.3"},
       {:resend, "~> 0.2.1"},
+      {:mjml, "~> 1.5.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},

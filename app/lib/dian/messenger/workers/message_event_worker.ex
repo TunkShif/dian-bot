@@ -2,9 +2,6 @@ defmodule Dian.Messenger.MessageEventWorker do
   use Oban.Worker, max_attempts: 3, unique: [fields: [:args], keys: [:message]]
 
   alias Dian.{Messenger, Favorites}
-  alias Dian.Messenger.{Client}
-
-  require Logger
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"event" => event}}) do
@@ -20,7 +17,7 @@ defmodule Dian.Messenger.MessageEventWorker do
     end
 
     # TODO
-    Client.mark_message(event["message"])
-    Client.send_message(event["group"], "[CQ:at,qq=#{event["operator"]}] 已入典")
+    Messenger.Client.mark_message(event["message"])
+    Messenger.Client.send_message(event["group"], "[CQ:at,qq=#{event["operator"]}] 已入典")
   end
 end

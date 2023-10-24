@@ -3,8 +3,6 @@ defmodule Dian.Messenger do
   The Messenger context.
   """
 
-  require Logger
-
   import Ecto.Query, warn: false
 
   alias Dian.Repo

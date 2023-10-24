@@ -8,7 +8,7 @@ defmodule Dian.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :password_confirmation, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
-    field :role, :string, default: "user"
+    field :role, Ecto.Enum, values: [:user, :admin]
 
     has_one :profile, Dian.Messenger.User
 

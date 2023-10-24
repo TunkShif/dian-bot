@@ -1,3 +1,4 @@
+import { UserAvatar } from "@/components/shared/user-avatar"
 import { WithUserHoverCard } from "@/components/shared/user-card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -63,10 +64,7 @@ export const MostRecentActiveUserCard = () => {
             <TooltipTrigger>
               <div>
                 <div className="flex gap-2 items-center">
-                  <Avatar className="w-9 h-9">
-                    <AvatarImage src={user.avatar_url} />
-                    <AvatarFallback delayMs={600}>{user.nickname.slice(0, 2)}</AvatarFallback>
-                  </Avatar>
+                  <UserAvatar user={user} className="w-9 h-9" />
                   <div className="flex flex-col justify-start items-start">
                     <span className="text-sm md:text-base">{user.nickname}</span>
                     <span className="text-xs md:text-sm">({user.number})</span>
@@ -139,10 +137,7 @@ export const MonthlyActiveUserCard = () => {
           {users.map(({ count, sender }) => (
             <li key={sender.id}>
               <div className="flex items-center">
-                <Avatar className="border mr-3 w-11 h-11">
-                  <AvatarImage src={sender.avatar_url} alt="user avatar" loading="lazy" />
-                  <AvatarFallback>{sender.nickname.slice(0, 1)}</AvatarFallback>
-                </Avatar>
+                <UserAvatar user={sender} className="w-11 h-11 mr-3" />
 
                 <WithUserHoverCard user={sender}>
                   <div className="flex flex-col justify-center gap-0.5 cursor-pointer">

@@ -1,6 +1,9 @@
 defmodule DianWeb.UserController do
-  alias Dian.Messenger
   use DianWeb, :controller
+
+  alias Dian.Messenger
+
+  action_fallback DianWeb.FallbackController
 
   def index(conn, _params) do
     users = Messenger.list_messenger_users()

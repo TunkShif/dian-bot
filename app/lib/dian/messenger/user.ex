@@ -17,4 +17,10 @@ defmodule Dian.Messenger.User do
     |> cast(attrs, [:number, :nickname, :user_id])
     |> validate_required([:number, :nickname])
   end
+
+  def registration_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:user_id])
+    |> validate_required([:user_id])
+  end
 end

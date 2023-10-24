@@ -4,12 +4,13 @@ import { LiveSocket } from "phoenix_live_view"
 import { mountApp } from "./entry"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
+
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken }
 })
 liveSocket.connect()
 window.liveSocket = liveSocket
 
-mountApp()
+sessionStorage.setItem("csrfToken", csrfToken)
 
-new Worker("/assets/worker.js")
+mountApp()

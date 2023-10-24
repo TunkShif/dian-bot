@@ -3,6 +3,8 @@ defmodule DianWeb.DiaanController do
 
   alias Dian.{Favorites, Statistics}
 
+  action_fallback DianWeb.FallbackController
+
   # TODO
 
   def index(conn, params) do

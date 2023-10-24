@@ -15,6 +15,9 @@ defmodule DianWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
+    plug :protect_from_forgery
+    plug :fetch_current_user
   end
 
   # Enable LiveDashboard in development
@@ -53,6 +56,14 @@ defmodule DianWeb.Router do
     get "/statistics/hotwords", StatisticsController, :list_hotwords
     get "/statistics/dashboard", StatisticsController, :get_dashboard_statistics
     get "/statistics/user/:id", StatisticsController, :get_user_statistics
+
+    post "/account/users/login", SessionController, :create
+    get "/account/users/me", SessionController, :show
+    get "/account/users/logout", SessionController, :delete
+
+    get "/account/users/verify/:token", AccountController, :verify
+    post "/account/users/confirm/:token", AccountController, :confirm
+    post "/account/users/request/:id", AccountController, :create
   end
 
   scope "/", DianWeb do

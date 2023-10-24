@@ -17,6 +17,8 @@ defmodule Dian.Application do
       {Oban, Application.fetch_env!(:dian, Oban)}
     ]
 
+    Oban.Telemetry.attach_default_logger()
+
     opts = [strategy: :one_for_one, name: Dian.Supervisor]
     Supervisor.start_link(children, opts)
   end
@@ -27,5 +29,10 @@ defmodule Dian.Application do
   def config_change(changed, _new, removed) do
     DianWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  @impl true
+  def stop(_state) do
+    Oban.Telemetry.detach_default_logger()
   end
 end
