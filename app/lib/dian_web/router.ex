@@ -13,6 +13,10 @@ defmodule DianWeb.Router do
     plug :fetch_current_user
   end
 
+  pipeline :event do
+    plug :accepts, ["json"]
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
     plug :fetch_session
@@ -38,7 +42,7 @@ defmodule DianWeb.Router do
   end
 
   scope "/", DianWeb do
-    pipe_through :api
+    pipe_through :event
 
     post "/event/incoming", EventController, :create
   end
