@@ -12,7 +12,7 @@ import { ArchiveDetail, archiveDetailLoader } from "@/pages/archive/detail.page"
 import { Archive, archiveLoader } from "@/pages/archive/page"
 import { Dashboard, dashboardLoder } from "@/pages/dashboard/page"
 import { Gallery, galleryLoader } from "@/pages/gallery/page"
-import { Preferences } from "@/pages/preference/page"
+import { Preferences, preferencesLoader } from "@/pages/preference/page"
 import { Root, rootLoader } from "@/pages/root"
 import { Confirm, confirmAction, confirmLoader } from "@/pages/users/confirm.page"
 import { Login, loginAction, loginLoader } from "@/pages/users/login.page"
@@ -34,7 +34,7 @@ const router = createBrowserRouter(
 
       <Route path="gallery" element={<Gallery />} loader={galleryLoader} errorElement={<Empty />} />
 
-      <Route path="preferences" element={<Preferences />} />
+      <Route path="preferences" element={<Preferences />} loader={preferencesLoader} />
 
       <Route path="users/login" element={<Login />} loader={loginLoader} action={loginAction} />
       <Route

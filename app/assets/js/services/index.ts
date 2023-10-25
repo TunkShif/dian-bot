@@ -1,5 +1,6 @@
 export * from "./dian-service"
 export * from "./messenger-service"
+export * from "./notification-service"
 export * from "./statistics-service"
 export * from "./user-service"
 

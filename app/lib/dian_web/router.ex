@@ -68,6 +68,10 @@ defmodule DianWeb.Router do
     get "/account/users/verify/:token", AccountController, :verify
     post "/account/users/confirm/:token", AccountController, :confirm
     post "/account/users/request/:id", AccountController, :create
+
+    post "/notification/subscriptions/create", NotificationController, :create
+    post "/notification/subscriptions/current", NotificationController, :show
+    post "/notification/subscriptions/cancel", NotificationController, :delete
   end
 
   scope "/", DianWeb do

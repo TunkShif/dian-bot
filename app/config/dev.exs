@@ -27,6 +27,7 @@ config :dian, DianWeb.Endpoint,
   secret_key_base: "thXj/UVjC7WQAV8wlOL6ep8KPcNUMKvk2zueaYZ6+/oYhQLmHqoUES38XTt9f7mU",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    esbuild: {Esbuild, :install_and_run, [:service_worker, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 

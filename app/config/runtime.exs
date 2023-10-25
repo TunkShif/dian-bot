@@ -61,6 +61,12 @@ if config_env() == :prod do
     adapter: Resend.Swoosh.Adapter,
     api_key: resend_api_key
 
+  # Configure web push
+  config :dian, Dian.WebPush,
+    vapid_public_key: env.("VAPID_PUBLIC_KEY"),
+    vapid_private_key: env.("VAPID_PRIVATE_KEY"),
+    vapid_subject: env.("VAPID_SUBJECT")
+
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
   # want to use a different value for prod and you most likely don't want

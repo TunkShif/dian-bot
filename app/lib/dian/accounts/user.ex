@@ -11,6 +11,7 @@ defmodule Dian.Accounts.User do
     field :role, Ecto.Enum, values: [:user, :admin]
 
     has_one :profile, Dian.Messenger.User
+    has_one :subscription, Dian.Notification.Subscription
 
     timestamps()
   end

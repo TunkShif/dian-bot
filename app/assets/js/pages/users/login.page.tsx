@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { UserService } from "@/services"
+import { csrfToken } from "@/session"
 import { HTTPError } from "ky"
 import { Helmet } from "react-helmet-async"
 import {
@@ -132,14 +133,7 @@ const LoginTab = () => {
               <Label htmlFor="remember_me">记住我</Label>
             </fieldset>
             <input name="intent" type="text" value="login" readOnly hidden aria-hidden />
-            <input
-              name="_csrf_token"
-              type="text"
-              value={sessionStorage.getItem("csrfToken") ?? ""}
-              readOnly
-              hidden
-              aria-hidden
-            />
+            <input name="_csrf_token" type="text" value={csrfToken} readOnly hidden aria-hidden />
           </div>
         </form>
       </CardContent>

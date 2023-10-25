@@ -3,13 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="manifest" href="/manifest.json" />
     <meta name="csrf-token" content={get_csrf_token()} />
+    <meta name="vapid-public-key" content={Dian.WebPush.vapid_public_key()} />
 
     <.live_title suffix=" · My Little Red Book">
       <%= assigns[:page_title] || "典" %>
     </.live_title>
 
-    <link phx-track-static rel="icon" type="image/png" href={~p"/favicon.png"} />
+    <link rel="icon" type="image/png" href={~p"/favicon.png"} />
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>

@@ -35,12 +35,24 @@ config :dian, Oban,
   plugins: [Oban.Plugins.Pruner],
   repo: Dian.Repo
 
+# Configure web push
+config :dian, Dian.WebPush,
+  vapid_public_key:
+    "BJxEWJjvN4vAjC159Bbm77C3djrbEQ289dv-jUw8KkULtGcguDxpg17BCmQu6QA2MGBZZfup7GQ38zJtwH0sOSw",
+  vapid_private_key: "Cd8V9CsHOwCGLTB8ukIKI5VQ7DQLiUx8beBTcozPSos",
+  vapid_subject: "mailto:admin@email.com"
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
   default: [
     args:
       ~w(js/app.js --bundle --target=esnext --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+    cd: Path.expand("../assets", __DIR__),
+    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+  ],
+  service_worker: [
+    args: ~w(js/sw.js --bundle --target=esnext --outdir=../priv/static/),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]

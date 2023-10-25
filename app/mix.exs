@@ -58,6 +58,7 @@ defmodule Dian.MixProject do
       {:bcrypt_elixir, "~> 3.0"},
       {:scrivener_ecto, "~> 2.7"},
       {:nimble_parsec, "~> 1.0"},
+      {:jose, "~> 1.11"},
       {:sobelow, "~> 0.12", only: [:dev, :test], runtime: false}
     ]
   end
@@ -79,8 +80,17 @@ defmodule Dian.MixProject do
         "esbuild.install --if-missing",
         "cmd --cd assets npm install"
       ],
-      "assets.build": ["tailwind default", "esbuild default"],
-      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
+      "assets.build": [
+        "tailwind default",
+        "esbuild default",
+        "esbuild service_worker"
+      ],
+      "assets.deploy": [
+        "tailwind default --minify",
+        "esbuild default --minify",
+        "esbuild service_worker --minify",
+        "phx.digest"
+      ]
     ]
   end
 end

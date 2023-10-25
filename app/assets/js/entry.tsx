@@ -21,3 +21,6 @@ const Root = () => {
 }
 
 export const mountApp = () => createRoot(document.getElementById("app")!).render(<Root />)
+
+export const registerServiceWorker = () =>
+  navigator.serviceWorker.register("/sw.js", { scope: "/" })

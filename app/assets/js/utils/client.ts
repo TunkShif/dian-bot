@@ -1,3 +1,4 @@
+import { csrfToken } from "@/session"
 import { QueryClient } from "@tanstack/react-query"
 import ky from "ky"
 
@@ -7,6 +8,6 @@ export const httpClient = ky.create({
   headers: {
     accept: "application/json",
     "content-type": "application/json",
-    "x-csrf-token": sessionStorage.getItem("csrfToken") ?? ""
+    "x-csrf-token": csrfToken
   }
 })

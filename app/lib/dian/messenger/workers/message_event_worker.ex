@@ -1,7 +1,8 @@
 defmodule Dian.Messenger.MessageEventWorker do
   use Oban.Worker, max_attempts: 3, unique: [fields: [:args], keys: [:message]]
 
-  alias Dian.{Messenger, Favorites}
+  alias Dian.{Messenger, Favorites, Notification}
+  alias Dian.Notification.MessageNotificationWorker
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"event" => event}}) do
@@ -13,6 +14,16 @@ defmodule Dian.Messenger.MessageEventWorker do
            operator_id: operator.id
          },
          {:ok, diaan} <- Favorites.create_diaan(attrs) do
+      # TODO
+      for %{subscription: subscription} <- Notification.list_notification_subscriptions() do
+        MessageNotificationWorker.new(%{
+          subscription: subscription,
+          message: message.id,
+          endpoint: subscription["endpoint"]
+        })
+        |> Oban.insert()
+      end
+
       diaan
     end
 

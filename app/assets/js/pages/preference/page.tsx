@@ -1,12 +1,29 @@
+import { RequireAuthed } from "@/components/shared/require-authed"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { preferencesAtom } from "@/pages/atoms"
+import { NotificationSetting } from "@/pages/preference/notification-setting"
+import { NotificationService, UserService } from "@/services"
+import { queryClient } from "@/utils/client"
 import { useAtom } from "jotai/react"
 import { Helmet } from "react-helmet-async"
+import { LoaderFunctionArgs, useLoaderData } from "react-router-dom"
+import { toast } from "sonner"
 
 // TODO: refactor logic
+
+export const preferencesLoader = async ({ }: LoaderFunctionArgs) => {
+  if (await queryClient.getQueryData(UserService.queries.current.queryKey)) {
+    queryClient.prefetchQuery(NotificationService.queries.isSubscribed)
+  }
+
+  return {}
+}
+
+export const usePreferencesLoaderData = () =>
+  useLoaderData() as Awaited<ReturnType<typeof preferencesLoader>>
 
 export const Preferences = () => {
   const [preferences, setPreferences] = useAtom(preferencesAtom)
@@ -33,7 +50,6 @@ export const Preferences = () => {
             <div className="shrink-0 grow-0">
               <Switch
                 id="renderMarkdown"
-                name="renderMarkdown"
                 checked={preferences.renderMarkdown}
                 onCheckedChange={(value) =>
                   setPreferences((pref) => ({ ...pref, renderMarkdown: value }))
@@ -52,12 +68,45 @@ export const Preferences = () => {
             <div className="shrink-0 grow-0">
               <Switch
                 id="repeatTypingAnimation"
-                name=""
                 checked={preferences.repeatTypingAnimation}
                 onCheckedChange={(value) =>
                   setPreferences((pref) => ({ ...pref, repeatTypingAnimation: value }))
                 }
               />
+            </div>
+          </section>
+
+          <RequireAuthed>
+            <Separator className="my-6" />
+            <section className="flex justify-between items-center gap-2">
+              <div className="space-y-1.5">
+                <CardTitle>开启通知推送</CardTitle>
+                <CardDescription>是否接收新的入典通知推送</CardDescription>
+              </div>
+
+              <div className="shrink-0 grow-0">
+                <NotificationSetting />
+              </div>
+            </section>
+          </RequireAuthed>
+
+          <Separator className="my-6" />
+          <section className="flex justify-between items-center gap-2">
+            <div className="space-y-1.5">
+              <CardTitle>更新应用</CardTitle>
+              <CardDescription>更新应用服务</CardDescription>
+            </div>
+
+            <div className="shrink-0 grow-0">
+              <Button
+                onClick={() =>
+                  navigator.serviceWorker.ready
+                    .then((registration) => registration.update())
+                    .then(() => toast.message("应用更新成功"))
+                }
+              >
+                更新
+              </Button>
             </div>
           </section>
 
