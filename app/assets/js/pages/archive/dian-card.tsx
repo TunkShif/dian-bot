@@ -84,9 +84,12 @@ const Text: React.FC<{ text: string }> = ({ text }) => {
   )
 
   return preferences.renderMarkdown ? (
-    <p className="prose prose-zinc dark:prose-invert" dangerouslySetInnerHTML={{ __html: html }} />
+    <p
+      className="prose prose-zinc dark:prose-invert break-words"
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
   ) : (
-    <p className="leading-7">{html}</p>
+    <p className="leading-7 break-words">{html}</p>
   )
 }
 
