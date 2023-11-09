@@ -85,7 +85,7 @@ const SharePreview: React.FC<{ id: string }> = ({ id }) => {
           <Skeleton className="h-4 w-80" />
         </div>
       ) : (
-        <div className="overflow-hidden">
+        <div className="max-h-96 overflow-auto">
           <img src={image} loading="lazy" alt="share preview" />
         </div>
       )}
