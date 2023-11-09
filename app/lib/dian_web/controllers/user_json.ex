@@ -27,7 +27,7 @@ defmodule DianWeb.UserJSON do
 
   def one(%User{} = user) do
     Map.take(user, [:id, :number, :nickname])
-    |> Map.put(:avatar_url, "https://q.qlogo.cn/g?b=qq&nk=#{user.number}&s=100")
+    |> Map.put(:avatar_url, "/api/messenger/users/avatar/#{user.number}")
   end
 
   def many(users) do

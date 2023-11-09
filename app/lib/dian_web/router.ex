@@ -57,6 +57,8 @@ defmodule DianWeb.Router do
     resources "/messenger/users", UserController, only: [:index]
     resources "/messenger/groups", GroupController, only: [:index]
 
+    get "/messenger/users/avatar/:number", UserController, :avatar
+
     get "/statistics/hotwords", StatisticsController, :list_hotwords
     get "/statistics/dashboard", StatisticsController, :get_dashboard_statistics
     get "/statistics/user/:id", StatisticsController, :get_user_statistics
