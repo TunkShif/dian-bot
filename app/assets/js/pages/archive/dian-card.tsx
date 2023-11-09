@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { DianCardMenu } from "@/pages/archive/dian-card-menu"
 import { PhotoProvider, PhotoView } from "react-photo-view"
+import { ShareDialog } from "@/pages/archive/share-dialog"
 
 export const DianCard: React.FC<{ dian: Dian }> = ({ dian }) => {
   const { message, operator } = dian
@@ -65,6 +66,7 @@ export const DianCard: React.FC<{ dian: Dian }> = ({ dian }) => {
           </div>
         </CardFooter>
       </Card>
+      <ShareDialog id={dian.id} />
     </>
   )
 }
