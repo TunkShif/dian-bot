@@ -10,6 +10,7 @@ defmodule DianWeb.UserController do
     render(conn, :index, users: users)
   end
 
+  # TODO: error handling
   def avatar(conn, %{"number" => number}) do
     with {:ok, %Finch.Response{status: 200, body: body, headers: headers}} <-
            Finch.build(:get, "https://q.qlogo.cn/g?b=qq&nk=#{number}&s=100")

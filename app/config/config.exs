@@ -32,7 +32,13 @@ config :dian, Dian.Mailer, adapter: Swoosh.Adapters.Local
 # Configure Oban
 config :dian, Oban,
   queues: [default: 10],
-  plugins: [Oban.Plugins.Pruner],
+  plugins: [
+    Oban.Plugins.Pruner,
+    {Oban.Plugins.Cron,
+     crontab: [
+       {"@daily", Dian.Messenger.ProfileUpdateWorker}
+     ]}
+  ],
   repo: Dian.Repo
 
 # Configure web push

@@ -79,6 +79,15 @@ defmodule Dian.Messenger do
     end
   end
 
+  def update_groups() do
+    for group <- list_messenger_groups() do
+      with {:ok, %Group{name: name}} <- Client.fetch_group(group.number) do
+        Group.changeset(group, %{name: name})
+        |> Repo.update()
+      end
+    end
+  end
+
   @doc """
   Returns the list of messenger_groups.
 
