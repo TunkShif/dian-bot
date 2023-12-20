@@ -58,25 +58,25 @@ export const Preferences = () => {
             </div>
           </section>
 
-          <Separator className="my-6" />
-          <section className="flex justify-between items-center gap-2">
-            <div className="space-y-1.5">
-              <CardTitle>重复欢迎动画</CardTitle>
-              <CardDescription>是否重复播放首页文本输入动画</CardDescription>
-            </div>
-
-            <div className="shrink-0 grow-0">
-              <Switch
-                id="repeatTypingAnimation"
-                checked={preferences.repeatTypingAnimation}
-                onCheckedChange={(value) =>
-                  setPreferences((pref) => ({ ...pref, repeatTypingAnimation: value }))
-                }
-              />
-            </div>
-          </section>
-
           <RequireAuthed>
+            <Separator className="my-6" />
+            <section className="flex justify-between items-center gap-2">
+              <div className="space-y-1.5">
+                <CardTitle>重复欢迎动画</CardTitle>
+                <CardDescription>是否重复播放首页文本输入动画</CardDescription>
+              </div>
+
+              <div className="shrink-0 grow-0">
+                <Switch
+                  id="repeatTypingAnimation"
+                  checked={preferences.repeatTypingAnimation}
+                  onCheckedChange={(value) =>
+                    setPreferences((pref) => ({ ...pref, repeatTypingAnimation: value }))
+                  }
+                />
+              </div>
+            </section>
+
             <Separator className="my-6" />
             <section className="flex justify-between items-center gap-2">
               <div className="space-y-1.5">

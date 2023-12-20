@@ -5,6 +5,7 @@ import {
   WeeklyActivityChartCard
 } from "@/pages/dashboard/statistics-cards"
 import { WelcomeInfo } from "@/pages/dashboard/welcome-info"
+import { WrappedCard } from "@/pages/dashboard/wrapped-card"
 import { StatisticsService } from "@/services"
 import { queryClient } from "@/utils/client"
 import { Helmet } from "react-helmet-async"
@@ -29,6 +30,9 @@ export const Dashboard = () => {
       <div className="space-y-4">
         <section className="empty:hidden">
           <WelcomeInfo />
+        </section>
+        <section className="empty:hidden">
+          <WrappedCard />
         </section>
         <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <MostRecentActiveUserCard />
