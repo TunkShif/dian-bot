@@ -65,7 +65,12 @@ export const loginAction = async ({ request }: ActionFunctionArgs) => {
 export const useLoginLoaderData = () => useLoaderData() as Awaited<ReturnType<typeof loginLoader>>
 
 const formSchema = z.discriminatedUnion("intent", [
-  z.object({ intent: z.literal("login"), user: z.string(), password: z.string() }),
+  z.object({
+    intent: z.literal("login"),
+    user: z.string(),
+    password: z.string(),
+    remember_me: z.boolean()
+  }),
   z.object({ intent: z.literal("register"), user: z.string() })
 ])
 
@@ -129,7 +134,7 @@ const LoginTab = () => {
               />
             </fieldset>
             <fieldset className="flex items-center gap-2">
-              <Checkbox id="remember_me" name="remember_me" defaultChecked />
+              <Checkbox id="remember_me" name="remember_me" value="true" defaultChecked />
               <Label htmlFor="remember_me">记住我</Label>
             </fieldset>
             <input name="intent" type="text" value="login" readOnly hidden aria-hidden />

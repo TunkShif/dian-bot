@@ -1,11 +1,15 @@
 import Config
 
+env = fn name ->
+  System.get_env(name) || raise "environment variable #{name} is missing."
+end
+
 # Configure your database
 config :dian, Dian.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "dian_dev",
+  username: env.("DB_USERNAME"),
+  password: env.("DB_PASSWORD"),
+  hostname: env.("DB_HOSTNAME"),
+  database: env.("DB_DATABASE"),
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
