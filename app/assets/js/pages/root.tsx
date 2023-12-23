@@ -5,7 +5,13 @@ import { UserService } from "@/services"
 import { queryClient } from "@/utils/client"
 import { cn } from "@/utils/styling"
 import { useEffect } from "react"
-import { Outlet, useLoaderData, useNavigation, type LoaderFunctionArgs } from "react-router-dom"
+import {
+  Outlet,
+  ScrollRestoration,
+  useLoaderData,
+  useNavigation,
+  type LoaderFunctionArgs
+} from "react-router-dom"
 import { Toaster, toast } from "sonner"
 
 export const rootLoader = async ({ request }: LoaderFunctionArgs) => {
@@ -43,6 +49,7 @@ export const Root = () => {
       <Footer />
       <NavBar />
       <Toaster position="top-center" />
+      <ScrollRestoration />
     </>
   )
 }
