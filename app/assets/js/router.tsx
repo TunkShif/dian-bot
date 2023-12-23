@@ -16,6 +16,7 @@ import { Preferences, preferencesLoader } from "@/pages/preference/page"
 import { Root, rootLoader } from "@/pages/root"
 import { Confirm, confirmAction, confirmLoader } from "@/pages/users/confirm.page"
 import { Login, loginAction, loginLoader } from "@/pages/users/login.page"
+import { Wrapped2023, wrappedLoader } from "@/pages/wrapped/2023/page"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -35,6 +36,8 @@ const router = createBrowserRouter(
       <Route path="gallery" element={<Gallery />} loader={galleryLoader} errorElement={<Empty />} />
 
       <Route path="preferences" element={<Preferences />} loader={preferencesLoader} />
+
+      <Route path="wrapped/2023" element={<Wrapped2023 />} loader={wrappedLoader} />
 
       <Route path="users/login" element={<Login />} loader={loginLoader} action={loginAction} />
       <Route

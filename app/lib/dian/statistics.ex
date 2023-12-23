@@ -8,7 +8,7 @@ defmodule Dian.Statistics do
   alias Dian.Repo
   alias Dian.Statistics.Hotword
   alias Dian.Favorites.Diaan
-  alias Dian.Messenger.Message
+  alias Dian.Messenger.{User, Message}
 
   @pubsub Dian.PubSub
 
@@ -116,12 +116,12 @@ defmodule Dian.Statistics do
     Repo.all(query)
   end
 
-  def get_user_statistics(id) do
+  def get_user_statistics(number) do
     as_operator =
       Repo.one(
         from d in Diaan,
           join: operator in assoc(d, :operator),
-          where: operator.id == ^id,
+          where: operator.number == ^number,
           group_by: operator.id,
           select: count(d.id)
       )
@@ -130,12 +130,65 @@ defmodule Dian.Statistics do
       Repo.one(
         from m in Message,
           join: sender in assoc(m, :sender),
-          where: sender.id == ^id,
+          where: sender.number == ^number,
           group_by: sender.id,
           select: count(m.id)
       )
 
     %{as_operator: as_operator, as_sender: as_sender}
+  end
+
+  def get_top_groups_of_messages(year) do
+    Repo.all(
+      from m in Message,
+        join: group in assoc(m, :group),
+        where: fragment("extract(year from ?) = ?", m.inserted_at, ^year),
+        group_by: [group.id, group.name],
+        order_by: [desc: count(m.id)],
+        limit: 5,
+        select: %{group_name: group.name, messsage_count: count(m.id)}
+    )
+  end
+
+  def get_top_users_of_messages(year) do
+    Repo.all(
+      from m in Message,
+        join: user in assoc(m, :sender),
+        where: fragment("extract(year from ?) = ?", m.inserted_at, ^year),
+        group_by: user.id,
+        order_by: [desc: count(m.id)],
+        limit: 5,
+        select: %{user: user, message_count: count(m.id)}
+    )
+  end
+
+  def get_top_user_operated_by(number) do
+    Repo.one(
+      from dian in Diaan,
+        join: operator in User,
+        on: operator.number == ^number,
+        join: message in Message,
+        on: message.id == dian.message_id and dian.operator_id == operator.id,
+        join: sender in assoc(message, :sender),
+        group_by: sender.id,
+        order_by: [desc: count(dian.id), desc: sender.id],
+        limit: 1,
+        select: sender
+    )
+  end
+
+  def get_top_user_operated_on(number) do
+    Repo.one(
+      from dian in Diaan,
+        join: operator in assoc(dian, :operator),
+        join: message in assoc(dian, :message),
+        join: sender in User,
+        on: message.sender_id == sender.id and sender.number == ^number,
+        group_by: operator.id,
+        order_by: [desc: count(dian.id), desc: operator.id],
+        limit: 1,
+        select: operator
+    )
   end
 
   @doc """

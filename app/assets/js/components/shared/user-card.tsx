@@ -1,5 +1,4 @@
 import { UserAvatar } from "@/components/shared/user-avatar"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   HoverCard,
   HoverCardContent,
@@ -36,7 +35,7 @@ export const UserCardContent: React.FC<{
   const { number, nickname } = user
   const avatarUrl = user.avatar_url ?? MessengerService.generateUserAvatarUrl(number)
 
-  const { data, isLoading } = useQuery(StatisticsService.queries.user(user.id ?? null))
+  const { data, isLoading } = useQuery(StatisticsService.queries.user(user.number ?? null))
 
   return (
     <div className="w-72 flex flex-col gap-4">

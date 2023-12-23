@@ -112,3 +112,107 @@
     background: var(--bg-gradient);
   }
 }
+
+/* for wrapped page */
+
+.bg-liquid-gradient {
+  background: linear-gradient(
+    -45deg,
+    #abecd6,
+    #fbed96,
+    #dcb0ed,
+    #ddd6f3,
+    #faaca8,
+    #f3e7e9,
+    #e3eeff
+  );
+  background-size: 400% 400%;
+  animation: liquid-gradient 10s ease infinite;
+}
+
+@keyframes liquid-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bg-text-sliding {
+  @apply text-white/5 bg-repeat bg-clip-text;
+  animation: corner-sliding 15s ease-in-out infinite;
+  background-image: url("/images/nebula.jpg");
+}
+
+@keyframes corner-sliding {
+  0%,
+  100% {
+    background-position: left top;
+  }
+  25% {
+    background-position: right bottom;
+  }
+  50% {
+    background-position: left bottom;
+  }
+  75% {
+    background-position: right top;
+  }
+}
+
+@property --num {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+.animate-count-up {
+  animation: count-up 5s ease-in-out forwards;
+  counter-set: num var(--num);
+}
+
+.animate-count-up::after {
+  content: counter(num);
+}
+
+@keyframes count-up {
+  from {
+    --num: 0;
+  }
+  to {
+    --num: calc(var(--total));
+  }
+}
+
+.animate-bubbling {
+  animation: bubbling 25s linear infinite;
+}
+
+@keyframes bubbling {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+    border-radius: 0;
+  }
+
+  100% {
+    transform: translateY(-1000px) rotate(720deg);
+    opacity: 0;
+    border-radius: 50%;
+  }
+}
+
+.animate-line-fade-in {
+  opacity: 0;
+  animation: fade-in-line 1s ease-in-out forwards;
+}
+
+@keyframes fade-in-line {
+  to {
+    opacity: 1;
+  }
+}
