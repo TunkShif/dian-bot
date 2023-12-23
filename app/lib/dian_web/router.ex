@@ -61,7 +61,8 @@ defmodule DianWeb.Router do
 
     get "/statistics/hotwords", StatisticsController, :list_hotwords
     get "/statistics/dashboard", StatisticsController, :get_dashboard_statistics
-    get "/statistics/user/:id", StatisticsController, :get_user_statistics
+    get "/statistics/user/:number", StatisticsController, :get_user_statistics
+    get "/statistics/wrapped/:year/:number", StatisticsController, :wrapped
 
     post "/account/users/login", SessionController, :create
     get "/account/users/me", SessionController, :show

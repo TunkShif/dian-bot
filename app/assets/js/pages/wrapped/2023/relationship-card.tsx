@@ -4,14 +4,8 @@ import { Card } from "@/components/ui/card"
 import { User } from "@/services"
 import { MoveRightIcon } from "lucide-react"
 import React from "react"
+import { useWrappedLoaderData } from "./page"
 import { useSliderControl } from "./slider-control"
-
-const user = {
-  id: 2,
-  number: "1395084414",
-  nickname: "ܛܟܫܦ",
-  avatar_url: "/api/messenger/users/avatar/1395084414"
-} satisfies User
 
 const pick = <T,>(list: T[]) => list.at(Math.floor(Math.random() * list.length)) as T
 
@@ -60,8 +54,29 @@ const BubblingBackground = () => {
   )
 }
 
+const UserInRelation: React.FC<{ user: User | null }> = ({ user }) => {
+  if (!user)
+    return (
+      <div className="text-center">
+        <div className="w-16 h-16 rounded-full bg-amber-100 flex justify-center items-center text-2xl">🥲</div>
+        <div className="mt-2">唉卜?</div>
+      </div>
+    )
+
+  return (
+    <div className="text-center">
+      <UserAvatar user={user} className="w-16 h-16" />
+      <div className="mt-2">{user.nickname}</div>
+    </div>
+  )
+}
+
 export const RelationshipCard = () => {
   const nextSlide = useSliderControl()
+  const {
+    statistics: { top_sender, top_operator },
+    user
+  } = useWrappedLoaderData()
 
   return (
     <Card className="relative h-full overflow-hidden">
@@ -78,22 +93,29 @@ export const RelationshipCard = () => {
         </div>
 
         <div className="flex justify-center items-center gap-16">
-          <div className="text-center">
-            <UserAvatar user={user} className="w-16 h-16" />
-            <div className="mt-2">{user.nickname}</div>
-          </div>
-          <div className="text-center">
-            <UserAvatar user={user} className="w-16 h-16" />
-            <div className="mt-2">{user.nickname}</div>
-          </div>
+          <UserInRelation user={top_sender} />
+          <UserInRelation user={top_operator} />
         </div>
 
         <div className="mt-16 text-lg md:text-2xl font-medium space-y-4">
           <div>
-            <span className="font-semibold">{user.nickname} </span> 是你最爱设精的人
+            {top_sender ? (
+              <>
+                <span className="font-semibold">{top_sender.nickname} </span> 是你最爱设精的人
+              </>
+            ) : (
+              "你还没有使用过入典哦"
+            )}
           </div>
+
           <div>
-            <span className="font-semibold">{user.nickname} </span> 是为你设精最多的人
+            {top_operator ? (
+              <>
+                <span className="font-semibold">{top_operator.nickname} </span> 是为你设精最多的人
+              </>
+            ) : (
+              "老登竟然还没爆过典？"
+            )}
           </div>
         </div>
       </div>

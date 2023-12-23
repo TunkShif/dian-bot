@@ -2,7 +2,6 @@ import { CSSDoodle } from "@/components/shared/css-doodle"
 import { UserAvatar } from "@/components/shared/user-avatar"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { User } from "@/services"
 import { MoveRightIcon, RefreshCcwIcon } from "lucide-react"
 import { CSSProperties, useState } from "react"
 import { useSliderControl } from "./slider-control"
@@ -65,48 +64,48 @@ const TOP_GROUPS = [
 const TOP_USERS = [
   {
     user: {
-      id: 2,
-      number: "1395084414",
-      nickname: "ܛܟܫܦ",
-      avatar_url: "/api/messenger/users/avatar/1395084414"
-    } satisfies User,
-    count: 233
+      id: 16,
+      nickname: "HHruarua",
+      number: "1195188422",
+      avatar_url: "/api/messenger/users/avatar/1195188422"
+    },
+    count: 296
   },
   {
     user: {
-      id: 2,
-      number: "1395084414",
-      nickname: "ܛܟܫܦ",
-      avatar_url: "/api/messenger/users/avatar/1395084414"
-    } satisfies User,
-    count: 233
+      id: 5,
+      nickname: "780",
+      number: "1619162044",
+      avatar_url: "/api/messenger/users/avatar/1619162044"
+    },
+    count: 225
   },
   {
     user: {
-      id: 2,
-      number: "1395084414",
-      nickname: "ܛܟܫܦ",
-      avatar_url: "/api/messenger/users/avatar/1395084414"
-    } satisfies User,
-    count: 233
+      id: 14,
+      nickname: "Dylech30th",
+      number: "2653221698",
+      avatar_url: "/api/messenger/users/avatar/2653221698"
+    },
+    count: 202
   },
   {
     user: {
-      id: 2,
-      number: "1395084414",
-      nickname: "ܛܟܫܦ",
-      avatar_url: "/api/messenger/users/avatar/1395084414"
-    } satisfies User,
-    count: 233
+      id: 21,
+      nickname: "锌锂铱砷",
+      number: "1141946313",
+      avatar_url: "/api/messenger/users/avatar/1141946313"
+    },
+    count: 193
   },
   {
     user: {
-      id: 2,
-      number: "1395084414",
-      nickname: "ܛܟܫܦ",
-      avatar_url: "/api/messenger/users/avatar/1395084414"
-    } satisfies User,
-    count: 233
+      id: 7,
+      nickname: "冯•鲁道夫",
+      number: "2665187332",
+      avatar_url: "/api/messenger/users/avatar/2665187332"
+    },
+    count: 160
   }
 ]
 
@@ -118,7 +117,11 @@ const TopGroupList = () => {
         <p className="mt-2 mb-4 text-sm md:text-base">来看看爆典最多的群</p>
         <ul className="flex flex-col gap-4">
           {TOP_GROUPS.map(({ name, count }, i) => (
-            <li key={name}>
+            <li
+              key={name}
+              className="animate-line-fade-in"
+              style={{ animationDelay: `${(i - 1) * 1.5}s` }}
+            >
               <div className="text-base md:text-lg flex justify-between items-center">
                 <h3 className="font-medium">
                   <span>{i + 1}. </span> {name}
@@ -141,7 +144,11 @@ const TopUserList = () => {
         <p className="mt-2 mb-4 text-sm md:text-base">来看看爆典最多的用户</p>
         <ul className="flex flex-col gap-4">
           {TOP_USERS.map(({ user, count }, i) => (
-            <li key={i}>
+            <li
+              key={i}
+              className="animate-line-fade-in"
+              style={{ animationDelay: `${(i - 1) * 1.5}s` }}
+            >
               <div className="text-base md:text-lg flex justify-between items-center">
                 <div className="flex items-center gap-1.5 truncate">
                   <span>{i + 1}. </span>
@@ -158,10 +165,12 @@ const TopUserList = () => {
   )
 }
 
-export const OverviewCard = () => {
+export const OverviewCard: React.FC<{ index: number }> = ({ index }) => {
   const nextSlide = useSliderControl()
   const [current, setCurrent] = useState(1)
   const flip = () => setCurrent((prev) => -prev)
+
+  if (index !== 1) return null
 
   return (
     <Card className="relative bg-black h-full">

@@ -1,4 +1,18 @@
 import { useUpdateSearchParams } from "@/components/hooks/use-update-search-params"
+import { UserService } from "@/services"
+import { csrfToken } from "@/session"
+import { HTTPError } from "ky"
+import { useEffect } from "react"
+import {
+  Form,
+  redirect,
+  useLoaderData,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs
+} from "react-router-dom"
+import { toast } from "sonner"
+import * as z from "zod"
+
 import { SubmitButton } from "@/components/shared/submit-button"
 import { UserSelect } from "@/components/shared/user-select"
 import {
@@ -13,28 +27,15 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { UserService } from "@/services"
-import { csrfToken } from "@/session"
-import { HTTPError } from "ky"
 import { Helmet } from "react-helmet-async"
-import {
-  Form,
-  redirect,
-  useLoaderData,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs
-} from "react-router-dom"
-import { toast } from "sonner"
-import * as z from "zod"
 
 export const loginLoader = async ({ request }: LoaderFunctionArgs) => {
   const searchParams = new URL(request.url).searchParams
 
-  if (searchParams.has("login_failed")) {
-    setTimeout(() => toast.error("登录失败"), 500)
-  }
+  const loginNeeded = searchParams.has("login_needed")
+  const loginFailed = searchParams.has("login_failed")
 
-  return { tab: searchParams.get("tab") ?? undefined }
+  return { tab: searchParams.get("tab") ?? undefined, loginNeeded, loginFailed }
 }
 
 export const loginAction = async ({ request }: ActionFunctionArgs) => {
@@ -75,8 +76,28 @@ const formSchema = z.discriminatedUnion("intent", [
 ])
 
 export const Login = () => {
-  const { tab } = useLoginLoaderData()
+  const { tab, loginFailed, loginNeeded } = useLoginLoaderData()
   const updateSearchParams = useUpdateSearchParams()
+
+  useEffect(() => {
+    let toastId: string | number
+    if (loginFailed) {
+      toastId = toast.error("登录失败")
+    }
+    return () => {
+      toast.dismiss(toastId)
+    }
+  }, [loginFailed])
+
+  useEffect(() => {
+    let toastId: string | number
+    if (loginNeeded) {
+      toastId = toast.error("需要登录哦")
+    }
+    return () => {
+      toast.dismiss(toastId)
+    }
+  }, [loginNeeded])
 
   return (
     <>

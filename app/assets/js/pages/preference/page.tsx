@@ -15,7 +15,7 @@ import { toast } from "sonner"
 // TODO: refactor logic
 
 export const preferencesLoader = async ({ }: LoaderFunctionArgs) => {
-  if (await queryClient.getQueryData(UserService.queries.current.queryKey)) {
+  if (queryClient.getQueryData(UserService.queries.current.queryKey)) {
     queryClient.prefetchQuery(NotificationService.queries.isSubscribed)
   }
 

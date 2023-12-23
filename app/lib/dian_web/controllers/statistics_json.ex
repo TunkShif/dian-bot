@@ -26,6 +26,16 @@ defmodule DianWeb.StatisticsJSON do
     %{data: counts}
   end
 
+  def wrapped(%{top_operator: top_operator, top_sender: top_sender, counts: counts}) do
+    %{
+      data: %{
+        counts: counts,
+        top_operator: top_operator && UserJSON.one(top_operator),
+        top_sender: top_sender && UserJSON.one(top_sender)
+      }
+    }
+  end
+
   def one(%Hotword{} = hotword) do
     hotword.keyword
   end

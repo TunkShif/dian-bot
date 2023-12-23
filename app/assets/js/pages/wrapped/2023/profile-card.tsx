@@ -2,16 +2,9 @@ import { CSSDoodle } from "@/components/shared/css-doodle"
 import { UserAvatar } from "@/components/shared/user-avatar"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { User } from "@/services"
-import { BananaIcon, AwardIcon, CalendarIcon, MoveLeftIcon } from "lucide-react"
+import { AwardIcon, BananaIcon, CalendarIcon, MoveLeftIcon } from "lucide-react"
 import { Link } from "react-router-dom"
-
-const user = {
-  id: 2,
-  number: "1395084414",
-  nickname: "ܛܟܫܦ",
-  avatar_url: "/api/messenger/users/avatar/1395084414"
-} satisfies User
+import { useWrappedLoaderData } from "./page"
 
 const PixelBackground = () => {
   return (
@@ -38,6 +31,11 @@ const PixelBackground = () => {
 }
 
 export const ProfileCard = () => {
+  const {
+    user,
+    statistics: { counts }
+  } = useWrappedLoaderData()
+
   return (
     <Card className="relative h-full overflow-hidden">
       <PixelBackground />
@@ -59,14 +57,14 @@ export const ProfileCard = () => {
           <div className="flex items-center gap-2">
             <BananaIcon className="w-5 h-5" />
             <div className="text-sm">
-              共设精 <span className="font-medium">{233}</span> 次
+              共设精 <span className="font-medium">{counts.as_operator || 0}</span> 次
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <AwardIcon className="w-5 h-5" />
             <div className="text-sm">
-              已入典 <span className="font-medium">{322}</span> 次
+              已入典 <span className="font-medium">{counts.as_sender || 0}</span> 次
             </div>
           </div>
         </div>

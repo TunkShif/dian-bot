@@ -116,12 +116,12 @@ defmodule Dian.Statistics do
     Repo.all(query)
   end
 
-  def get_user_statistics(id) do
+  def get_user_statistics(number) do
     as_operator =
       Repo.one(
         from d in Diaan,
           join: operator in assoc(d, :operator),
-          where: operator.id == ^id,
+          where: operator.number == ^number,
           group_by: operator.id,
           select: count(d.id)
       )
@@ -130,7 +130,7 @@ defmodule Dian.Statistics do
       Repo.one(
         from m in Message,
           join: sender in assoc(m, :sender),
-          where: sender.id == ^id,
+          where: sender.number == ^number,
           group_by: sender.id,
           select: count(m.id)
       )
@@ -183,7 +183,7 @@ defmodule Dian.Statistics do
         join: operator in assoc(dian, :operator),
         join: message in assoc(dian, :message),
         join: sender in User,
-        on: sender.number == ^number,
+        on: message.sender_id == sender.id and sender.number == ^number,
         group_by: operator.id,
         order_by: [desc: count(dian.id), desc: operator.id],
         limit: 1,

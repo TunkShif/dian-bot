@@ -94,7 +94,7 @@ export const KeywordCard = () => {
         <h1 className="text-xl md:text-2xl font-semibold text-center text-sky-950">
           2023 年度入典关键词
         </h1>
-        <ul className="mt-16 mx-2 flex flex-wrap gap-2 justify-center items-center">
+        <ul className="mt-16 mx-2 flex flex-wrap gap-4 justify-center items-center">
           {KEYWORDS.map(([keyword, weight]) => (
             <li
               key={keyword}

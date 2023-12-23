@@ -127,7 +127,7 @@
     #e3eeff
   );
   background-size: 400% 400%;
-  animation: liquid-gradient 12s ease infinite;
+  animation: liquid-gradient 10s ease infinite;
 }
 
 @keyframes liquid-gradient {
@@ -171,7 +171,7 @@
 }
 
 .animate-count-up {
-  animation: count-up 3s ease-in-out forwards;
+  animation: count-up 5s ease-in-out forwards;
   counter-set: num var(--num);
 }
 
@@ -203,5 +203,16 @@
     transform: translateY(-1000px) rotate(720deg);
     opacity: 0;
     border-radius: 50%;
+  }
+}
+
+.animate-line-fade-in {
+  opacity: 0;
+  animation: fade-in-line 1s ease-in-out forwards;
+}
+
+@keyframes fade-in-line {
+  to {
+    opacity: 1;
   }
 }
