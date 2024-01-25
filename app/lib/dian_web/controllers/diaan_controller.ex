@@ -1,11 +1,13 @@
 defmodule DianWeb.DiaanController do
   use DianWeb, :controller
 
+  import DianWeb.Auth
+
   alias Dian.{Favorites, Statistics}
 
-  action_fallback DianWeb.FallbackController
+  plug :require_authorized_user when action in [:delete]
 
-  # TODO
+  action_fallback DianWeb.FallbackController
 
   def index(conn, params) do
     if keyword = params["keyword"] do
@@ -24,6 +26,12 @@ defmodule DianWeb.DiaanController do
     else
       put_status(conn, :not_found)
       |> json(%{error: "not found"})
+    end
+  end
+
+  def delete(conn, params) do
+    with {:ok, _entry} <- Favorites.delete_diaan(params["id"]) do
+      json(conn, %{data: nil})
     end
   end
 

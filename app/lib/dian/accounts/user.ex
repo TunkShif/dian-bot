@@ -16,7 +16,7 @@ defmodule Dian.Accounts.User do
     timestamps()
   end
 
-  def is_admin?(%User{role: "admin"}), do: true
+  def is_admin?(%User{role: :admin}), do: true
   def is_admin?(_), do: false
 
   def changeset(user, attrs) do

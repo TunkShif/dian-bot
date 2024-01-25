@@ -190,8 +190,14 @@ defmodule Dian.Favorites do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_diaan(%Diaan{} = diaan) do
-    Repo.delete(diaan)
+  def delete_diaan(id) do
+    diaan = Repo.get(Diaan, id)
+
+    if diaan do
+      Repo.delete(diaan)
+    else
+      {:error, :not_found}
+    end
   end
 
   @doc """

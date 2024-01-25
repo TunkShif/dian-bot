@@ -6,11 +6,14 @@ export const useUpdateSearchParams = () => {
 
   return useCallback(
     (update: (searchParams: URLSearchParams) => void) => {
-      setSearchParams((searchParams) => {
-        const cloned = new URLSearchParams(searchParams.toString())
-        update(cloned)
-        return cloned
-      })
+      setSearchParams(
+        (searchParams) => {
+          const cloned = new URLSearchParams(searchParams.toString())
+          update(cloned)
+          return cloned
+        },
+        { preventScrollReset: true }
+      )
     },
     [setSearchParams]
   )

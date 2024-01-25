@@ -135,6 +135,21 @@ defmodule DianWeb.Auth do
       |> put_status(:unauthorized)
       |> put_view(json: DianWeb.ErrorJSON)
       |> render("401.json")
+      |> halt()
+    end
+  end
+
+  def require_authorized_user(conn, _opts) do
+    user = conn.assigns[:current_user]
+
+    if Dian.Accounts.User.is_admin?(user) do
+      conn
+    else
+      conn
+      |> put_status(:unauthorized)
+      |> put_view(json: DianWeb.ErrorJSON)
+      |> render("401.json")
+      |> halt()
     end
   end
 
