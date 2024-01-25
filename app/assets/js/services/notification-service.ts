@@ -50,12 +50,16 @@ export const NotificationService = {
     subscribe: {
       mutationFn: () => NotificationService.subscribe(),
       onSettled: () =>
-        queryClient.invalidateQueries(NotificationService.queries.isSubscribed.queryKey)
+        queryClient.invalidateQueries({
+          queryKey: NotificationService.queries.isSubscribed.queryKey
+        })
     },
     cancel: {
       mutationFn: () => NotificationService.cancel(),
       onSettled: () =>
-        queryClient.invalidateQueries(NotificationService.queries.isSubscribed.queryKey)
+        queryClient.invalidateQueries({
+          queryKey: NotificationService.queries.isSubscribed.queryKey
+        })
     }
   }
 }

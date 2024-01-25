@@ -12,9 +12,10 @@ import { UserAvatar } from "@/components/shared/user-avatar"
 import { WithUserHoverCard } from "@/components/shared/user-card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { DeleteDialog } from "@/pages/archive/delete-dialog"
 import { DianCardMenu } from "@/pages/archive/dian-card-menu"
-import { PhotoProvider, PhotoView } from "react-photo-view"
 import { ShareDialog } from "@/pages/archive/share-dialog"
+import { PhotoProvider, PhotoView } from "react-photo-view"
 
 export const DianCard: React.FC<{ dian: Dian }> = ({ dian }) => {
   const { message, operator } = dian
@@ -67,6 +68,7 @@ export const DianCard: React.FC<{ dian: Dian }> = ({ dian }) => {
         </CardFooter>
       </Card>
       <ShareDialog id={dian.id} />
+      <DeleteDialog id={dian.id} />
     </>
   )
 }

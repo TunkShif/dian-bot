@@ -33,6 +33,9 @@ export const DianService = {
   getOne(id: string | number) {
     return httpClient.get(`/api/favorites/diaans/${id}`).json<Data<Dian>>()
   },
+  deleteOne(id: string | number) {
+    return httpClient.delete(`/api/favorites/diaans/${id}`).json<Data<Dian>>()
+  },
   queries: {
     list: (params?: ListAllDianParams) => ({
       queryKey: ["dians", "list", params],
