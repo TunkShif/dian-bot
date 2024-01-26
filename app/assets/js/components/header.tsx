@@ -10,7 +10,7 @@ import {
   DropdownMenuPortal,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { LogInIcon } from "lucide-react"
+import { LogInIcon, RssIcon } from "lucide-react"
 import { Link } from "react-router-dom"
 
 export const Header = () => {
@@ -29,9 +29,20 @@ export const Header = () => {
       </div>
       <div className="flex justify-end items-center gap-2">
         <UserInfo />
+        <RssFeed />
         <ThemeToggle />
       </div>
     </header>
+  )
+}
+
+const RssFeed = () => {
+  return (
+    <Button variant="ghost" size="icon" asChild>
+      <a href="/feed" target="_blank">
+        <RssIcon className="h-[1.2rem] w-[1.2rem]" />
+      </a>
+    </Button>
   )
 }
 

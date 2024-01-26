@@ -134,6 +134,19 @@ defmodule Dian.Favorites do
     Repo.get(Diaan, message_id: id)
   end
 
+  def list_favorites_feeds(date) do
+    query =
+      from d in Diaan,
+        inner_join: m in assoc(d, :message),
+        left_join: s in assoc(m, :sender),
+        preload: [message: {m, sender: s}],
+        where: fragment("DATE(?) = ?", d.marked_at, ^date),
+        order_by: [desc: d.marked_at, desc: d.id],
+        select: d
+
+    Repo.all(query)
+  end
+
   @doc """
   Creates a diaan.
 
