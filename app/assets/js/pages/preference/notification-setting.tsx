@@ -20,7 +20,7 @@ export const NotificationSetting = () => {
   return (
     <Switch
       id="enableNotification"
-      disabled={query.isLoading || subscribeMutation.isLoading || cancelMutation.isLoading}
+      disabled={query.isLoading || subscribeMutation.isPending || cancelMutation.isPending}
       checked={query.data ?? false}
       onCheckedChange={(value) => {
         if (value) {

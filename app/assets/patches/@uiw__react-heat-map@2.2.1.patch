@@ -1,0 +1,12 @@
+diff --git a/esm/index.js b/esm/index.js
+index d68480a09f0f7206aa21dc342cd292b8a02a99c0..b35653e055abdba2a037d0cbb66a6ee54839e359 100644
+--- a/esm/index.js
++++ b/esm/index.js
+@@ -3,7 +3,6 @@ import _objectWithoutPropertiesLoose from "@babel/runtime/helpers/objectWithoutP
+ var _excluded = ["prefixCls", "className"];
+ import React from 'react';
+ import SVG from './SVG';
+-import "./style/index.css";
+ import { jsx as _jsx } from "react/jsx-runtime";
+ export * from './SVG';
+ export default function HeatMap(props) {

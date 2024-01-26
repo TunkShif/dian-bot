@@ -1,17 +1,25 @@
 import { UserAvatar } from "@/components/shared/user-avatar"
 import { WithUserHoverCard } from "@/components/shared/user-card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { StatisticsService } from "@/services"
+import { TooltipPortal } from "@radix-ui/react-tooltip"
 import { useQuery } from "@tanstack/react-query"
-import { format } from "date-fns"
-import { ActivityIcon, BarChart4Icon, MoveRightIcon, RadiationIcon } from "lucide-react"
-import { Link } from "react-router-dom"
+import HeatMap from "@uiw/react-heat-map"
+import { format, subDays } from "date-fns"
+import {
+  ActivityIcon,
+  BarChart4Icon,
+  CalendarDaysIcon,
+  MoveRightIcon,
+  RadiationIcon
+} from "lucide-react"
+import { Link, useNavigate } from "react-router-dom"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 
 const useDashboardStatisticsQuery = () => useQuery(StatisticsService.queries.dashboard)
+const useHeatMapStatisticsQuery = () => useQuery(StatisticsService.queries.heatmap)
 
 export const DailyActivityCard = () => {
   const { data } = useDashboardStatisticsQuery()
@@ -58,33 +66,31 @@ export const MostRecentActiveUserCard = () => {
         <h3 className="tracking-tight text-sm font-medium">最新爆典的是</h3>
         <RadiationIcon className="w-5 h-5" />
       </CardHeader>
-      <TooltipProvider>
-        <CardContent className="flex justify-between items-end">
-          <Tooltip delayDuration={500}>
-            <TooltipTrigger>
-              <div>
-                <div className="flex gap-2 items-center">
-                  <UserAvatar user={user} className="w-9 h-9" />
-                  <div className="flex flex-col justify-start items-start">
-                    <span className="text-sm md:text-base">{user.nickname}</span>
-                    <span className="text-xs md:text-sm">({user.number})</span>
-                  </div>
+      <CardContent className="flex justify-between items-end">
+        <Tooltip delayDuration={500}>
+          <TooltipTrigger>
+            <div>
+              <div className="flex gap-2 items-center">
+                <UserAvatar user={user} className="w-9 h-9" />
+                <div className="flex flex-col justify-start items-start">
+                  <span className="text-sm md:text-base">{user.nickname}</span>
+                  <span className="text-xs md:text-sm">({user.number})</span>
                 </div>
               </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>老东西又爆了</p>
-            </TooltipContent>
-          </Tooltip>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>老东西又爆了</p>
+          </TooltipContent>
+        </Tooltip>
 
-          <Button variant="outline" size="sm" asChild>
-            <Link to={`/archive`}>
-              <MoveRightIcon className="w-5 h-5 mr-2" />
-              <span>查看</span>
-            </Link>
-          </Button>
-        </CardContent>
-      </TooltipProvider>
+        <Button variant="outline" size="sm" asChild>
+          <Link to={`/archive`}>
+            <MoveRightIcon className="w-5 h-5 mr-2" />
+            <span>查看</span>
+          </Link>
+        </Button>
+      </CardContent>
     </Card>
   )
 }
@@ -114,7 +120,7 @@ export const WeeklyActivityChartCard = () => {
               tickFormatter={(value) => `${format(new Date(value), "E")}`}
             />
             <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-            <Bar dataKey="count" fill="#4f46e5" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="count" fill="#09090b" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
@@ -151,6 +157,57 @@ export const MonthlyActiveUserCard = () => {
             </li>
           ))}
         </ul>
+      </CardContent>
+    </Card>
+  )
+}
+
+export const HeatMapCard = () => {
+  const { data } = useHeatMapStatisticsQuery()
+  const navigate = useNavigate()
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center">
+          <CalendarDaysIcon className="w-5 h-5 mr-2" />
+          最近入典统计
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="overflow-x-auto">
+          <HeatMap
+            width={680}
+            height={180}
+            space={4}
+            value={data ?? []}
+            startDate={subDays(new Date(), 30 * 6)}
+            rectSize={16}
+            rectProps={{ rx: 1.6 }}
+            rectRender={(props, data) =>
+              data.count ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <rect
+                      {...props}
+                      onClick={() =>
+                        navigate(`/archive?date=${format(new Date(data.date), "yyyy-MM-dd")}`)
+                      }
+                    />
+                  </TooltipTrigger>
+                  <TooltipPortal>
+                    <TooltipContent>
+                      <p>{`${data.count} 次入典记录 ${data.date}`}</p>
+                    </TooltipContent>
+                  </TooltipPortal>
+                </Tooltip>
+              ) : (
+                <rect {...props} />
+              )
+            }
+            legendCellSize={0}
+          />
+        </div>
       </CardContent>
     </Card>
   )

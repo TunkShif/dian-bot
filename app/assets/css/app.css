@@ -3,6 +3,7 @@
 @import "tailwindcss/utilities";
 
 @import "react-photo-view/dist/react-photo-view.css";
+@import "@uiw/react-heat-map/dist/heat-map.css";
 
 @font-face {
   font-family: "Inter Variable";

@@ -138,6 +138,18 @@ defmodule Dian.Statistics do
     %{as_operator: as_operator, as_sender: as_sender}
   end
 
+  def get_heatmap_statistics() do
+    last_date = DateTime.utc_now() |> DateTime.add(-(30 * 6), :day)
+
+    Repo.all(
+      from d in Diaan,
+        where: d.inserted_at > ^last_date,
+        group_by: fragment("date_trunc('day', ?)", d.inserted_at),
+        order_by: [desc: fragment("date_trunc('day', ?)", d.inserted_at)],
+        select: %{date: fragment("date_trunc('day', ?)", d.inserted_at), count: count()}
+    )
+  end
+
   def get_top_groups_of_messages(year) do
     Repo.all(
       from m in Message,

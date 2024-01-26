@@ -22,7 +22,7 @@ FROM ${BUILDER_IMAGE} as builder
 
 # install build dependencies
 RUN apt-get update -y && apt-get install -y build-essential git nodejs npm \
-    && apt-get clean && rm -f /var/lib/apt/lists/*_*
+    && apt-get clean && npm install -g pnpm && rm -f /var/lib/apt/lists/*_*
 
 # prepare build dir
 WORKDIR /app
