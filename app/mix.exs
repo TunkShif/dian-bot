@@ -78,7 +78,7 @@ defmodule Dian.MixProject do
       "assets.setup": [
         "tailwind.install --if-missing",
         "esbuild.install --if-missing",
-        "cmd --cd assets npm install"
+        "cmd --cd assets pnpm install"
       ],
       "assets.build": [
         "tailwind default",

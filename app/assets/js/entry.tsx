@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/components/theme"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { Router } from "@/router"
 import { queryClient } from "@/utils/client"
 import { QueryClientProvider } from "@tanstack/react-query"
@@ -10,11 +11,13 @@ const Root = () => {
   return (
     <StrictMode>
       <ThemeProvider>
-        <QueryClientProvider client={queryClient}>
-          <HelmetProvider>
-            <Router />
-          </HelmetProvider>
-        </QueryClientProvider>
+        <TooltipProvider>
+          <QueryClientProvider client={queryClient}>
+            <HelmetProvider>
+              <Router />
+            </HelmetProvider>
+          </QueryClientProvider>
+        </TooltipProvider>
       </ThemeProvider>
     </StrictMode>
   )

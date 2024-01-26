@@ -26,6 +26,19 @@ defmodule DianWeb.StatisticsJSON do
     %{data: counts}
   end
 
+  def heatmap(%{data: data}) do
+    %{
+      data:
+        for(
+          %{date: date, count: count} <- data,
+          do: %{
+            date: Calendar.strftime(date, "%Y/%m/%d"),
+            count: count
+          }
+        )
+    }
+  end
+
   def wrapped(%{top_operator: top_operator, top_sender: top_sender, counts: counts}) do
     %{
       data: %{

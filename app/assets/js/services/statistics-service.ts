@@ -15,6 +15,11 @@ export type PersonalStatistics = {
   as_sender: number
 }
 
+export type HeatMapStatistics = {
+  date: string
+  count: number
+}[]
+
 export type WrappedStatistics = {
   top_operator: User | null
   top_sender: User | null
@@ -30,6 +35,9 @@ export const StatisticsService = {
   },
   getUserStatistcs(number: string) {
     return httpClient.get(`/api/statistics/user/${number}`).json<Data<PersonalStatistics>>()
+  },
+  getHeatMapStatistics() {
+    return httpClient.get(`/api/statistics/heatmap`).json<Data<HeatMapStatistics>>()
   },
   getWrappedStatistics(number: string) {
     return httpClient.get(`/api/statistics/wrapped/2023/${number}`).json<Data<WrappedStatistics>>()
@@ -49,6 +57,10 @@ export const StatisticsService = {
       queryFn: () => StatisticsService.getUserStatistcs(number!).then(({ data }) => data),
       enabled: !!number
     }),
+    heatmap: {
+      queryKey: ["statistics", "heatmap"],
+      queryFn: () => StatisticsService.getHeatMapStatistics().then(({ data }) => data)
+    },
     wrapped: (number: string) => ({
       queryKey: ["statistics", "wrapped", number],
       queryFn: () => StatisticsService.getWrappedStatistics(number).then(({ data }) => data),

@@ -21,6 +21,11 @@ defmodule DianWeb.StatisticsController do
     render(conn, :user, counts: counts)
   end
 
+  def get_heatmap_statistics(conn, _params) do
+    data = Statistics.get_heatmap_statistics()
+    render(conn, :heatmap, data: data)
+  end
+
   def wrapped(conn, %{"number" => number}) do
     top_sender = Statistics.get_top_user_operated_by(number)
     top_operator = Statistics.get_top_user_operated_on(number)

@@ -10,7 +10,7 @@ import { Empty } from "@/components/shared/empty"
 
 import { ArchiveDetail, archiveDetailLoader } from "@/pages/archive/detail.page"
 import { Archive, archiveLoader } from "@/pages/archive/page"
-import { Dashboard, dashboardLoder } from "@/pages/dashboard/page"
+import { Dashboard, dashboardLoader } from "@/pages/dashboard/page"
 import { Gallery, galleryLoader } from "@/pages/gallery/page"
 import { Preferences, preferencesLoader } from "@/pages/preference/page"
 import { Root, rootLoader } from "@/pages/root"
@@ -23,7 +23,7 @@ const router = createBrowserRouter(
     <Route path="/" element={<Root />} loader={rootLoader}>
       <Route index loader={() => redirect("/dashboard")} />
 
-      <Route path="dashboard" element={<Dashboard />} loader={dashboardLoder} />
+      <Route path="dashboard" element={<Dashboard />} loader={dashboardLoader} />
 
       <Route path="archive" element={<Archive />} loader={archiveLoader} />
       <Route
