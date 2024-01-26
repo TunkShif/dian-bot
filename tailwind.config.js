@@ -1,1 +1,0 @@
-./app/assets/tailwind.config.js
