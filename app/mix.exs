@@ -59,6 +59,7 @@ defmodule Dian.MixProject do
       {:scrivener_ecto, "~> 2.7"},
       {:nimble_parsec, "~> 1.0"},
       {:jose, "~> 1.11"},
+      {:atomex, "0.3.0"},
       {:sobelow, "~> 0.12", only: [:dev, :test], runtime: false}
     ]
   end

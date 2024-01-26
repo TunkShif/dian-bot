@@ -81,6 +81,8 @@ defmodule DianWeb.Router do
   scope "/", DianWeb do
     pipe_through :browser
 
+    get "/feed", FeedController, :index
+
     get "/*path", PageController, :index
   end
 end
