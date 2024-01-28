@@ -22,6 +22,9 @@ config :dian, DianWeb.Endpoint,
   pubsub_server: Dian.PubSub,
   live_view: [signing_salt: "f8MzOaNB"]
 
+# Configures Bot Adapter
+config :dian, DianBot, adapter: DianBot.Adapters.OnebotAdapter
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
