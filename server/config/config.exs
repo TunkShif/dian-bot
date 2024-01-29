@@ -22,7 +22,10 @@ config :dian, DianWeb.Endpoint,
   pubsub_server: Dian.PubSub,
   live_view: [signing_salt: "f8MzOaNB"]
 
-# Configures Bot Adapter
+# Configure tesla client adapter
+config :tesla, :adapter, {Tesla.Adapter.Finch, name: Dian.Finch}
+
+# Configures bot adapter
 config :dian, DianBot, adapter: DianBot.Adapters.OnebotAdapter
 
 # Configures the mailer

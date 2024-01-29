@@ -22,7 +22,7 @@ defmodule DianBot.Schemas do
       field :qid, String.t(), enforce: true
       field :gid, String.t(), enforce: true
       field :raw_text, String.t(), enforce: true
-      field :sent_at, String.t(), enforce: true
+      field :sent_at, DateTime.t(), enforce: true
     end
   end
 end

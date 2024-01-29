@@ -3,9 +3,7 @@ defmodule DianBot.Adapter do
 
   @type result(t) :: {:ok, t} | error()
 
-  @type error :: {:error, {reason(), message()}}
-  @type reason :: :internal_error | :not_found
-  @typep message :: String.t()
+  @type error :: {:error, String.t()}
 
   @callback is_online() :: boolean()
 
