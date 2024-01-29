@@ -90,7 +90,7 @@ defmodule DianBot.Adapters.OnebotAdapter do
     case response do
       %{status: 200, body: %{"status" => "ok"} = body} -> {:ok, body["data"]}
       %{status: 200, body: body} -> {:error, body["msg"]}
-      %{status: 400} -> {:error, "unknown bot api"}
+      %{status: 404} -> {:error, "unknown bot api"}
       _ -> {:error, "bot api error"}
     end
   end
