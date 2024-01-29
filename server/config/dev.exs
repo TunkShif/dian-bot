@@ -24,9 +24,7 @@ config :dian, DianWeb.Endpoint,
   code_reloader: true,
   debug_errors: true,
   secret_key_base: "z1sVZZszHS+7lAh5MafUIEBMTIM+3GGajTJPR6UDywLLpfeA7ONAbUGkSjycUSv0",
-  watchers: [
-    just: ["mock-dev"]
-  ]
+  watchers: []
 
 # ## SSL Support
 #
