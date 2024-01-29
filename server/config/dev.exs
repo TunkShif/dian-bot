@@ -24,7 +24,9 @@ config :dian, DianWeb.Endpoint,
   code_reloader: true,
   debug_errors: true,
   secret_key_base: "z1sVZZszHS+7lAh5MafUIEBMTIM+3GGajTJPR6UDywLLpfeA7ONAbUGkSjycUSv0",
-  watchers: []
+  watchers: [
+    just: ["mock-dev"]
+  ]
 
 # ## SSL Support
 #
@@ -61,6 +63,9 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Use local mock server for onebot adapter
+config :dian, DianBot, base_url: "http://localhost:4321/bot", access_token: "secret token"
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false

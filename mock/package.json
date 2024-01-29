@@ -1,0 +1,22 @@
+{
+  "name": "dian-mock",
+  "module": "./src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "build": "bun build src/index.ts",
+    "start": "NODE_ENV=production bun src/index.ts",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.5.3",
+    "@faker-js/faker": "^8.4.0",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "elysia": "^0.8.14"
+  }
+}
