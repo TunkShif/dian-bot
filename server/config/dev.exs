@@ -63,7 +63,10 @@ config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime
 
 # Use local mock server for onebot adapter
-config :dian, DianBot, base_url: "http://localhost:4321/bot", access_token: "secret token"
+config :dian, DianBot,
+  secret: "8964",
+  base_url: "http://localhost:4321/bot",
+  access_token: "secret token"
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false

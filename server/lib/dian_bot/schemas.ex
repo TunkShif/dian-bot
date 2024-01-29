@@ -25,4 +25,13 @@ defmodule DianBot.Schemas do
       field :sent_at, DateTime.t(), enforce: true
     end
   end
+
+  defmodule Event do
+    typedstruct do
+      field :mid, String.t(), enforce: true
+      field :qid, String.t(), enforce: true
+      field :gid, String.t(), enforce: true
+      field :marked_at, DateTime.t(), enforce: true
+    end
+  end
 end

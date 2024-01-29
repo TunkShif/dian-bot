@@ -1,5 +1,5 @@
 defmodule DianBot.Adapter do
-  alias DianBot.Schemas.{User, Group, Message}
+  alias DianBot.Schemas.{User, Group, Message, Event}
 
   @type result(t) :: {:ok, t} | error()
 
@@ -16,4 +16,6 @@ defmodule DianBot.Adapter do
   @callback send_group_message(String.t(), String.t()) :: :ok | error()
 
   @callback set_honorable_message(String.t()) :: :ok | error()
+
+  @callback parse_event(map(), keyword()) :: Event.t() | nil
 end

@@ -11,4 +11,6 @@ defmodule DianBot do
 
   defdelegate send_group_message(gid, content), to: @adapter
   defdelegate set_honorable_message(mid), to: @adapter
+
+  defdelegate parse_event(data, opts), to: @adapter
 end

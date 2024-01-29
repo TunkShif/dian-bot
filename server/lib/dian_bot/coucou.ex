@@ -42,6 +42,8 @@ defmodule DianBot.Coucou do
     defp wrap_text([text]), do: %{type: "text", data: text}
   end
 
+  @type data :: String.t() | %{String.t() => String.t()}
+
   @doc ~S"""
   Parse a message text containing CQ code.
 
@@ -49,6 +51,7 @@ defmodule DianBot.Coucou do
       iex> DianBot.Coucou.parse_message("[CQ:at,qq=8964]foobar")
       [%{type: "at", data: %{"qq" => "8964"}}, %{type: "text", data: "foobar"}]
   """
+  @spec parse_message(String.t()) :: [%{type: String.t(), data: data()}]
   def parse_message(source) do
     {:ok, result, _rest, _context, _position, _byte_offset} = Parser.parse(source)
     result

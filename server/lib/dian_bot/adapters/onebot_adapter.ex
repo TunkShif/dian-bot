@@ -3,7 +3,7 @@ defmodule DianBot.Adapters.OnebotAdapter do
 
   use Tesla, only: [:get, :post]
 
-  alias DianBot.Schemas.{User, Group, Message}
+  alias DianBot.Schemas.{User, Group, Message, Event}
 
   plug Tesla.Middleware.BaseUrl, base_url()
   plug Tesla.Middleware.Headers, [{"authorization", access_token()}]
@@ -85,6 +85,38 @@ defmodule DianBot.Adapters.OnebotAdapter do
       :ok
     end
   end
+
+  @impl true
+  def parse_event(data, opts) do
+    payload = opts |> Keyword.get(:payload)
+    signature = opts |> Keyword.get(:signature)
+
+    case trusted_event?(payload, signature) do
+      true -> build_event(data)
+      false -> nil
+    end
+  end
+
+  defp build_event(data) do
+    %{"mid" => mid} = Regex.named_captures(~r/\[CQ:reply,id=(?<mid>-?\d+)\]/, data["raw_message"])
+
+    %Event{
+      mid: mid,
+      qid: data["sender"]["user_id"],
+      gid: data["group_id"],
+      marked_at: data["time"] |> DateTime.from_unix!()
+    }
+  end
+
+  defp secret, do: config() |> Keyword.fetch!(:secret)
+
+  defp trusted_event?(payload, signature) when is_binary(payload) and is_binary(signature) do
+    hmac = :crypto.mac(:hmac, :sha, secret(), payload)
+    actual_signature = Base.encode16(hmac, case: :lower)
+    signature == "sha1=" <> actual_signature
+  end
+
+  defp trusted_event?(_body, _signature), do: false
 
   defp handle_response(%Tesla.Env{} = response) do
     case response do

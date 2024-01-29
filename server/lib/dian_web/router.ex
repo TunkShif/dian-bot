@@ -5,8 +5,14 @@ defmodule DianWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/webhooks", DianWeb do
+
+    post "/event", WebhookController, :event
+  end
+
   scope "/api", DianWeb do
     pipe_through :api
+
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
