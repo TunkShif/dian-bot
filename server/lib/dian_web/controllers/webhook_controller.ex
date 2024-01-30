@@ -9,8 +9,8 @@ defmodule DianWeb.WebhookController do
     maybe_event = DianBot.parse_event(params, payload: payload, signature: signature)
 
     case maybe_event do
-      nil -> conn |> put_status(:unauthorized) |> json(%{success: false, data: nil})
-      _ -> conn |> json(%{success: true, data: nil})
+      nil -> conn |> put_status(:unauthorized) |> json(%{data: nil})
+      _ -> conn |> json(%{data: nil})
     end
   end
 end
