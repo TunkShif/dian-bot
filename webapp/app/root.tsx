@@ -2,8 +2,11 @@ import type { LinksFunction } from "@remix-run/cloudflare"
 import { cssBundleHref } from "@remix-run/css-bundle"
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react"
 
+import styles from "./index.css"
+
 export const links: LinksFunction = () => [
-  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : [])
+  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
+  { rel: "stylesheet", href: styles }
 ]
 
 export default function App() {
