@@ -1,4 +1,6 @@
 defmodule DianBot do
+  @behaviour DianBot.Adapter
+
   @adapter Application.compile_env!(:dian, DianBot) |> Keyword.get(:adapter)
 
   defdelegate is_online(), to: @adapter

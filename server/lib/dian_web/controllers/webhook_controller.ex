@@ -6,10 +6,11 @@ defmodule DianWeb.WebhookController do
   def event(conn, params) do
     payload = BodyReader.get_raw_body(conn)
     signature = get_req_header(conn, "x-signature") |> List.first()
-    event = DianBot.parse_event(params, payload: payload, signature: signature)
+    maybe_event = DianBot.parse_event(params, payload: payload, signature: signature)
 
-    # TODO event handler
-
-    conn |> json(%{success: true, data: nil})
+    case maybe_event do
+      nil -> conn |> put_status(:unauthorized) |> json(%{success: false, data: nil})
+      _ -> conn |> json(%{success: true, data: nil})
+    end
   end
 end
