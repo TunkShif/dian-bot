@@ -11,8 +11,10 @@ defmodule DianWeb.Router do
     post "/event", WebhookController, :event
   end
 
-  scope "/api", DianWeb do
-    pipe_through :api
+  forward "/api", Absinthe.Plug, schema: Dian.GraphQL.Schema
+
+  if Application.compile_env(:dian, :dev_routes) do
+    forward "/graphiql", Absinthe.Plug.GraphiQL, schema: Dian.GraphQL.Schema
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
