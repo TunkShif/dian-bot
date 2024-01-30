@@ -14,6 +14,7 @@ defmodule Dian.Application do
       {Phoenix.PubSub, name: Dian.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: Dian.Finch},
+      {Oban, Application.fetch_env!(:dian, Oban)},
       # Start a worker by calling: Dian.Worker.start_link(arg)
       # {Dian.Worker, arg},
       # Start to serve requests, typically the last entry

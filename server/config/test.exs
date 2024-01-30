@@ -26,6 +26,9 @@ config :dian, Dian.Mailer, adapter: Swoosh.Adapters.Test
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
 
+# Prevent Oban from running jobs and plugins during test runs
+config :dian, Oban, testing: :inline
+
 # Print only warnings and errors during test
 config :logger, level: :warning
 

@@ -37,6 +37,12 @@ config :dian, DianBot, adapter: DianBot.Adapters.OnebotAdapter
 # at the `config/runtime.exs`.
 config :dian, Dian.Mailer, adapter: Swoosh.Adapters.Local
 
+# Configure oban jobs
+config :dian, Oban,
+  repo: Dian.Repo,
+  plugins: [Oban.Plugins.Pruner],
+  queues: [default: 8]
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

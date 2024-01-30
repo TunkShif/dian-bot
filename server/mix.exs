@@ -46,7 +46,8 @@ defmodule Dian.MixProject do
       {:bandit, "~> 1.1.3"},
       {:nimble_parsec, "~> 1.0"},
       {:typed_struct, "~> 0.3.0"},
-      {:tesla, "~> 1.8"}
+      {:tesla, "~> 1.8"},
+      {:oban, "~> 2.16"}
     ]
   end
 
