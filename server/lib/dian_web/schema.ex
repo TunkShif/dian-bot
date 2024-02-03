@@ -1,4 +1,4 @@
-defmodule Dian.GraphQL.Schema do
+defmodule DianWeb.Schema do
   use Absinthe.Schema
 
   query do
