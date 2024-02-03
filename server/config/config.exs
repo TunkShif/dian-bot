@@ -28,6 +28,9 @@ config :tesla, :adapter, {Tesla.Adapter.Finch, name: Dian.Finch}
 # Configures bot adapter
 config :dian, DianBot, adapter: DianBot.Adapters.OnebotAdapter
 
+# Configures storgae provider
+config :dian, Dian.Storage, adapter: Dian.Storage.Adapters.Supabase
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
