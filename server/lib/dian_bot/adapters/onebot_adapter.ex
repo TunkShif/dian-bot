@@ -1,8 +1,11 @@
 defmodule DianBot.Adapters.OnebotAdapter do
   @behaviour DianBot.Adapter
 
+  # TODO: considering cache request result
+
   use Tesla, only: [:get, :post]
 
+  alias DianBot.BotError
   alias DianBot.Schemas.{User, Group, Message, Event}
 
   plug Tesla.Middleware.BaseUrl, base_url()
@@ -27,7 +30,7 @@ defmodule DianBot.Adapters.OnebotAdapter do
   def get_user(qid) do
     with {:ok, response} <- get("/get_stranger_info", query: [user_id: qid]),
          {:ok, data} <- handle_response(response) do
-      {:ok, %User{qid: qid, nickname: data["nickname"]}}
+      {:ok, %User{qid: to_string(qid), nickname: data["nickname"]}}
     end
   end
 
@@ -35,19 +38,22 @@ defmodule DianBot.Adapters.OnebotAdapter do
   def get_group(gid) do
     with {:ok, response} <- get("/get_group_info", query: [group_id: gid]),
          {:ok, data} <- handle_response(response) do
-      {:ok, %Group{gid: gid, name: data["group_name"], description: data["group_memo"]}}
+      {:ok,
+       %Group{gid: to_string(gid), name: data["group_name"], description: data["group_memo"]}}
     end
   end
 
   @impl true
   def get_message(mid) do
     with {:ok, response} <- get("/get_msg", query: [message_id: mid]),
-         {:ok, data} <- handle_response(response) do
+         {:ok, data} <- handle_response(response),
+         {:ok, sender} <- get_user(data["sender"]["user_id"]),
+         {:ok, group} <- get_group(data["group_id"]) do
       {:ok,
        %Message{
          mid: mid,
-         qid: data["sender"]["user_id"],
-         gid: data["group_id"],
+         sender: sender,
+         group: group,
          raw_text: data["raw_message"],
          sent_at: data["time"] |> DateTime.from_unix!()
        }}
@@ -57,16 +63,24 @@ defmodule DianBot.Adapters.OnebotAdapter do
   @impl true
   def get_forwarded_messages(mid) do
     with {:ok, response} <- get("/get_forward_msg", query: [message_id: mid]),
-         {:ok, data} <- handle_response(response) do
-      {:ok,
-       for message <- data["messages"] do
-         %Message{
-           qid: message["sender"]["user_id"],
-           gid: message["group_id"],
-           raw_text: message["content"],
-           sent_at: message["time"] |> DateTime.from_unix!()
-         }
-       end}
+         {:ok, data} <- handle_response(response),
+         {:ok, messages} <-
+           Enum.reduce_while(data["messages"], {:ok, []}, fn message, {:ok, acc} ->
+             with {:ok, sender} <- get_user(message["sender"]["user_id"]),
+                  {:ok, group} <- get_group(message["group_id"]) do
+               message = %Message{
+                 sender: sender,
+                 group: group,
+                 raw_text: message["content"],
+                 sent_at: message["time"] |> DateTime.from_unix!()
+               }
+
+               {:cont, {:ok, [message | acc]}}
+             else
+               {:error, _} = error -> {:halt, error}
+             end
+           end) do
+      {:ok, Enum.reverse(messages)}
     end
   end
 
@@ -93,19 +107,23 @@ defmodule DianBot.Adapters.OnebotAdapter do
 
     case trusted_event?(payload, signature) do
       true -> build_event(data)
-      false -> nil
+      false -> {:error, %BotError{message: "unauthorized event source"}}
     end
   end
 
   defp build_event(data) do
     %{"mid" => mid} = Regex.named_captures(~r/\[CQ:reply,id=(?<mid>-?\d+)\]/, data["raw_message"])
 
-    %Event{
-      mid: mid,
-      qid: data["sender"]["user_id"],
-      gid: data["group_id"],
-      marked_at: data["time"] |> DateTime.from_unix!()
-    }
+    with {:ok, owner} <- get_user(data["sender"]["user_id"]),
+         {:ok, group} <- get_group(data["group_id"]) do
+      {:ok,
+       %Event{
+         mid: mid,
+         owner: owner,
+         group: group,
+         marked_at: data["time"] |> DateTime.from_unix!()
+       }}
+    end
   end
 
   defp secret, do: config() |> Keyword.fetch!(:secret)
@@ -121,9 +139,9 @@ defmodule DianBot.Adapters.OnebotAdapter do
   defp handle_response(%Tesla.Env{} = response) do
     case response do
       %{status: 200, body: %{"status" => "ok"} = body} -> {:ok, body["data"]}
-      %{status: 200, body: body} -> {:error, body["msg"]}
-      %{status: 404} -> {:error, "unknown bot api"}
-      _ -> {:error, "bot api error"}
+      %{status: 200, body: body} -> {:error, %BotError{message: body["msg"]}}
+      %{status: 404} -> {:error, %BotError{message: "unknown bot api"}}
+      _ -> {:error, %BotError{message: "bot api error"}}
     end
   end
 end

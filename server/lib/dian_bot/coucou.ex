@@ -43,6 +43,7 @@ defmodule DianBot.Coucou do
   end
 
   @type data :: String.t() | %{String.t() => String.t()}
+  @type result :: [%{type: String.t(), data: data()}]
 
   @doc ~S"""
   Parse a message text containing CQ code.
@@ -51,7 +52,7 @@ defmodule DianBot.Coucou do
       iex> DianBot.Coucou.parse_message("[CQ:at,qq=8964]foobar")
       [%{type: "at", data: %{"qq" => "8964"}}, %{type: "text", data: "foobar"}]
   """
-  @spec parse_message(String.t()) :: [%{type: String.t(), data: data()}]
+  @spec parse_message(String.t()) :: result()
   def parse_message(source) do
     {:ok, result, _rest, _context, _position, _byte_offset} = Parser.parse(source)
     result

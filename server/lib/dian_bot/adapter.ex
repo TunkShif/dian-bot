@@ -1,9 +1,10 @@
 defmodule DianBot.Adapter do
+  alias DianBot.BotError
   alias DianBot.Schemas.{User, Group, Message, Event}
 
   @type result(t) :: {:ok, t} | error()
 
-  @type error :: {:error, String.t()}
+  @type error :: {:error, BotError.t()}
 
   @callback is_online() :: boolean()
 
@@ -17,5 +18,5 @@ defmodule DianBot.Adapter do
 
   @callback set_honorable_message(String.t()) :: :ok | error()
 
-  @callback parse_event(map(), keyword()) :: Event.t() | nil
+  @callback parse_event(map(), keyword()) :: result(Event.t())
 end

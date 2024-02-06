@@ -3,6 +3,12 @@ defmodule DianBot do
 
   @adapter Application.compile_env!(:dian, DianBot) |> Keyword.fetch!(:adapter)
 
+  defmodule BotError do
+    @type t :: %{message: String.t()}
+
+    defexception [:message]
+  end
+
   defdelegate is_online(), to: @adapter
 
   defdelegate get_message(mid), to: @adapter
