@@ -1,0 +1,27 @@
+[
+  {
+    "gid": 1,
+    "group_name": "Engineering Team",
+    "group_memo": "Group responsible for software development and engineering tasks."
+  },
+  {
+    "gid": 2,
+    "group_name": "Marketing Department",
+    "group_memo": "Responsible for promoting products and services to potential customers."
+  },
+  {
+    "gid": 3,
+    "group_name": "Sales Team",
+    "group_memo": "Tasked with generating revenue by selling products or services to clients."
+  },
+  {
+    "gid": 4,
+    "group_name": "Customer Support",
+    "group_memo": "Handles customer inquiries, complaints, and support requests."
+  },
+  {
+    "gid": 5,
+    "group_name": "Finance Department",
+    "group_memo": "Manages the company's financial operations, including budgeting and accounting."
+  }
+]
