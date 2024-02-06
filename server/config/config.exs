@@ -29,7 +29,7 @@ config :tesla, :adapter, {Tesla.Adapter.Finch, name: Dian.Finch}
 config :dian, DianBot, adapter: DianBot.Adapters.OnebotAdapter
 
 # Configures storgae provider
-config :dian, Dian.Storage, adapter: Dian.Storage.Adapters.Supabase
+config :dian, Dian.Storage, adapter: Dian.Storage.Adapters.SupabaseAdapter
 
 # Configures the mailer
 #

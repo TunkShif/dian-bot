@@ -5,5 +5,5 @@ defmodule Dian.Storage do
 
   defdelegate get_url(name), to: @adapter
   defdelegate exists?(name), to: @adapter
-  defdelegate upload(name, content, opts), to: @adapter
+  defdelegate upload(params), to: @adapter
 end

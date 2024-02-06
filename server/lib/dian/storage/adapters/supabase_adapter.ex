@@ -1,4 +1,4 @@
-defmodule Dian.Storage.Adapters.Supabase do
+defmodule Dian.Storage.Adapters.SupabaseAdapter do
   @behaviour Dian.Storage.Adapter
 
   use Tesla
@@ -26,18 +26,17 @@ defmodule Dian.Storage.Adapters.Supabase do
   end
 
   @impl true
-  def upload(name, content, content_type: content_type) do
-    payload =
-      Tesla.Multipart.new()
-      |> Tesla.Multipart.add_file_content(
-        content,
-        name,
-        headers: [{"content-type", content_type}]
-      )
+  def upload(params) do
+    %{"name" => name, "url" => url} = params
 
-    case post("/storage/v1/object/#{bucket_name()}/#{name}", payload) do
-      {:ok, %Tesla.Env{status: 200}} -> {:ok, get_url(name)}
-      error -> error
+    with {:ok, %Tesla.Env{status: 200} = response} <- get(url),
+         %Tesla.Env{headers: headers, body: body} = response,
+         headers = Enum.find(headers, fn {key, _value} -> key == "content-type" end),
+         payload =
+           Tesla.Multipart.new() |> Tesla.Multipart.add_file_content(body, name, headers: headers),
+         {:ok, %Tesla.Env{status: 200}} <-
+           post("/storage/v1/object/#{bucket_name()}/#{name}", payload) do
+      {:ok, get_url(name)}
     end
   end
 end
