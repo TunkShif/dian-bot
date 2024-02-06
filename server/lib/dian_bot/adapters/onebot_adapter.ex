@@ -115,10 +115,12 @@ defmodule DianBot.Adapters.OnebotAdapter do
     %{"mid" => mid} = Regex.named_captures(~r/\[CQ:reply,id=(?<mid>-?\d+)\]/, data["raw_message"])
 
     with {:ok, owner} <- get_user(data["sender"]["user_id"]),
-         {:ok, group} <- get_group(data["group_id"]) do
+         {:ok, group} <- get_group(data["group_id"]),
+         {:ok, message} <- get_message(mid) do
       {:ok,
        %Event{
-         mid: mid,
+         id: data["message_id"],
+         message: message,
          owner: owner,
          group: group,
          marked_at: data["time"] |> DateTime.from_unix!()
