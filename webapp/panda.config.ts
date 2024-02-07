@@ -1,7 +1,15 @@
 import { defineConfig } from "@pandacss/dev"
+import { createPreset } from "@park-ui/panda-preset"
 
 export default defineConfig({
-  presets: ["@pandacss/preset-base", "@park-ui/panda-preset"],
+  presets: [
+    "@pandacss/preset-base",
+    createPreset({
+      grayColor: "sage",
+      accentColor: "tomato",
+      borderRadius: "lg"
+    })
+  ],
   preflight: true,
   jsxFramework: "react",
   outdir: "styled-system",
