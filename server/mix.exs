@@ -48,6 +48,7 @@ defmodule Dian.MixProject do
       {:typed_struct, "~> 0.3.0"},
       {:tesla, "~> 1.8"},
       {:oban, "~> 2.16"},
+      {:cachex, "~> 3.6"},
       {:absinthe, "~> 1.7"},
       {:absinthe_plug, "~> 1.5"}
     ]

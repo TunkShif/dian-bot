@@ -5,7 +5,6 @@ defmodule Dian.ChatsTest do
 
   alias Dian.Chats
   alias Dian.Chats.Thread
-  alias DianBot.Schemas.Event
 
   describe "Chats.create_thread/1" do
     test "should create thread when given an valid event" do

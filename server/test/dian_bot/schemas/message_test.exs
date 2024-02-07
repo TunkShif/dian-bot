@@ -3,6 +3,7 @@ defmodule DianBot.Schemas.MessageTest do
 
   import Dian.Fixtures
 
+  alias DianBot.BotError
   alias DianBot.Schemas.Message
 
   describe "Message.prepare/1" do
@@ -20,7 +21,7 @@ defmodule DianBot.Schemas.MessageTest do
 
     test "should fail when message is not found" do
       message = fixture(:message, raw_text: "[CQ:forward,id=999]")
-      assert {:error, reason} = Message.prepare(message)
+      assert {:error, %BotError{message: "not found"}} = Message.prepare(message)
     end
 
     test "should process at cq code" do

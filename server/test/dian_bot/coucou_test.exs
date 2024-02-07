@@ -1,5 +1,5 @@
 defmodule DianBot.CoucouTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   alias DianBot.Coucou
 
