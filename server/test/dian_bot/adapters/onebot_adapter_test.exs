@@ -1,6 +1,8 @@
 defmodule DianBot.Adapters.OnebotAdapterTest do
   use ExUnit.Case
 
+  import Dian.Fixtures
+
   alias DianBot.BotError
   alias DianBot.Adapters.OnebotAdapter
   alias DianBot.Schemas.{User, Group, Message, Event}
@@ -45,7 +47,7 @@ defmodule DianBot.Adapters.OnebotAdapterTest do
   describe "OnebotAdapter.get_forwarded_messages/1" do
     test "returns messages when given valid id" do
       assert {:ok, messages} = OnebotAdapter.get_forwarded_messages("1")
-      assert length(messages) == 3
+      assert length(messages) == 5
       assert message = List.first(messages)
       assert message.sender.nickname == "Alice"
       assert message.group.name == "Sales Team"
@@ -55,15 +57,15 @@ defmodule DianBot.Adapters.OnebotAdapterTest do
 
   describe "OnebotAdapter.parse_event/2" do
     test "should fail when signature is nil" do
-      event = event_fixature()
-      payload = Jason.encode!(event)
+      payload = fixture(:raw_event)
+      event = Jason.decode!(payload)
       assert {:error, %BotError{} = error} = OnebotAdapter.parse_event(event, payload: payload)
       assert error.message == "unauthorized event source"
     end
 
     test "should fail when signature is invalid" do
-      event = event_fixature()
-      payload = Jason.encode!(event)
+      payload = fixture(:raw_event)
+      event = Jason.decode!(payload)
 
       assert {:error, %BotError{} = error} =
                OnebotAdapter.parse_event(event, payload: payload, signature: "sha1=foobar")
@@ -72,8 +74,8 @@ defmodule DianBot.Adapters.OnebotAdapterTest do
     end
 
     test "should succeed when signature is valid" do
-      event = event_fixature()
-      payload = Jason.encode!(event)
+      payload = fixture(:raw_event)
+      event = Jason.decode!(payload)
       signature = :crypto.mac(:hmac, :sha, "1234", payload) |> Base.encode16(case: :lower)
 
       assert {:ok, %Event{} = event} =
@@ -85,19 +87,5 @@ defmodule DianBot.Adapters.OnebotAdapterTest do
       assert event.message.mid == "1"
       assert event.message.raw_text == "Hello everyone!"
     end
-  end
-
-  defp event_fixature(mid \\ "1") do
-    %{
-      "message_type" => "group",
-      "sub_type" => "group",
-      "message_id" => 666,
-      "group_id" => 3,
-      "raw_message" => "[CQ:reply,id=#{mid}]/mk",
-      "sender" => %{
-        "user_id" => 9
-      },
-      "time" => 1_644_180_000
-    }
   end
 end

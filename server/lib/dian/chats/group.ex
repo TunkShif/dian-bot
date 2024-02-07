@@ -1,7 +1,9 @@
 defmodule Dian.Chats.Group do
-  alias Dian.Chats.Thread
   use Ecto.Schema
   import Ecto.Changeset
+
+  alias Dian.Chats.Thread
+  alias DianBot.Schemas.Group, as: BotGroup
 
   schema "groups" do
     field :gid, :string
@@ -18,5 +20,11 @@ defmodule Dian.Chats.Group do
     group
     |> cast(attrs, [:gid, :name, :description])
     |> validate_required([:gid, :name, :description])
+    |> unique_constraint(:gid)
+  end
+
+  @spec create_changeset(Ecto.Schema.t(), BotGroup.t()) :: Ecto.Changeset.t()
+  def create_changeset(group, %BotGroup{} = group_params) do
+    changeset(group, Map.from_struct(group_params))
   end
 end

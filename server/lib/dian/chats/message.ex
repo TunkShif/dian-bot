@@ -5,7 +5,6 @@ defmodule Dian.Chats.Message do
   alias Dian.Chats.User
 
   schema "messages" do
-    field :mid, :string
     field :raw_text, :string
     field :content, {:array, :map}
     field :sent_at, :naive_datetime
@@ -18,7 +17,7 @@ defmodule Dian.Chats.Message do
   @doc false
   def changeset(message, attrs) do
     message
-    |> cast(attrs, [:mid, :raw_text, :content])
-    |> validate_required([:mid, :raw_text, :content])
+    |> cast(attrs, [:raw_text, :content, :sent_at, :sender_id])
+    |> validate_required([:raw_text, :content, :sent_at])
   end
 end

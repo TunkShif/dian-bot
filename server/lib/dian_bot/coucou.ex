@@ -49,11 +49,11 @@ defmodule DianBot.Coucou do
   Parse a message text containing CQ code.
 
   ## Examples
-      iex> DianBot.Coucou.parse_message("[CQ:at,qq=8964]foobar")
+      iex> DianBot.Coucou.parse("[CQ:at,qq=8964]foobar")
       [%{type: "at", data: %{"qq" => "8964"}}, %{type: "text", data: "foobar"}]
   """
-  @spec parse_message(String.t()) :: result()
-  def parse_message(source) do
+  @spec parse(String.t()) :: result()
+  def parse(source) do
     {:ok, result, _rest, _context, _position, _byte_offset} = Parser.parse(source)
     result
   end

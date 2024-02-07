@@ -2,7 +2,7 @@ defmodule Dian.Chats.Thread do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Dian.Chats.{User, Group, Message}
+  alias Dian.Chats.{User, Group, Message, ThreadMessage}
 
   schema "threads" do
     field :posted_at, :naive_datetime
@@ -10,7 +10,7 @@ defmodule Dian.Chats.Thread do
     belongs_to :owner, User
     belongs_to :group, Group
 
-    many_to_many :messages, Message, join_through: "threads_messages", unique: true
+    many_to_many :messages, Message, join_through: ThreadMessage, on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
