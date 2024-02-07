@@ -25,7 +25,7 @@ defmodule Dian.Chats do
 
           {:ok, messages}
         rescue
-          e -> {:error, e}
+          error -> {:error, error}
         end
       end)
       |> Ecto.Multi.run(:thread, fn repo, %{owner: owner, group: group, messages: messages} ->

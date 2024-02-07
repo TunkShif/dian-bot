@@ -43,8 +43,10 @@ const app = new Elysia()
       )
       .get(
         "/get_forward_msg",
-        ({ query: { message_id } }) =>
-          okOrError({ messages: forwarded_messages[(parseInt(message_id) ?? 0) - 1] }),
+        ({ query: { message_id } }) => {
+          const messages = forwarded_messages[(parseInt(message_id) ?? 0) - 1]
+          return okOrError(messages && { messages })
+        },
         {
           query: t.Object({ message_id: t.String() })
         }

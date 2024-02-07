@@ -28,17 +28,20 @@ defmodule DianBot.Schemas.Message do
   """
   @spec prepare(t()) :: {:ok, [t()]} | {:error, any()}
   def prepare(message) do
-    # TODO: work from here next time
-    message = to_parsed(message)
-    messages = maybe_get_forwarded_messages!(message)
+    try do
+      message = to_parsed(message)
+      messages = maybe_get_forwarded_messages!(message)
 
-    messages =
-      for message <- messages do
-        Task.async(fn -> process_message!(message) end)
-      end
-      |> Task.await_many()
+      messages =
+        for message <- messages do
+          Task.async(fn -> process_message!(message) end)
+        end
+        |> Task.await_many()
 
-    {:ok, messages}
+      {:ok, messages}
+    rescue
+      error -> {:error, error}
+    end
   end
 
   # If the message itself is a forwarded message, get the list of messages from it.

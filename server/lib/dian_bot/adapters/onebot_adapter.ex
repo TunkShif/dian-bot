@@ -63,24 +63,31 @@ defmodule DianBot.Adapters.OnebotAdapter do
   @impl true
   def get_forwarded_messages(mid) do
     with {:ok, response} <- get("/get_forward_msg", query: [message_id: mid]),
-         {:ok, data} <- handle_response(response),
-         {:ok, messages} <-
-           Enum.reduce_while(data["messages"], {:ok, []}, fn message, {:ok, acc} ->
-             with {:ok, sender} <- get_user(message["sender"]["user_id"]),
-                  {:ok, group} <- get_group(message["group_id"]) do
-               message = %Message{
-                 sender: sender,
-                 group: group,
-                 raw_text: message["content"],
-                 sent_at: message["time"] |> DateTime.from_unix!()
-               }
+         {:ok, data} <- handle_response(response) do
+      parse_forwarded_messages(data["messages"])
+    end
+  end
 
-               {:cont, {:ok, [message | acc]}}
-             else
-               {:error, _} = error -> {:halt, error}
-             end
-           end) do
-      {:ok, Enum.reverse(messages)}
+  defp parse_forwarded_messages(messages) do
+    try do
+      messages =
+        for message <- messages do
+          with {:ok, sender} <- get_user(message["sender"]["user_id"]),
+               {:ok, group} <- get_group(message["group_id"]) do
+            %Message{
+              sender: sender,
+              group: group,
+              raw_text: message["content"],
+              sent_at: message["time"] |> DateTime.from_unix!()
+            }
+          else
+            {:error, error} -> raise error
+          end
+        end
+
+      {:ok, messages}
+    rescue
+      error -> {:error, error}
     end
   end
 
